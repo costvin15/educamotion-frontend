@@ -1,10 +1,11 @@
 'use client'
 import React from 'react';
-import { Box, Button, CssBaseline, Drawer, Grid, IconButton, Stack, ThemeProvider, Toolbar, Typography, createTheme, styled } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, IconButton, Stack, ThemeProvider, Toolbar, Typography, createTheme, styled } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import InboxIcon from '@mui/icons-material/Inbox';
 import CircleIcon from '@mui/icons-material/Circle';
+import Drawer from '@/app/home/components/Drawer';
 
 const drawerWidth = 80;
 
@@ -35,46 +36,7 @@ export default function Home() {
     <ThemeProvider theme={darkTheme}>
       <Box sx={{display: 'flex'}}>
         <CssBaseline />
-        <Drawer
-          PaperProps={{
-            sx: {
-              backgroundColor: '#141218',
-              border: 'none',
-              borderTopRightRadius: 16,
-            }
-          }}
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: drawerWidth,
-              boxSizing: 'border-box'
-            }
-          }}
-          variant='permanent'
-          anchor='left'>
-          <Toolbar disableGutters>
-            <IconButton sx={{'margin': 'auto'}} centerRipple size='large'>
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-  
-          <Toolbar disableGutters>
-            <Button variant='contained' style={{paddingTop: '22px', paddingBottom: '22px', borderRadius: '16px'}} sx={{'margin': 'auto'}} size='large'>
-              <AddIcon />
-            </Button>
-          </Toolbar>
-
-          <Stack alignItems='center'>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((_, index) => (
-              <Box key={index}>
-                <IconButton centerRipple size='large'>
-                  <InboxIcon />
-                </IconButton>
-              </Box>
-            ))}
-          </Stack>
-        </Drawer>
+        <Drawer />
 
         <Grid container>
           <Grid item md={3}>

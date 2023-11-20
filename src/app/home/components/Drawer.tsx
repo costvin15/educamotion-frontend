@@ -1,0 +1,161 @@
+import {Backdrop, Box, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Add as AddIcon,
+  Inbox as InboxIcon,
+  Star as StarIcon,
+  Email as EmailIcon,
+  Drafts as DraftsIcon
+} from '@mui/icons-material';
+import { useState } from 'react';
+
+const miniDrawerWidth = 80;
+const drawerWidth = 240;
+const backgroundColor = '#141218';
+
+const openedMixin = (theme: Theme) : CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme: Theme) : CSSObject => ({
+  width: miniDrawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden'
+});
+
+const PermanentDrawer = styled(MuiDrawer)(({ theme, open }) => ({
+  width: miniDrawerWidth,
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: miniDrawerWidth,
+    boxSizing: 'border-box',
+    backgroundColor,
+    border: 'none',
+    borderTopRightRadius: 16,
+  },
+  ...(open && {
+    '& .MuiDrawer-paper': openedMixin(theme),
+  }),
+  ...(!open && {
+    '& .MuiDrawer-paper': closedMixin(theme),
+  })
+}));
+
+const IconButtonCentered = styled(IconButton)(() => ({
+  margin: '0',
+  marginTop: '5px',
+  marginBottom: '5px',
+}));
+
+const NewDocumentButton = styled(Button)(() => ({
+  margin: 'auto',
+  paddingTop: '22px',
+  paddingBottom: '22px',
+  borderRadius: '16px'
+}));
+
+const ShortcutsToolbar = styled(Toolbar)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  width: miniDrawerWidth,
+}));
+
+const ShortcutsStack = styled(Stack)(() => ({
+  width: miniDrawerWidth,
+  marginTop: '15px'
+}));
+
+const ContainerStack = styled(Stack)(() => ({
+  width: drawerWidth,
+  alignItems: 'center',
+  marginBottom: '5px',
+}));
+
+const BackdropForDrawer = styled(Backdrop)(({theme}) => ({
+  zIndex: theme.zIndex.drawer,
+}));
+
+export default function Drawer() : JSX.Element {
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpened = () => {
+    setOpen(!open);
+  };
+
+  return (  
+    <>
+      <BackdropForDrawer open={open}
+        onClick={handleDrawerOpened} />
+      <PermanentDrawer
+        open={open}
+        variant='permanent'
+        anchor='left'>
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered onClick={handleDrawerOpened}>
+              <MenuIcon />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <NewDocumentButton variant='contained'>
+              <AddIcon />
+            </NewDocumentButton>
+          </ShortcutsToolbar>
+
+          <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered>
+              <InboxIcon />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+
+          <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered>
+              <StarIcon />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+
+          <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered>
+              <EmailIcon />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+
+          <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered>
+              <DraftsIcon />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+
+          <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+      </PermanentDrawer>
+    </>
+  );
+}
