@@ -1,3 +1,4 @@
+'use client'
 import {Backdrop, Box, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -15,32 +16,33 @@ const backgroundColor = '#141218';
 
 const openedMixin = (theme: Theme) : CSSObject => ({
   width: drawerWidth,
+  boxSizing: 'border-box',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
+  backgroundColor,
+  border: 'none',
+  borderTopRightRadius: 16,
 });
 
 const closedMixin = (theme: Theme) : CSSObject => ({
   width: miniDrawerWidth,
+  boxSizing: 'border-box',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden'
+  overflowX: 'hidden',
+  backgroundColor,
+  border: 'none',
+  borderTopRightRadius: 16,
 });
 
 const PermanentDrawer = styled(MuiDrawer)(({ theme, open }) => ({
   width: miniDrawerWidth,
   flexShrink: 0,
-  '& .MuiDrawer-paper': {
-    width: miniDrawerWidth,
-    boxSizing: 'border-box',
-    backgroundColor,
-    border: 'none',
-    borderTopRightRadius: 16,
-  },
   ...(open && {
     '& .MuiDrawer-paper': openedMixin(theme),
   }),
