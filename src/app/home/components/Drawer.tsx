@@ -1,5 +1,5 @@
 'use client'
-import {Backdrop, Box, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
+import {Backdrop, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
 import {
   Menu as MenuIcon,
   Add as AddIcon,
@@ -11,7 +11,7 @@ import {
 import { useState } from 'react';
 
 const miniDrawerWidth = 80;
-const drawerWidth = 240;
+const drawerWidth = 300;
 const backgroundColor = '#141218';
 
 const openedMixin = (theme: Theme) : CSSObject => ({
@@ -68,11 +68,7 @@ const ShortcutsToolbar = styled(Toolbar)(() => ({
   display: 'flex',
   justifyContent: 'center',
   width: miniDrawerWidth,
-}));
-
-const ShortcutsStack = styled(Stack)(() => ({
-  width: miniDrawerWidth,
-  marginTop: '15px'
+  marginRight: '10px'
 }));
 
 const ContainerStack = styled(Stack)(() => ({
