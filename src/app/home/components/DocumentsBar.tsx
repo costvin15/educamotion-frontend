@@ -1,3 +1,4 @@
+'use client'
 import { Circle as CircleIcon } from '@mui/icons-material';
 import { Box, Button, Grid, Stack, Toolbar, Typography, styled } from '@mui/material';
 

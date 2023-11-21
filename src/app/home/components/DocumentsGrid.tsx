@@ -1,3 +1,4 @@
+'use client'
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { Avatar, Box, Card, CardHeader, CardMedia, Grid, IconButton, Typography, styled } from '@mui/material';
 import { red } from '@mui/material/colors';
