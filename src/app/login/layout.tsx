@@ -4,14 +4,14 @@ import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     background: {
       default: '#09090B',
       paper: '#09090B'
     },
     text: {
       primary: '#000'
-    }
+    },
   },
 });
 
