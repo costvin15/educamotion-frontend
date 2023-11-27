@@ -10,7 +10,7 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 
-import NewDocumentModal from '@/app/home/modals/NewDocument';
+import NewDocumentModal from '@/app/dashboard/modals/NewDocument';
 
 const miniDrawerWidth = 80;
 const drawerWidth = 300;
@@ -92,7 +92,7 @@ export default function Drawer() : JSX.Element {
 
   return (  
     <>
-      <NewDocumentModal open={true} onClose={() => {}} />
+      <NewDocumentModal open={false} onClose={() => {}} />
       <BackdropForDrawer open={open}
         onClick={handleDrawerOpened} />
       <PermanentDrawer

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import Drawer from '@/app/home/components/Drawer';
+import Drawer from '@/app/dashboard/components/Drawer';
 
 const darkTheme = createTheme({
   palette: {
