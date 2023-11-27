@@ -1,5 +1,5 @@
 'use client'
-import {Backdrop, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
+import {Avatar, Backdrop, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
 import {
   Menu as MenuIcon,
   Add as AddIcon,
@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 
 import NewDocumentModal from '@/app/dashboard/modals/NewDocument';
+import { useSession } from 'next-auth/react';
 
 const miniDrawerWidth = 80;
 const drawerWidth = 300;
@@ -84,6 +85,7 @@ const BackdropForDrawer = styled(Backdrop)(({theme}) => ({
 }));
 
 export default function Drawer() : JSX.Element {
+  const { data : session } = useSession();
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpened = () => {
@@ -155,6 +157,16 @@ export default function Drawer() : JSX.Element {
           </ShortcutsToolbar>
 
           <Typography>Nova apresentação</Typography>
+        </ContainerStack>
+
+        <ContainerStack direction="row" overflow="hidden">
+          <ShortcutsToolbar disableGutters>
+            <IconButtonCentered>
+              <Avatar src={session?.user?.image ?? ''} />
+            </IconButtonCentered>
+          </ShortcutsToolbar>
+
+          <Typography>{session?.user?.name}</Typography>
         </ContainerStack>
       </PermanentDrawer>
     </>
