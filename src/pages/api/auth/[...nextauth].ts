@@ -28,8 +28,11 @@ const callbacks : Partial<CallbacksOptions> = {
     return token;
   },
   session: async ({ session, token }) => {
+    console.log('Gathering informations from user in the backend');
     const accessToken : string = token?.accessToken as string;
     const user = await userInfo(accessToken);
+    console.log('Information received');
+    console.log(user);
 
     session.user = {};
     session.user.name = user.name;
