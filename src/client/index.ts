@@ -38,9 +38,14 @@ export const userInfo = async (accessToken: string) => {
 };
 
 export const authenticate = async (credential: string) => {
-  const { data } : { data : AuthenticationResponse } = await axiosInstance().post(paths.SOCIAL_AUTHENTICATION, {
-    credential,
-  });
+  try {
+    console.log(axiosInstance().defaults.baseURL);
+    const { data } : { data : AuthenticationResponse } = await axiosInstance().post(paths.SOCIAL_AUTHENTICATION, {
+      credential,
+    });
 
-  return data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
