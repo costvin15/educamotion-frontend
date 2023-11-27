@@ -47,5 +47,6 @@ export const authenticate = async (credential: string) => {
     return data;
   } catch (error) {
     console.log(error);
+    throw new Error('Failed in the connection.');
   }
 };
