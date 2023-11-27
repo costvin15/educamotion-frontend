@@ -15,10 +15,26 @@ type AuthenticationResponse = {
   refresh_token: string;
 };
 
+type UserInfoResponse = {
+  name: string;
+  email: string;
+  picture: string;
+};
+
 export const get = async (url: string) => {
   await axiosInstance().get(url, {
 
   });
+};
+
+export const userInfo = async (accessToken: string) => {
+  const { data} : { data: UserInfoResponse } = await axiosInstance().get(paths.USER_INFO, {
+    headers: {
+      Authorization: 'Bearer ' + accessToken
+    },
+  });
+
+  return data;
 };
 
 export const authenticate = async (credential: string) => {
