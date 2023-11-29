@@ -52,15 +52,7 @@ export const authOptions : AuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  callbacks,
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        sameSite: 'none'
-      }
-    }
-  }
+  callbacks
 };
 
 export default NextAuth(authOptions);
