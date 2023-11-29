@@ -56,7 +56,7 @@ export default function Login({ providers } : InferGetServerSidePropsType<typeof
                 <Box padding={'10px'} sx={{textAlign: 'center'}}>
                   {Object.values(providers).map(provider => (
                     <Box paddingBottom={2} key={provider.id}>
-                      <LoginButton onClick={() => signIn(provider.id)} variant='contained'>Entrar com {provider.name}</LoginButton>
+                      <LoginButton onClick={() => { console.log('Hi!'); signIn(provider.id); }} variant='contained'>Entrar com {provider.name}</LoginButton>
                     </Box>
                   ))}
                   {/* <Typography variant='h5'><strong>Bem vindo!</strong></Typography>
