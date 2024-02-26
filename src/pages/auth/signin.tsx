@@ -7,8 +7,6 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Box, Button, CssBaseline, Grid, Paper, TextField, ThemeProvider, Typography, createTheme, styled } from '@mui/material';
 import { grey } from '@mui/material/colors';
 
-import { authenticate } from '@/client';
-
 const darkTheme = createTheme({
   palette: {
     mode: 'light',

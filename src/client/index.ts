@@ -1,52 +1,24 @@
 import axios from 'axios';
-import paths from '@/client/paths';
 
-const timeout = 3000;
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from 'next-auth/next';
+import { getSession } from 'next-auth/react';
 
-const axiosInstance = () => {
-  return axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_BASEURL,
-    timeout,
-  });
+type Session = {
+  accessToken: string;
 }
 
-type AuthenticationResponse = {
-  access_token: string;
-  refresh_token: string;
-};
+axios.interceptors.request.use(async config => {
+    config.baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
+    const data = await getSession();
 
-type UserInfoResponse = {
-  name: string;
-  email: string;
-  picture: string;
-};
+    if (data && data.user.token) {
+      config.headers.Authorization = `Bearer ${data.user.token}`;
+    }
 
-export const get = async (url: string) => {
-  await axiosInstance().get(url, {
+    return config;
+  },
+  error => Promise.reject(error)
+);
 
-  });
-};
-
-export const userInfo = async (accessToken: string) => {
-  const { data} : { data: UserInfoResponse } = await axiosInstance().get(paths.USER_INFO, {
-    headers: {
-      Authorization: 'Bearer ' + accessToken
-    },
-  });
-
-  return data;
-};
-
-export const authenticate = async (credential: string) => {
-  try {
-    console.log(axiosInstance().defaults.baseURL);
-    const { data } : { data : AuthenticationResponse } = await axiosInstance().post(paths.SOCIAL_AUTHENTICATION, {
-      credential,
-    });
-
-    return data;
-  } catch (error) {
-    console.log(error);
-    throw new Error('Failed in the connection.');
-  }
-};
+export default axios;

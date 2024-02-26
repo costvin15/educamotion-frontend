@@ -1,6 +1,5 @@
-import NextAuth, { AuthOptions, CallbacksOptions } from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
-import { authenticate, userInfo } from '@/client';
 
 const providers = [
   KeycloakProvider({
@@ -18,7 +17,25 @@ export const authOptions : AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 60
   },
+  callbacks: {
+    jwt: async ({ token, user, account }) => {
+      if (user) {
+        token.id = user.id;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+
+      return token;
+    },
+    session: async ({ session, token }: any) => {
+      session.user = token;
+      session.user.token = token.accessToken;
+      return session;
+    }
+  }
 };
 
 export default NextAuth(authOptions);
