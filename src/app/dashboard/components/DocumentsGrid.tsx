@@ -1,10 +1,10 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { Avatar, Box, Card, CardHeader, CardMedia, Grid, IconButton, Typography, styled } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, Grid, styled } from '@mui/material';
 import { red } from '@mui/material/colors';
 
 import client from '@/client';
+import { useRouter } from 'next/navigation';
 
 type PresentationsPage = {
   nextPageToken: string;
@@ -39,6 +39,7 @@ const ContainerBox = styled(Box)(() => ({
 }));
 
 export default function DocumentsGrid() {
+  const router = useRouter();
   const [nextPageToken, setNextPageToken] = useState('' as string);
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
@@ -53,7 +54,6 @@ export default function DocumentsGrid() {
 
   useEffect(() => {
     presentations.map(async (presentation) => {
-      console.log(presentation);
       const thumbnail = await getPresentationImage(presentation.id);
       setThumbnails((prevState) => ({
         ...prevState,
@@ -61,6 +61,10 @@ export default function DocumentsGrid() {
       }));
     });
   }, [presentations]);
+
+  const handlePresentation = (presentationId: string) => {
+    router.push(`/slide-details/${presentationId}`);
+  }
 
   return (
     <Grid container direction='column'>
@@ -71,26 +75,23 @@ export default function DocumentsGrid() {
               return (
                 <Grid key={index} item md={4} p={1}>
                   <Card>
-                    <CardHeader 
-                      avatar={
-                        <Avatar sx={{ bgcolor: red[500] }}>
-                          {presentation.name.charAt(0)}
-                        </Avatar>
-                      }
-                      action={
-                        <IconButton aria-label='settings'>
-                          <MoreVertIcon />
-                        </IconButton>
-                      }
-                      title={presentation.name}
-                      subheader="September 14, 2016" />
+                    <CardActionArea onClick={() => handlePresentation(presentation.id)}>
+                      <CardHeader
+                        avatar={
+                          <Avatar sx={{ bgcolor: red[500] }}>
+                            {presentation.name.charAt(0)}
+                          </Avatar>
+                        }
+                        title={presentation.name}
+                        subheader="September 14, 2016" />
+                      <CardMedia
+                        component="img"
+                        height={194}
+                        image={thumbnails[presentation.id]}
+                        referrerPolicy='no-referrer'
+                        alt={presentation.name} />
+                    </CardActionArea>
                   </Card>
-                  <CardMedia
-                    component="img"
-                    height={194}
-                    image={thumbnails[presentation.id]}
-                    referrerPolicy='no-referrer'
-                    alt={presentation.name} />
                 </Grid>
               )
             })}
