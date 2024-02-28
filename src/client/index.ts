@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { getServerSession } from 'next-auth/next';
 import { getSession } from 'next-auth/react';
 
 type Session = {

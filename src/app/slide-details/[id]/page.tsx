@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { Box, Button, Grid, Typography, styled } from '@mui/material';
+import { Box, Button, ButtonGroup, Grid, Typography, styled } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 import client from '@/client';
 
@@ -62,9 +63,13 @@ export default function Home({ params }: { params: { id: string } }) {
         </Grid>
         <Grid item md={4} p={1}>
           <Typography variant='h4' fontWeight='bold'>{presentation.title}</Typography>
-          <Button variant='contained'>Resultados</Button>
-          <Button variant='contained'>Apresentar</Button>
-          <Button variant='contained'>Editar</Button>
+          <Grid container justifyContent='flex-end'>
+            <ButtonGroup variant='contained'>
+              <Button><b>Resultados</b></Button>
+              <Button><b>Apresentar</b></Button>
+              <Button><b>Editar</b></Button>
+            </ButtonGroup>           
+          </Grid>
         </Grid>
       </Grid>
       <Grid container>
