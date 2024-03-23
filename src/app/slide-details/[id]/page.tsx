@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { Box, Button, ButtonGroup, Grid, Typography, styled } from '@mui/material';
-import ImageGallery from 'react-image-gallery';
+import { Box, Button, ButtonGroup, Grid, Toolbar, Typography, styled } from '@mui/material';
 
 import 'react-image-gallery/styles/css/image-gallery.css';
 
 import client from '@/client';
+import { useRouter } from 'next/navigation';
 
 type Slide = {
   objectId: string;
@@ -43,6 +43,11 @@ async function getAllThumbnails(presentationId: string) {
 export default function Home({ params }: { params: { id: string } }) {
   const [presentation, setPresentation] = useState({} as Presentation);
   const [thumbnails, setThumbnails] = useState([] as PresentationThumbnail[]);
+  const router = useRouter();
+
+  const handleEditButton = () => {
+    router.push(`/edit/${params.id}`);
+  };
 
   useEffect(() => {
     (async () => {
@@ -65,13 +70,7 @@ export default function Home({ params }: { params: { id: string } }) {
     <ContainerBox component='main'>
       <Grid container>
         <Grid item md={8} p={1}>
-          <ImageGallery
-            infinite
-            showBullets
-            showPlayButton={false}
-            showThumbnails={false}
-            showFullscreenButton={false}
-            items={thumbnails} />
+          <img width='100%' src={thumbnails[0]?.contentUrl} alt='' />
         </Grid>
         <Grid item md={4} p={1}>
           <Typography variant='h4' fontWeight='bold'>{presentation.title}</Typography>
@@ -79,10 +78,26 @@ export default function Home({ params }: { params: { id: string } }) {
             <ButtonGroup variant='contained'>
               <Button><b>Resultados</b></Button>
               <Button><b>Apresentar</b></Button>
-              <Button><b>Editar</b></Button>
+              <Button onClick={handleEditButton}><b>Editar</b></Button>
             </ButtonGroup>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid container>
+        <Grid item md={12}>
+          <Toolbar>
+            <Typography variant='h5'>
+              Páginas da apresentação
+            </Typography>
+          </Toolbar>
+        </Grid>
+        {presentation.slides?.map((slide, index) => {
+          return (
+            <Grid key={index} item md={4} p={1}>
+              <img width='100%' src={thumbnails[index]?.contentUrl} referrerPolicy='no-referrer' />
+            </Grid>
+          );
+        })}
       </Grid>
     </ContainerBox>
   )
