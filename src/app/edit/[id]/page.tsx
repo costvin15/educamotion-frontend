@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react';
-import { Box, Button, ButtonGroup, Grid, Typography, styled } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Grid, Toolbar, Typography, styled } from "@mui/material";
 import ImageGallery from 'react-image-gallery';
 
 import 'react-image-gallery/styles/css/image-gallery.css';
@@ -40,7 +40,7 @@ async function getAllThumbnails(presentationId: string) {
   return data;
 }
 
-export default function Home({ params }: { params: { id: string } }) {
+export default function Edit({ params }: { params: { id: string } }) {
   const [presentation, setPresentation] = useState({} as Presentation);
   const [thumbnails, setThumbnails] = useState([] as PresentationThumbnail[]);
 
@@ -64,26 +64,24 @@ export default function Home({ params }: { params: { id: string } }) {
   return (
     <ContainerBox component='main'>
       <Grid container>
-        <Grid item md={8} p={1}>
+        <Grid item>
+          <Toolbar>
+            <Typography variant='h5'>
+              Editando {presentation.title}
+            </Typography>
+          </Toolbar>
+        </Grid>
+
+        <Grid item width={'100%'}>
           <ImageGallery
             infinite
-            showBullets
             showPlayButton={false}
+            showBullets
             showThumbnails={false}
             showFullscreenButton={false}
             items={thumbnails} />
         </Grid>
-        <Grid item md={4} p={1}>
-          <Typography variant='h4' fontWeight='bold'>{presentation.title}</Typography>
-          <Grid container justifyContent='flex-end'>
-            <ButtonGroup variant='contained'>
-              <Button><b>Resultados</b></Button>
-              <Button><b>Apresentar</b></Button>
-              <Button><b>Editar</b></Button>
-            </ButtonGroup>
-          </Grid>
-        </Grid>
       </Grid>
     </ContainerBox>
-  )
-};
+  );
+}

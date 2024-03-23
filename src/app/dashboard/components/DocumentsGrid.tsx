@@ -23,12 +23,12 @@ type PresentationThumbnail = {
 }	
 
 async function getPresentations() : Promise<PresentationsPage> {
-  const {data} = await client.get('/slides');
+  const {data} = await client.get('/presentation');
   return data;
 }
 
 async function getPresentationImage(presentationId: string) : Promise<PresentationThumbnail> {
-  const {data} = await client.get(`/slides/thumbnail/${presentationId}`);
+  const {data} = await client.get(`/presentation/thumbnail/${presentationId}`);
   return data;
 }
 
