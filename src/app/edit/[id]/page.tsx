@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { Box, Card, CardMedia, Grid, Paper, styled } from "@mui/material";
+import { Box, Card, CardMedia, Fab, Grid, Paper, styled } from "@mui/material";
 import ImageGallery from 'react-image-gallery';
 import { Reorder } from 'framer-motion';
 
+import AddIcon from '@mui/icons-material/Add';
 import 'react-image-gallery/styles/css/image-gallery.css';
 
 import client from '@/client';
@@ -42,15 +43,7 @@ async function getAllThumbnails(presentationId: string) {
 }
 
 export default function Edit({ params }: { params: { id: string } }) {
-  const [presentation, setPresentation] = useState({} as Presentation);
   const [thumbnails, setThumbnails] = useState([] as PresentationThumbnail[]);
-
-  useEffect(() => {
-    (async () => {
-      const presentationDetails = await getPresentationDetails(params.id);
-      setPresentation(presentationDetails);
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -76,12 +69,13 @@ export default function Edit({ params }: { params: { id: string } }) {
         </Grid>
 
         <Grid item md={2} className='h-full overflow-auto'>
-          <Paper className='p-2 h-full'>
+          <Paper className='pr-2 h-full'>
             <Reorder.Group
               axis='y'
               layoutScroll
               values={thumbnails}
               onReorder={setThumbnails}
+              className='list-none p-0'
             >
               {thumbnails.map((item) => (
                 <Reorder.Item className='mb-2' key={item.contentUrl} value={item}>
@@ -97,6 +91,10 @@ export default function Edit({ params }: { params: { id: string } }) {
             </Reorder.Group>
           </Paper>
         </Grid>
+
+        <Fab className='absolute bottom-1 right-1' color='primary'>
+          <AddIcon />
+        </Fab>
       </Grid>
     </ContainerBox>
   );
