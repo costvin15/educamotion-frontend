@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { Box, Grid, Toolbar, Typography, styled } from "@mui/material";
+import { Box, Card, CardMedia, Grid, Paper, styled } from "@mui/material";
 import ImageGallery from 'react-image-gallery';
+import { Reorder } from 'framer-motion';
 
 import 'react-image-gallery/styles/css/image-gallery.css';
 
@@ -62,17 +63,9 @@ export default function Edit({ params }: { params: { id: string } }) {
   }, []);
 
   return (
-    <ContainerBox component='main'>
+    <ContainerBox component='main' className='h-dvh flex overflow-hidden'>
       <Grid container>
-        <Grid item>
-          <Toolbar>
-            <Typography variant='h5'>
-              Editando {presentation.title}
-            </Typography>
-          </Toolbar>
-        </Grid>
-
-        <Grid item width={'100%'}>
+        <Grid item md={10}>
           <ImageGallery
             infinite
             showPlayButton={false}
@@ -80,6 +73,29 @@ export default function Edit({ params }: { params: { id: string } }) {
             showThumbnails={false}
             showFullscreenButton={false}
             items={thumbnails} />
+        </Grid>
+
+        <Grid item md={2} className='h-full overflow-auto'>
+          <Paper className='p-2 h-full'>
+            <Reorder.Group
+              axis='y'
+              layoutScroll
+              values={thumbnails}
+              onReorder={setThumbnails}
+            >
+              {thumbnails.map((item) => (
+                <Reorder.Item className='mb-2' key={item.contentUrl} value={item}>
+                  <Card>
+                    <CardMedia
+                      draggable={false}
+                      component='img'
+                      image={item.contentUrl}
+                    />
+                  </Card>
+                </Reorder.Item>
+              ))}
+            </Reorder.Group>
+          </Paper>
         </Grid>
       </Grid>
     </ContainerBox>
