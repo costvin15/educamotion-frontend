@@ -81,6 +81,7 @@ export default function Edit({ params }: { params: { id: string } }) {
                 <Reorder.Item className='mb-2' key={item.contentUrl} value={item}>
                   <Card>
                     <CardMedia
+                      referrerPolicy='no-referrer'
                       draggable={false}
                       component='img'
                       image={item.contentUrl}

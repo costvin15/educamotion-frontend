@@ -2,10 +2,14 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { getProviders, signIn, } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
+import Head from 'next/head';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
-import { Box, Button, CssBaseline, Grid, Paper, TextField, ThemeProvider, Typography, createTheme, styled } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, Paper, ThemeProvider, Typography, createTheme, styled } from '@mui/material';
 import { grey } from '@mui/material/colors';
+
+import EducamotionLogo from '@/images/educamotion-widelogo.png';
+import Image from 'next/image';
 
 const darkTheme = createTheme({
   palette: {
@@ -37,39 +41,41 @@ const LoginButton = styled(Button)(() => ({
   }
 }));
 
+const HighlightedBox = styled(Box)(() => ({
+  width: '100%',
+  height: '100%',
+  backgroundImage: 'url("/static/images/student-computer-learning.jpg")',
+  backgroundSize: 'cover',
+  borderRadius: '35px',
+  marginRight: '10px'
+}));
+
 export default function Login({ providers } : InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
+
+      <Head>
+        <title>Fazer login em EducaMotion</title>
+      </Head>
+
       <CenteredBox>
         <Paper sx={{width: '70vw', bgcolor: grey['300'], borderRadius: '35px'}}>
-          <Grid container padding='10px'>
+          <Grid container paddingRight='10px'>
             <Grid item xs={8} height={'70vh'} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <Box>
-                <Typography>Content</Typography>
-              </Box>
+              <HighlightedBox>
+              </HighlightedBox>
             </Grid>
-            <Grid item xs={4}>
-              <Paper sx={{bgcolor: 'white', height: '100%', borderRadius: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <Grid item marginTop='10px' marginBottom='10px' xs={4}>
+              <Paper sx={{bgcolor: 'white', height: '100%', borderRadius: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                <Image height={35} style={{ marginBottom: '40px'}} src={EducamotionLogo} alt='EducaMotion' />
                 <Box padding={'10px'} sx={{textAlign: 'center'}}>
+
                   {Object.values(providers).map(provider => (
                     <Box paddingBottom={2} key={provider.id}>
-                      <LoginButton onClick={() => { console.log('Hi!'); signIn(provider.id); }} variant='contained'>Entrar com {provider.name}</LoginButton>
+                      <LoginButton onClick={() => { signIn(provider.id); }} variant='contained'>Entrar com Google</LoginButton>
                     </Box>
                   ))}
-                  {/* <Typography variant='h5'><strong>Bem vindo!</strong></Typography>
-                  <Typography variant='caption' color={grey[800]}><strong>Por favor, insira seus dados</strong></Typography>
-
-                  <Box paddingTop={5}>
-                    <TextField label='Email' variant='standard' sx={{width: '100%'}} />
-                  </Box>
-                  <Box paddingTop={1.5} paddingBottom={3}>
-                    <TextField label='Password' variant='standard' sx={{width: '100%'}} />
-                  </Box>
-
-                  <Box paddingBottom={2}>
-                    <LoginButton variant='contained'>Entrar</LoginButton>
-                  </Box> */}
                 </Box>
               </Paper>
             </Grid>
