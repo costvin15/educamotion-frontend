@@ -6,30 +6,25 @@ import { red } from '@mui/material/colors';
 import client from '@/client';
 import { useRouter } from 'next/navigation';
 
-type PresentationsPage = {
-  nextPageToken: string;
-  files: Presentation[];
+type Presentations = {
+  total: number;
+  presentations: Presentation[];
 };
 
 type Presentation = {
-  id: string;
-  name: string;
+  presentationId: string;
+  title: string;
 }
 
-type PresentationThumbnail = {
-  width: number;
-  height: number;
-  contentUrl: string;
-}	
-
-async function getPresentations() : Promise<PresentationsPage> {
-  const {data} = await client.get('/presentation');
+async function getPresentations() : Promise<Presentations> {
+  const {data} = await client.get('/presentation/imported');
   return data;
 }
 
-async function getPresentationImage(presentationId: string) : Promise<PresentationThumbnail> {
-  const {data} = await client.get(`/presentation/thumbnail/${presentationId}`);
-  return data;
+async function getPresentationImage(presentationId: string) : Promise<string> {
+  const response = await client.get(`/presentation/thumbnail/${presentationId}`, { responseType: 'arraybuffer' });
+  const blob = new Blob([response.data], { type: 'image/png' });
+  return URL.createObjectURL(blob);
 }
 
 const ContainerBox = styled(Box)(() => ({
@@ -40,24 +35,22 @@ const ContainerBox = styled(Box)(() => ({
 
 export default function DocumentsGrid() {
   const router = useRouter();
-  const [nextPageToken, setNextPageToken] = useState('' as string);
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
 
   useEffect(() => {
     (async () => {
-      // const data = await getPresentations();
-      // setPresentations(data.files);
-      // setNextPageToken(data.nextPageToken);
+      const { presentations } = await getPresentations();
+      setPresentations(presentations);
     })();
   }, []);
 
   useEffect(() => {
-    presentations.map(async (presentation) => {
-      const thumbnail = await getPresentationImage(presentation.id);
+    presentations.map(async presentation => {
+      const thumbnail = await getPresentationImage(presentation.presentationId);
       setThumbnails((prevState) => ({
         ...prevState,
-        [presentation.id]: thumbnail.contentUrl
+        [presentation.presentationId]: thumbnail
       }));
     });
   }, [presentations]);
@@ -75,21 +68,21 @@ export default function DocumentsGrid() {
               return (
                 <Grid key={index} item md={4} p={1}>
                   <Card>
-                    <CardActionArea onClick={() => handlePresentation(presentation.id)}>
+                    <CardActionArea onClick={() => handlePresentation(presentation.presentationId)}>
                       <CardHeader
                         avatar={
                           <Avatar sx={{ bgcolor: red[500] }}>
-                            {presentation.name.charAt(0)}
+                            {presentation.title.charAt(0)}
                           </Avatar>
                         }
-                        title={presentation.name}
+                        title={presentation.title}
                         subheader="September 14, 2016" />
                       <CardMedia
                         component="img"
                         height={194}
-                        image={thumbnails[presentation.id]}
+                        src={thumbnails[presentation.presentationId]}
                         referrerPolicy='no-referrer'
-                        alt={presentation.name} />
+                        alt={presentation.title} />
                     </CardActionArea>
                   </Card>
                 </Grid>

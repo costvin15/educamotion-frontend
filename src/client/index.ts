@@ -2,10 +2,6 @@ import axios from 'axios';
 
 import { getSession } from 'next-auth/react';
 
-type Session = {
-  accessToken: string;
-}
-
 axios.interceptors.request.use(async config => {
     config.baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
     const data = await getSession();
