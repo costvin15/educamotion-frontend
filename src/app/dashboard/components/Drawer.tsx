@@ -2,7 +2,7 @@
 import {Avatar, Backdrop, Button, CSSObject, IconButton, Drawer as MuiDrawer, Stack, Theme, Toolbar, Typography, styled} from '@mui/material';
 import {
   Menu as MenuIcon,
-  Add as AddIcon,
+  Sync as SyncIcon,
   Inbox as InboxIcon,
   Star as StarIcon,
   Email as EmailIcon,
@@ -10,8 +10,8 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 
-import NewDocumentModal from '@/app/dashboard/modals/NewDocument';
 import { useSession } from 'next-auth/react';
+import ImportPresentationModal from '../modals/ImportPresentation';
 
 const miniDrawerWidth = 80;
 const drawerWidth = 300;
@@ -86,19 +86,24 @@ const BackdropForDrawer = styled(Backdrop)(({theme}) => ({
 
 export default function Drawer() : JSX.Element {
   const { data : session } = useSession();
-  const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [importPresentationsModalOpen, setImportPresentationsModalOpen] = useState(false);
 
   const handleDrawerOpened = () => {
-    setOpen(!open);
+    setDrawerOpen(!drawerOpen);
   };
+
+  const handleImportPresentationsModalOpened = () => {
+    setImportPresentationsModalOpen(!importPresentationsModalOpen);
+  }
 
   return (  
     <>
-      <NewDocumentModal open={false} onClose={() => {}} />
-      <BackdropForDrawer open={open}
+      <ImportPresentationModal open={importPresentationsModalOpen} onClose={handleImportPresentationsModalOpened} />
+      <BackdropForDrawer open={drawerOpen}
         onClick={handleDrawerOpened} />
       <PermanentDrawer
-        open={open}
+        open={drawerOpen}
         variant='permanent'
         anchor='left'>
         <ContainerStack direction="row" overflow="hidden">
@@ -111,8 +116,8 @@ export default function Drawer() : JSX.Element {
 
         <ContainerStack direction="row" overflow="hidden">
           <ShortcutsToolbar disableGutters>
-            <NewDocumentButton variant='contained'>
-              <AddIcon />
+            <NewDocumentButton variant='contained' onClick={handleImportPresentationsModalOpened}>
+              <SyncIcon />
             </NewDocumentButton>
           </ShortcutsToolbar>
 

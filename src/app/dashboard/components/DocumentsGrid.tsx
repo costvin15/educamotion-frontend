@@ -46,9 +46,9 @@ export default function DocumentsGrid() {
 
   useEffect(() => {
     (async () => {
-      const data = await getPresentations();
-      setPresentations(data.files);
-      setNextPageToken(data.nextPageToken);
+      // const data = await getPresentations();
+      // setPresentations(data.files);
+      // setNextPageToken(data.nextPageToken);
     })();
   }, []);
 
