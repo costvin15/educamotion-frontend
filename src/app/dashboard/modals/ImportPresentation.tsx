@@ -22,11 +22,17 @@ async function getPresentationsAvailable() : Promise<Presentations> {
   return data;
 }
 
+async function importPresentations(presentations: Presentation[]) {
+  await client.post('/presentation/import', {
+    presentationIds: presentations.map(presentation => presentation.id)
+  });
+}
+
 export default function ImportPresentationModal({open, onClose}: {open: boolean, onClose: () => void}) {
   const [nextPageToken, setNextPageToken] = useState('' as string);
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [textFieldOpen, setTextFieldOpen] = useState(false);
-  const [selectedPresentations, setSelectedPresentations] = useState<Presentation[]>();
+  const [selectedPresentations, setSelectedPresentations] = useState<Presentation[]>([]);
   const loading = textFieldOpen && presentations.length === 0;
 
   const fetchPage = async () => {
@@ -74,7 +80,9 @@ export default function ImportPresentationModal({open, onClose}: {open: boolean,
               )} />
 
             <Box className='flex justify-end'>
-              <Button className='rounded-3xl normal-case mt-2' variant='contained'>Importar</Button>
+              <Button variant='contained' className='rounded-3xl normal-case mt-2' onClick={() => importPresentations(selectedPresentations)}>
+                Importar
+              </Button>
             </Box>
           </CardContent>
         </Card>
