@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
-import DocumentsBar from './components/DocumentsBar';
-import DocumentsGrid from './components/DocumentsGrid';
+
+import DocumentsBar from '@/app/dashboard/components/DocumentsBar';
+import DocumentsGrid from '@/app/dashboard/components/DocumentsGrid';
 
 export default function Home() {
   return (
