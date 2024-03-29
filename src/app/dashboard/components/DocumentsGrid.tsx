@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, CircularProgress, Grid, styled } from '@mui/material';
+import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, CircularProgress, Grid, Skeleton, styled } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,6 +15,11 @@ type Presentations = {
 type Presentation = {
   presentationId: string;
   title: string;
+}
+
+type Thumbnail = {
+  thumbnail: string;
+  loaded: boolean;
 }
 
 async function getPresentations() : Promise<Presentations> {
@@ -80,6 +85,7 @@ export default function DocumentsGrid() {
               exit={{ y: 10, opacity: 0 }}
               transition={{ duration: 1 }}
             >
+              {/* Melhor utilizar Skeleton */}
               <CircularProgress />
             </motion.div>
           </Box>
@@ -107,6 +113,8 @@ export default function DocumentsGrid() {
               <Grid item>
                 <Grid container>
                   {presentations.map((presentation, index) => {
+                    const thumbnail = thumbnails[presentation.presentationId];
+
                     return (
                       <Grid key={index} item md={4} p={1}>
                         <Card>
@@ -119,12 +127,19 @@ export default function DocumentsGrid() {
                               }
                               title={presentation.title}
                               subheader="September 14, 2016" />
-                            <CardMedia
-                              component="img"
-                              height={194}
-                              src={thumbnails[presentation.presentationId]}
-                              referrerPolicy='no-referrer'
-                              alt={presentation.title} />
+
+                            {thumbnail && (
+                              <CardMedia
+                                component="img"
+                                height={194}
+                                src={thumbnail}
+                                referrerPolicy='no-referrer'
+                                alt={presentation.title} />
+                            ) || (
+                              <Skeleton
+                                variant='rounded'
+                                height={194} />
+                            )}
                           </CardActionArea>
                         </Card>
                       </Grid>
