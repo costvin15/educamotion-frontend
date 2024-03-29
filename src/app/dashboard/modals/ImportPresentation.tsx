@@ -7,27 +7,6 @@ const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
 }));
 
-const CenteredModal = styled(Modal)(({theme}) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const Container = styled(Card)(() => ({
-  width: 'calc(100vw - 60vw)',
-}));
-
-const ContainerButtons = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'right',
-}));
-
-const CircularButton = styled(Button)(() => ({
-  borderRadius: '25px',
-  marginTop: '15px',
-  textTransform: 'none',
-}));
-
 type Presentation = {
   id: string;
   name: string;
@@ -60,8 +39,8 @@ export default function ImportPresentationModal({open, onClose}: {open: boolean,
   return (
     <>
       <BackdropForModal open={open} onClick={onClose} />
-      <CenteredModal open={open} onClose={onClose}>
-        <Container>
+      <Modal className='flex items-center justify-center' open={open} onClose={onClose}>
+        <Card className='w-2/6'>
           <CardContent>
             <Autocomplete
               id='import-presentation-autocomplete'
@@ -94,12 +73,12 @@ export default function ImportPresentationModal({open, onClose}: {open: boolean,
                 </li>
               )} />
 
-            <ContainerButtons>
-              <CircularButton variant='contained'>Importar</CircularButton>
-            </ContainerButtons>
+            <Box className='flex justify-end'>
+              <Button className='rounded-3xl normal-case mt-2' variant='contained'>Importar</Button>
+            </Box>
           </CardContent>
-        </Container>
-      </CenteredModal>
+        </Card>
+      </Modal>
     </>
   );
 }
