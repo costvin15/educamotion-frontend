@@ -18,11 +18,13 @@ export default function EditLayout({ children } : { children: React.ReactNode })
   return (
     <SessionProvider>
       <ThemeProvider theme={darkTheme}>
-        <Box sx={{display: 'flex'}}>
+        <Box className='flex'>
           <CssBaseline />
           <Drawer />
 
-          { children }
+          <Box className='w-full'>
+            { children }
+          </Box>
         </Box>
       </ThemeProvider>
     </SessionProvider>
