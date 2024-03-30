@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 
 import client from '@/client';
+import DocumentsGridSkeleton from '@/app/dashboard/components/DocumentsGridSkeleton';
 
 type Presentations = {
   total: number;
@@ -76,89 +77,81 @@ export default function DocumentsGrid() {
   }
 
   return (
-    <Grid container direction='column'>
-      <Grid item>
-        <Toolbar>
-          <Typography variant='h5'>
-            Apresentações importadas
-          </Typography>
-        </Toolbar>
-      </Grid>
-      <AnimatePresence>
-        {loading && !error && (
-          <Box className='h-dvh flex items-center justify-center'>
-            <motion.div
-              initial={{ x: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 10, opacity: 0 }}
-              transition={{ duration: 1 }}
-            >
-              {/* Melhor utilizar Skeleton */}
-              <CircularProgress />
-            </motion.div>
-          </Box>
-        )}
-        {error && !loading && (
-          <Box className='h-dvh flex items-center justify-center'>
-            <motion.div
-              initial={{ x: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 10, opacity: 0 }}
-              transition={{ duration: 1 }}
-            >
-              <p>Something went wrong. Please try again later.</p>
-            </motion.div>
-          </Box>
-        )}
-        {!loading && !error && (
-          <Box component='main' className='flex-grow pt-0, p-3'>
-            <motion.div
-              initial={{ x: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 10, opacity: 0 }}
-              transition={{ duration: 1 }}
-            >
-              <Grid item>
-                <Grid container>
-                  {presentations.map((presentation, index) => {
-                    const thumbnail = thumbnails[presentation.presentationId];
+    <Box className='h-dvh overflow-y-hidden'>
+      <Grid container direction='column'>
+        <Grid item>
+          <Toolbar>
+            <Typography variant='h5'>
+              Apresentações importadas
+            </Typography>
+          </Toolbar>
+        </Grid>
+        <AnimatePresence>
+          {loading && !error && (
+            <DocumentsGridSkeleton />
+          )}
+          {error && !loading && (
+            <Box className='h-dvh flex items-center justify-center'>
+              <motion.div
+                initial={{ x: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 10, opacity: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <p>Something went wrong. Please try again later.</p>
+              </motion.div>
+            </Box>
+          )}
+          {!loading && !error && (
+            <Box component='main' className='h-[calc(100vh-64px)] overflow-y-scroll pt-0 p-3'>
+              <motion.div
+                initial={{ x: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 10, opacity: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <Grid item>
+                  <Grid container>
+                    {presentations.map((presentation, index) => {
+                      const thumbnail = thumbnails[presentation.presentationId];
 
-                    return (
-                      <Grid key={index} item md={4} p={1}>
-                        <Card>
-                          <CardActionArea onClick={() => handlePresentation(presentation.presentationId)}>
-                            <CardHeader
-                              avatar={
-                                <Avatar sx={{ bgcolor: red[500] }}>
-                                  {presentation.title.charAt(0)}
-                                </Avatar>
-                              }
-                              title={presentation.title}
-                              subheader={formatDate(presentation.updatedAt)} />
+                      return (
+                        <Grid key={index} item md={4} p={1}>
+                          <Card>
+                            <CardActionArea onClick={() => handlePresentation(presentation.presentationId)}>
+                              <CardHeader
+                                avatar={
+                                  <Avatar sx={{ bgcolor: red[500] }}>
+                                    {presentation.title.charAt(0)}
+                                  </Avatar>
+                                }
+                                title={presentation.title}
+                                subheader={formatDate(presentation.updatedAt)} />
 
-                            {thumbnail && (
-                              <CardMedia
-                                component="img"
-                                height={194}
-                                src={thumbnail}
-                                referrerPolicy='no-referrer'
-                                alt={presentation.title} />
-                            ) || (
-                              <Skeleton
-                                variant='rounded'
-                                height={194} />
-                            )}
-                          </CardActionArea>
-                        </Card>
-                      </Grid>
-                    )
-                  })}
+                              {thumbnail && (
+                                <CardMedia
+                                  component="img"
+                                  height={194}
+                                  src={thumbnail}
+                                  referrerPolicy='no-referrer'
+                                  alt={presentation.title} />
+                              ) || (
+                                <Skeleton
+                                  variant='rounded'
+                                  height={194} />
+                              )}
+                            </CardActionArea>
+                          </Card>
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
                 </Grid>
-              </Grid>
-            </motion.div>
-          </Box>
-        )}
-      </AnimatePresence>
-    </Grid>
+              </motion.div>
+            </Box>
+          )}
+        </AnimatePresence>
+      </Grid>
+    </Box>
   );
 }
