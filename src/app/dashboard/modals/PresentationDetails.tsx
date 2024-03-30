@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Backdrop, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Skeleton, styled } from '@mui/material';
+import { Backdrop, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Skeleton, styled } from '@mui/material';
+
+import { useRouter } from 'next/navigation';
 
 import client from '@/client';
 
@@ -38,6 +40,12 @@ export default function PresentationDetails({presentation, open, onClose} : {pre
   const [loading, setLoading] = useState(true);
   const [slideInformation, setSlideInformation] = useState({} as SlidesInformation);
   const [slides, setSlides] = useState([] as string[]);
+
+  const router = useRouter();
+
+  const redirectToEditor = () => {
+    router.push(`/editor/${presentation.presentationId}`);
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -120,7 +128,7 @@ export default function PresentationDetails({presentation, open, onClose} : {pre
             Resultados
           </Button>
 
-          <Button className='normal-case' autoFocus>
+          <Button className='normal-case' autoFocus onClick={redirectToEditor}>
             Abrir editor
           </Button>
         </DialogActions>

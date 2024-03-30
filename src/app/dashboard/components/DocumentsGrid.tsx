@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, Grid, Skeleton, Toolbar, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
@@ -41,8 +40,6 @@ async function getPresentationImage(presentationId: string) : Promise<string> {
 }
 
 export default function DocumentsGrid() {
-  const router = useRouter();
-
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
   const [selectedPresentation, setSelectedPresentation] = useState({} as Presentation);
