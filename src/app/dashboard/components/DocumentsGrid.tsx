@@ -96,9 +96,9 @@ export default function DocumentsGrid() {
                 initial={{ x: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 10, opacity: 0 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.2 }}
               >
-                <p>Something went wrong. Please try again later.</p>
+                <p>Algo deu errado ao carregar as apresentações.</p>
               </motion.div>
             </Box>
           )}
