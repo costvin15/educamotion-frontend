@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, CircularProgress, Grid, Skeleton, Toolbar, Typography, styled } from '@mui/material';
+import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, Grid, Skeleton, Toolbar, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import client from '@/client';
 import DocumentsGridSkeleton from '@/app/dashboard/components/DocumentsGridSkeleton';
+import PresentationDetails from '@/app/dashboard/modals/PresentationDetails';
 
 type Presentations = {
   total: number;
@@ -44,6 +45,8 @@ export default function DocumentsGrid() {
 
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
+  const [selectedPresentation, setSelectedPresentation] = useState({} as Presentation);
+  const [presentationDetailsModalOpen, setPresentationDetailsModalOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -72,12 +75,14 @@ export default function DocumentsGrid() {
     });
   }, [presentations]);
 
-  const handlePresentation = (presentationId: string) => {
-    router.push(`/slide-details/${presentationId}`);
+  const handlePresentation = (presentation: Presentation) => {
+    setSelectedPresentation(presentation);
+    setPresentationDetailsModalOpen(true);
   }
 
   return (
     <Box className='h-dvh overflow-y-hidden'>
+      <PresentationDetails presentation={selectedPresentation} open={presentationDetailsModalOpen} onClose={() => setPresentationDetailsModalOpen(false)} />
       <Grid container direction='column'>
         <Grid item>
           <Toolbar>
@@ -118,7 +123,7 @@ export default function DocumentsGrid() {
                       return (
                         <Grid key={index} item md={4} p={1}>
                           <Card>
-                            <CardActionArea onClick={() => handlePresentation(presentation.presentationId)}>
+                            <CardActionArea onClick={() => handlePresentation(presentation)}>
                               <CardHeader
                                 avatar={
                                   <Avatar sx={{ bgcolor: red[500] }}>

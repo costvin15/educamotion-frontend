@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Autocomplete, Backdrop, Box, Button, Card, CardContent, Chip, CircularProgress, Modal, TextField, Typography, styled } from '@mui/material';
 
 import client from '@/client';
@@ -29,7 +29,7 @@ async function importPresentations(presentations: Presentation[]) {
 }
 
 export default function ImportPresentationModal({open, onClose}: {open: boolean, onClose: () => void}) {
-  const [nextPageToken, setNextPageToken] = useState('' as string);
+  const [_, setNextPageToken] = useState('' as string);
   const [presentations, setPresentations] = useState([] as Presentation[]);
   const [textFieldOpen, setTextFieldOpen] = useState(false);
   const [selectedPresentations, setSelectedPresentations] = useState<Presentation[]>([]);
