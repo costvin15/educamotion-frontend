@@ -1,9 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, CircularProgress, Grid, Skeleton, styled } from '@mui/material';
+
+import { Avatar, Box, Card, CardActionArea, CardHeader, CardMedia, CircularProgress, Grid, Skeleton, Toolbar, Typography, styled } from '@mui/material';
 import { red } from '@mui/material/colors';
+
 import { motion, AnimatePresence } from 'framer-motion';
+import moment from 'moment';
 
 import client from '@/client';
 
@@ -15,11 +18,13 @@ type Presentations = {
 type Presentation = {
   presentationId: string;
   title: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-type Thumbnail = {
-  thumbnail: string;
-  loaded: boolean;
+function formatDate(date: Date) {
+  moment.locale('pt-br');
+  return moment(date).format('DD [de] MMMM [de] YYYY');
 }
 
 async function getPresentations() : Promise<Presentations> {
@@ -32,12 +37,6 @@ async function getPresentationImage(presentationId: string) : Promise<string> {
   const blob = new Blob([response.data], { type: 'image/png' });
   return URL.createObjectURL(blob);
 }
-
-const ContainerBox = styled(Box)(() => ({
-  flexGrow: 1,
-  paddingTop: 0,
-  padding: '24px',
-}));
 
 export default function DocumentsGrid() {
   const router = useRouter();
@@ -52,8 +51,10 @@ export default function DocumentsGrid() {
     (async () => {
       try {
         const { presentations } = await getPresentations();
+        console.log(presentations[0].createdAt);
         setPresentations(presentations);
       } catch (error) {
+        console.error(error);
         setError(true);
       }
       setLoading(false);
@@ -76,6 +77,13 @@ export default function DocumentsGrid() {
 
   return (
     <Grid container direction='column'>
+      <Grid item>
+        <Toolbar>
+          <Typography variant='h5'>
+            Apresentações importadas
+          </Typography>
+        </Toolbar>
+      </Grid>
       <AnimatePresence>
         {loading && !error && (
           <Box className='h-dvh flex items-center justify-center'>
@@ -126,7 +134,7 @@ export default function DocumentsGrid() {
                                 </Avatar>
                               }
                               title={presentation.title}
-                              subheader="September 14, 2016" />
+                              subheader={formatDate(presentation.updatedAt)} />
 
                             {thumbnail && (
                               <CardMedia

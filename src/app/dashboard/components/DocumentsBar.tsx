@@ -1,6 +1,20 @@
 'use client'
+import {useState, useEffect} from 'react';
+
 import { Circle as CircleIcon } from '@mui/icons-material';
 import { Box, Button, Grid, Stack, Toolbar, Typography, styled } from '@mui/material';
+
+import client from '@/client';
+
+type Presentation = {
+  id: string;
+  name: string;
+}
+
+type Presentations = {
+  nextPageToken: string;
+  files: Presentation[];
+}
 
 const backgroundColorWhenSelected = '#4A4458';
 const backgroundColorWhenUnselected = 'none';
@@ -34,7 +48,21 @@ const ContainerBox = styled(Box)(() => ({
   paddingTop: 0,
 }));
 
+async function fetchRecentAvailablePresentations() : Promise<Presentations> {
+  const { data } = await client.get('/presentation');
+  return data;
+}
+
 export default function DocumentsBar() {
+  const [presentations, setPresentations] = useState([] as Presentation[]);
+
+  useEffect(() => {
+    (async () => {
+      const presentations = await fetchRecentAvailablePresentations();
+      setPresentations(presentations.files.slice(0, 9));
+    })();
+  }, []);
+
   return (
     <Grid container direction='column'>
       <Grid item>
@@ -49,20 +77,13 @@ export default function DocumentsBar() {
         <ContainerBox component='main'>
           <Grid container>
             <Grid item md={12}>
-              <SectionTitle variant='body2'>Apresentações</SectionTitle>
+              <SectionTitle variant='body2'>Apresentações recentemente editadas</SectionTitle>
               <Stack>
-                <RoundedButton variant='contained'
-                  startIcon={<DotIcon />}>
-                  <Typography>Apresentação 1</Typography>
-                </RoundedButton>
-
-                <RoundedButton startIcon={<DotIcon />}>
-                  <Typography>Apresentação 2</Typography>
-                </RoundedButton>
-                
-                <RoundedButton startIcon={<DotIcon />}>
-                  <Typography>Apresentação 3</Typography>
-                </RoundedButton>
+                {presentations.map((presentation) => (
+                  <RoundedButton key={presentation.id} startIcon={<DotIcon />}>
+                    <Typography className='text-ellipsis w-9/12 whitespace-nowrap overflow-hidden text-start'>{presentation.name}</Typography>
+                  </RoundedButton>
+                ))}
               </Stack>
             </Grid>
           </Grid>
