@@ -46,13 +46,13 @@ export default function Edit({ params }: { params: { id: string } }) {
   const [thumbnails, setThumbnails] = useState([] as PresentationThumbnail[]);
 
   useEffect(() => {
-    (async () => {
-      const thumbnails : PresentationThumbnail[] = await getAllThumbnails(params.id);
-      thumbnails.map((thumbnail) => {
-        thumbnail.original = thumbnail.contentUrl;
-      });
-      setThumbnails(thumbnails);
-    })();
+    // (async () => {
+    //   const thumbnails : PresentationThumbnail[] = await getAllThumbnails(params.id);
+    //   thumbnails.map((thumbnail) => {
+    //     thumbnail.original = thumbnail.contentUrl;
+    //   });
+    //   setThumbnails(thumbnails);
+    // })();
   }, []);
 
   return (

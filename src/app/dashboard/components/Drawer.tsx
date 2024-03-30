@@ -3,14 +3,13 @@ import {Avatar, Backdrop, Button, CSSObject, IconButton, Drawer as MuiDrawer, St
 import {
   Menu as MenuIcon,
   Sync as SyncIcon,
-  Inbox as InboxIcon,
-  Star as StarIcon,
-  Email as EmailIcon,
-  Drafts as DraftsIcon
+  Home as HomeIcon,
 } from '@mui/icons-material';
 import { useState } from 'react';
 
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
 import ImportPresentationModal from '../modals/ImportPresentation';
 
 const miniDrawerWidth = 80;
@@ -86,6 +85,8 @@ const BackdropForDrawer = styled(Backdrop)(({theme}) => ({
 
 export default function Drawer() : JSX.Element {
   const { data : session } = useSession();
+  const router = useRouter();
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [importPresentationsModalOpen, setImportPresentationsModalOpen] = useState(false);
 
@@ -95,6 +96,10 @@ export default function Drawer() : JSX.Element {
 
   const handleImportPresentationsModalOpened = () => {
     setImportPresentationsModalOpen(!importPresentationsModalOpen);
+  }
+
+  const redirectToDashboard = () => {
+    router.push('/dashboard');
   }
 
   return (  
@@ -126,42 +131,12 @@ export default function Drawer() : JSX.Element {
 
         <ContainerStack direction="row" overflow="hidden">
           <ShortcutsToolbar disableGutters>
-            <IconButtonCentered>
-              <InboxIcon />
+            <IconButtonCentered onClick={redirectToDashboard}>
+              <HomeIcon />
             </IconButtonCentered>
           </ShortcutsToolbar>
 
-          <Typography>Nova apresentação</Typography>
-        </ContainerStack>
-
-        <ContainerStack direction="row" overflow="hidden">
-          <ShortcutsToolbar disableGutters>
-            <IconButtonCentered>
-              <StarIcon />
-            </IconButtonCentered>
-          </ShortcutsToolbar>
-
-          <Typography>Nova apresentação</Typography>
-        </ContainerStack>
-
-        <ContainerStack direction="row" overflow="hidden">
-          <ShortcutsToolbar disableGutters>
-            <IconButtonCentered>
-              <EmailIcon />
-            </IconButtonCentered>
-          </ShortcutsToolbar>
-
-          <Typography>Nova apresentação</Typography>
-        </ContainerStack>
-
-        <ContainerStack direction="row" overflow="hidden">
-          <ShortcutsToolbar disableGutters>
-            <IconButtonCentered>
-              <DraftsIcon />
-            </IconButtonCentered>
-          </ShortcutsToolbar>
-
-          <Typography>Nova apresentação</Typography>
+          <Typography>Dashboard</Typography>
         </ContainerStack>
 
         <ContainerStack direction="row" overflow="hidden">
