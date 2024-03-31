@@ -52,7 +52,6 @@ export default function DocumentsGrid() {
     (async () => {
       try {
         const { presentations } = await getPresentations();
-        console.log(presentations[0].createdAt);
         setPresentations(presentations);
       } catch (error) {
         console.error(error);

@@ -39,9 +39,16 @@ async function getThumbnail(presentationId: string, slideId: string) : Promise<S
   };
 }
 
+async function savePresentation(presentation: Presentation, slides: Slide[]) {
+  const response = await client.put(`/presentation/update/${presentation.presentationId}`, {
+    slides: slides.map((slide) => slide.objectId),
+  });
+  console.log(response);
+}
+
 export default function Edit({ params }: { params: { id: string } }) {
   const [presentation, setPresentation] = useState({} as Presentation);
-  const [images, setImages] = useState([] as Slide[]);
+  const [slides, setSlides] = useState([] as Slide[]);
 
   useEffect(() => {
     if (params.id) {
@@ -58,7 +65,7 @@ export default function Edit({ params }: { params: { id: string } }) {
         const images = await Promise.all(presentation.slides.map(async (slide) => {
           return await getThumbnail(presentation.presentationId, slide.objectId);
         }));
-        setImages(images);
+        setSlides(images);
       })();
     }
   }, [presentation.slides]);
@@ -79,7 +86,7 @@ export default function Edit({ params }: { params: { id: string } }) {
             <SlideshowIcon />
           </IconButton>
 
-          <IconButton size='large'>
+          <IconButton size='large' onClick={() => savePresentation(presentation, slides)}>
             <SaveIcon />
           </IconButton>
         </Box>
@@ -93,7 +100,7 @@ export default function Edit({ params }: { params: { id: string } }) {
               showBullets
               showThumbnails={false}
               showFullscreenButton={false}
-              items={images}
+              items={slides}
             />
           </Grid>
           <Grid item md={2} className='h-[calc(100vh-70px)] overflow-y-auto'>
@@ -101,11 +108,11 @@ export default function Edit({ params }: { params: { id: string } }) {
               <Reorder.Group
                 axis='y'
                 layoutScroll
-                values={images}
-                onReorder={setImages}
+                values={slides}
+                onReorder={setSlides}
                 className='list-none p-0'
               >
-                {images.map((item) => (
+                {slides.map((item) => (
                   <Reorder.Item className='mb-2' key={item.original} value={item}>
                     <Card>
                       <CardMedia
