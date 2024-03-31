@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { Box, Card, CardMedia, Grid, IconButton, Paper, Toolbar, Typography } from '@mui/material';
+import { Box, Card, CardMedia, Grid, IconButton, Paper, Snackbar, Toolbar, Typography } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
@@ -39,16 +39,10 @@ async function getThumbnail(presentationId: string, slideId: string) : Promise<S
   };
 }
 
-async function savePresentation(presentation: Presentation, slides: Slide[]) {
-  const response = await client.put(`/presentation/update/${presentation.presentationId}`, {
-    slides: slides.map((slide) => slide.objectId),
-  });
-  console.log(response);
-}
-
 export default function Edit({ params }: { params: { id: string } }) {
   const [presentation, setPresentation] = useState({} as Presentation);
   const [slides, setSlides] = useState([] as Slide[]);
+  const [savedSuccessfully, setSavedSuccessfully] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -70,8 +64,21 @@ export default function Edit({ params }: { params: { id: string } }) {
     }
   }, [presentation.slides]);
 
+  const savePresentation = async (presentation: Presentation, slides: Slide[]) => {
+    const response = await client.put(`/presentation/update/${presentation.presentationId}`, {
+      slides: slides.map((slide) => slide.objectId),
+    });
+    setSavedSuccessfully(true);
+  }
+
   return (
     <Box className='flex h-screen flex-col'>
+      <Snackbar
+        open={savedSuccessfully}
+        autoHideDuration={5000}
+        message='Apresentação salva com sucesso'
+        onClose={() => setSavedSuccessfully(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} />
       <Toolbar>
         <Typography>
           {presentation.title}
