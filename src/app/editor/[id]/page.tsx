@@ -13,6 +13,7 @@ import 'react-image-gallery/styles/css/image-gallery.css';
 
 import client from '@/client';
 import LoadingModal from '@/app/editor/[id]/modals/LoadingModal';
+import AddActivityModal from '@/app/editor/[id]/modals/AddActivity';
 
 type Slide = {
   objectId: string;
@@ -46,6 +47,7 @@ export default function Edit({ params }: { params: { id: string } }) {
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [newActivityModalOpen, setNewActivityModalOpen] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -83,6 +85,7 @@ export default function Edit({ params }: { params: { id: string } }) {
   return (
     <Box className='flex h-screen flex-col'>
       <LoadingModal percentage={progress} open={loading} />
+      <AddActivityModal open={newActivityModalOpen} onClose={() => setNewActivityModalOpen(false)} />
       <Snackbar
         open={savedSuccessfully}
         autoHideDuration={5000}
@@ -99,7 +102,7 @@ export default function Edit({ params }: { params: { id: string } }) {
         )}
         <Box className='flex-grow' />
         <Box>
-          <IconButton size='large' disabled={loading}>
+          <IconButton size='large' disabled={loading} onClick={() => setNewActivityModalOpen(true)}>
             <AddIcon />
           </IconButton>
 
