@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-import ImportPresentationModal from '../modals/ImportPresentation';
+import ImportPresentationModal from '@/app/dashboard/modals/ImportPresentation';
 
 const miniDrawerWidth = 80;
 const drawerWidth = 300;

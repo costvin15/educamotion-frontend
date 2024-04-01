@@ -12,6 +12,7 @@ import { Reorder } from 'framer-motion';
 import 'react-image-gallery/styles/css/image-gallery.css';
 
 import client from '@/client';
+import LoadingModal from '@/app/editor/[id]/modals/LoadingModal';
 
 type Slide = {
   objectId: string;
@@ -81,6 +82,7 @@ export default function Edit({ params }: { params: { id: string } }) {
 
   return (
     <Box className='flex h-screen flex-col'>
+      <LoadingModal percentage={progress} open={loading} />
       <Snackbar
         open={savedSuccessfully}
         autoHideDuration={5000}
@@ -97,15 +99,15 @@ export default function Edit({ params }: { params: { id: string } }) {
         )}
         <Box className='flex-grow' />
         <Box>
-          <IconButton size='large'>
+          <IconButton size='large' disabled={loading}>
             <AddIcon />
           </IconButton>
 
-          <IconButton size='large'>
+          <IconButton size='large' disabled={loading}>
             <SlideshowIcon />
           </IconButton>
 
-          <IconButton size='large' onClick={() => savePresentation(presentation, slides)}>
+          <IconButton size='large' disabled={loading} onClick={() => savePresentation(presentation, slides)}>
             <SaveIcon />
           </IconButton>
         </Box>
