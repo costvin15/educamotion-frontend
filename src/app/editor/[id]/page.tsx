@@ -85,7 +85,7 @@ export default function Edit({ params }: { params: { id: string } }) {
   return (
     <Box className='flex h-screen flex-col'>
       <LoadingModal percentage={progress} open={loading} />
-      <AddActivityModal open={newActivityModalOpen} onClose={() => setNewActivityModalOpen(false)} />
+      <AddActivityModal presentation={presentation} open={newActivityModalOpen} onClose={() => setNewActivityModalOpen(false)} />
       <Snackbar
         open={savedSuccessfully}
         autoHideDuration={5000}
