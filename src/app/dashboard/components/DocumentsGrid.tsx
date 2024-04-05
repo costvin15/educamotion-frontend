@@ -35,6 +35,10 @@ async function getPresentations() : Promise<Presentations> {
 
 async function getPresentationImage(presentationId: string) : Promise<string> {
   const response = await client.get(`/presentation/thumbnail/${presentationId}`, { responseType: 'arraybuffer' });
+  if (response.status === 204) {
+    // TODO: Substituir essa imagem por uma imagem apropriada
+    return 'https://www.visivo.de/media/image/f1/35/dd/Visivo15602_600x600.png';
+  }
   const blob = new Blob([response.data], { type: 'image/png' });
   return URL.createObjectURL(blob);
 }

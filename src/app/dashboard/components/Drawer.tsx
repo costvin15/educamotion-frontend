@@ -84,7 +84,7 @@ const BackdropForDrawer = styled(Backdrop)(({theme}) => ({
 }));
 
 export default function Drawer() : JSX.Element {
-  const { data : session } = useSession();
+  const { data : session } = useSession({ required: true });
   const router = useRouter();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
