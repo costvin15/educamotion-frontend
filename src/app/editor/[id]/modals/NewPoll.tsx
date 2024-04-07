@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, styled } from '@mui/material';
 
 import RemoveIcon from '@mui/icons-material/Remove';
+
+import client from '@/client';
 
 const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
@@ -11,7 +13,18 @@ type Presentation = {
   presentationId: string;
 };
 
+async function createPoll(presentation: Presentation, title: string, options: string[]) {
+  const response = await client.post(`/poll`, {
+    presentationId: presentation.presentationId,
+    question: title,
+    choices: options
+  });
+
+  return response.data;
+}
+
 export default function NewPoll({presentation, open, onClose} : {presentation: Presentation, open: boolean, onClose: () => void}) {
+  const [title, setTitle] = useState('');
   const [currentLastOptionId, setCurrentLastOptionId] = useState(1);
   const [options, setOptions] = useState([
     {
@@ -20,8 +33,15 @@ export default function NewPoll({presentation, open, onClose} : {presentation: P
     }
   ]);
 
-  useEffect(() => {
-  }, []);
+  const handleCreatePoll = async () => {
+    try {
+      await createPoll(presentation, title, options.map((o) => o.value));
+    } catch (exception) {
+      console.error(exception);
+    } finally {
+      onClose();
+    }
+  }
 
   return (
     <>
@@ -37,7 +57,10 @@ export default function NewPoll({presentation, open, onClose} : {presentation: P
             <OutlinedInput
               type='text'
               label='Título da enquete'
-              fullWidth />
+              fullWidth
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
           </FormControl>
           <DialogContentText className='pt-3'>
             Quais serão as opções da enquete?
@@ -84,7 +107,7 @@ export default function NewPoll({presentation, open, onClose} : {presentation: P
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancelar</Button>
-          <Button onClick={onClose}>Criar</Button>
+          <Button onClick={handleCreatePoll}>Criar</Button>
         </DialogActions>
       </Dialog>
     </>
