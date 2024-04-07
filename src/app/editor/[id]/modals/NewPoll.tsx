@@ -30,6 +30,16 @@ export default function NewPoll({presentation, open, onClose} : {presentation: P
             label='Título da enquete'
             fullWidth
             variant='standard' />
+          <DialogContentText className='pt-3'>
+            Quais serão as opções da enquete?
+          </DialogContentText>
+          <TextField
+            autoFocus
+            required
+            margin='dense'
+            label='Opção 1'
+            fullWidth
+            variant='standard' />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancelar</Button>
