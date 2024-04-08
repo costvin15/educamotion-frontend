@@ -1,13 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
-  redirects: () => [
-    {
-      source: '/',
-      destination: '/dashboard',
-      permanent: true
-    }
-  ],
+  reactStrictMode: false
 }
 
 module.exports = nextConfig
