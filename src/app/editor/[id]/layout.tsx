@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
-import Drawer from '@/app/dashboard/components/Drawer';
+import Drawer from '@/app/creator/components/Drawer';
 
 const darkTheme = createTheme({
   palette: {

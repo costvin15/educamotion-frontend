@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import Drawer from '@/app/dashboard/components/Drawer';
+import Drawer from '@/app/creator/components/Drawer';
 import { SessionProvider } from 'next-auth/react';
 
 const darkTheme = createTheme({
@@ -14,7 +14,7 @@ const darkTheme = createTheme({
   },
 });
 
-export default function HomeLayout({ children } : {children: React.ReactNode}) {
+export default function CreatorLayout({ children } : {children: React.ReactNode}) {
   return (
     <SessionProvider>
       <ThemeProvider theme={darkTheme}>
