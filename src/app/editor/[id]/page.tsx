@@ -16,7 +16,8 @@ import staticsImages from '@/images';
 import { RenderActivity } from '@/app/activity';
 
 import LoadingModal from '@/app/editor/[id]/modals/LoadingModal';
-import AddActivityModal from '@/app/editor/[id]/modals/AddActivity';
+import AddActivityModal from '@/app/editor/[id]/modals/AddActivityModal';
+import CreateSessionModal from '@/app/editor/[id]/modals/CreateSessionModal';
 
 type Slide = {
   objectId: string;
@@ -70,6 +71,7 @@ export default function Edit({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [newActivityModalOpen, setNewActivityModalOpen] = useState(false);
+  const [createSessionModalOpen, setCreateSessionModalOpen] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -137,6 +139,7 @@ export default function Edit({ params }: { params: { id: string } }) {
     <Box className='flex h-screen flex-col'>
       <LoadingModal percentage={progress} open={loading} />
       <AddActivityModal presentation={presentation} open={newActivityModalOpen} onClose={() => setNewActivityModalOpen(false)} />
+      <CreateSessionModal presentationId={presentation.presentationId} open={createSessionModalOpen} onClose={() => setCreateSessionModalOpen(false)} />
       <Snackbar
         open={savedSuccessfully}
         autoHideDuration={5000}
@@ -157,7 +160,7 @@ export default function Edit({ params }: { params: { id: string } }) {
             <AddIcon />
           </IconButton>
 
-          <IconButton size='large' disabled={loading}>
+          <IconButton size='large' disabled={loading} onClick={() => setCreateSessionModalOpen(true)}>
             <SlideshowIcon />
           </IconButton>
 
