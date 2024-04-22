@@ -1,6 +1,7 @@
-import client from '@/client';
+import { useState, useEffect } from 'react';
 import { Button, Card, CardContent, FormControlLabel, FormGroup, Radio, RadioGroup, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+
+import client from '@/client';
 
 type Activity = {
   presentationId: string;
@@ -23,8 +24,8 @@ type Poll = {
 };
 
 async function getPollActivity(activityId: string) : Promise<Poll> {
-  const response = await client.get(`/poll/${activityId}`);
-  return response.data;
+  const { data } = await client.get(`/activity/poll/${activityId}`);
+  return data;
 }
 
 export default function PollActivity({activity}: {activity: Activity}) {

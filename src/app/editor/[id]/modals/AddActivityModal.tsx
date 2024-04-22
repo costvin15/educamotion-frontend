@@ -4,16 +4,13 @@ import PollIcon from '@mui/icons-material/Poll';
 import { blue } from '@mui/material/colors';
 
 import NewPollModal from '@/app/editor/[id]/modals/NewPoll';
+import IActivity, {Presentation} from '@/app/editor/[id]/IActivity';
 
 const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
 }));
 
-type Presentation = {
-  presentationId: string;
-};
-
-export default function AddActivity({presentation, open, onClose} : {presentation: Presentation, open: boolean, onClose: () => void}) {
+export default function AddActivity({presentation, open, onClose, onSuccess} : IActivity) {
   const [newPollModalOpen, setNewPollModalOpen] = useState(false);
 
   const activities = [
@@ -29,10 +26,14 @@ export default function AddActivity({presentation, open, onClose} : {presentatio
   return (
     <>
       <BackdropForModal open={open} onClick={onClose} />
-      <NewPollModal presentation={presentation} open={newPollModalOpen} onClose={() => {
-        onClose();
-        setNewPollModalOpen(false);
-      }} />
+      <NewPollModal
+        presentation={presentation}
+        open={newPollModalOpen}
+        onClose={() => {
+          onClose();
+          setNewPollModalOpen(false);
+        }}
+        onSuccess={onSuccess} />
       <Dialog open={open} onClose={onClose} fullWidth>
         <DialogTitle>Nova atividade</DialogTitle>
         <List sx={{ pt: 0 }}>

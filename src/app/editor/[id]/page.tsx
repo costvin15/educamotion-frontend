@@ -73,48 +73,50 @@ export default function Edit({ params }: { params: { id: string } }) {
   const [newActivityModalOpen, setNewActivityModalOpen] = useState(false);
   const [createSessionModalOpen, setCreateSessionModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      (async () => {
-        const presentation = await getPresentationDetails(params.id);
-        setPresentation(presentation);
-      })();
+  const loadEditorData = async () => {
+    setLoading(true);
+
+    if (params.id === undefined) {
+      setLoading(false);
+      // TODO: Lançar erro apropriado
+      return;
     }
+
+    const presentation = await getPresentationDetails(params.id);
+    setPresentation(presentation);
+    
+    const { activities } = await getActivities(params.id);
+    setActivities(activities);
+
+    if (presentation.totalSlides === 0) {
+      setLoading(false);
+      // TODO: Lançar erro apropriado
+      return;
+    }
+
+    var progress = 0;
+    const images = await Promise.all(presentation.slides.map(async (slide) => {
+      const activity = activities.find((activity) => activity.objectId === slide.objectId);
+      if (activity !== undefined) {
+        return {
+          objectId: slide.objectId,
+          original: staticsImages.POLL_THUMBNAIL,
+          renderItem: () => RenderActivity(activity)
+        };
+      }
+
+      const thumbnail = await getThumbnail(presentation.presentationId, slide.objectId);
+      progress++;
+      setProgress(progress / presentation.totalSlides * 100);
+      return thumbnail;
+    }));
+    setSlides(images);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadEditorData();
   }, []);
-
-  useEffect(() => {
-    if (params.id) {
-      (async () => {
-        const activities = await getActivities(params.id);
-        setActivities(activities.activities);
-      })();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (presentation.totalSlides > 0) {
-      (async () => {
-        var progress = 0;
-        const images = await Promise.all(presentation.slides.map(async (slide) => {
-          const activity = activities.find((activity) => activity.objectId === slide.objectId);
-          if (activity !== undefined) {
-            return {
-              objectId: slide.objectId,
-              original: staticsImages.POLL_THUMBNAIL,
-              renderItem: () => RenderActivity(activity)
-            };
-          }
-
-          const thumbnail = await getThumbnail(presentation.presentationId, slide.objectId);
-          progress++;
-          setProgress(progress / presentation.totalSlides * 100);
-          return thumbnail;
-        }));
-        setSlides(images);
-        setLoading(false);
-      })();
-    }
-  }, [presentation, activities]);
 
   function checkIfSlideIsActivity(slide: Slide) {
     return activities.some((activity) => activity.objectId === slide.objectId);
@@ -138,7 +140,11 @@ export default function Edit({ params }: { params: { id: string } }) {
   return (
     <Box className='flex h-screen flex-col'>
       <LoadingModal percentage={progress} open={loading} />
-      <AddActivityModal presentation={presentation} open={newActivityModalOpen} onClose={() => setNewActivityModalOpen(false)} />
+      <AddActivityModal
+        presentation={presentation}
+        open={newActivityModalOpen}
+        onClose={() => setNewActivityModalOpen(false)}
+        onSuccess={() => loadEditorData()} />
       <CreateSessionModal presentationId={presentation.presentationId} open={createSessionModalOpen} onClose={() => setCreateSessionModalOpen(false)} />
       <Snackbar
         open={savedSuccessfully}

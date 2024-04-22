@@ -4,17 +4,14 @@ import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentTe
 import RemoveIcon from '@mui/icons-material/Remove';
 
 import client from '@/client';
+import IActivity, {Presentation} from '@/app/editor/[id]/IActivity';
 
 const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
 }));
 
-type Presentation = {
-  presentationId: string;
-};
-
 async function createPoll(presentation: Presentation, title: string, options: string[]) {
-  const response = await client.post(`/poll`, {
+  const response = await client.post(`/activity/poll`, {
     presentationId: presentation.presentationId,
     question: title,
     choices: options
@@ -23,7 +20,7 @@ async function createPoll(presentation: Presentation, title: string, options: st
   return response.data;
 }
 
-export default function NewPoll({presentation, open, onClose} : {presentation: Presentation, open: boolean, onClose: () => void}) {
+export default function NewPoll({presentation, open, onClose, onSuccess} : IActivity) {
   const [title, setTitle] = useState('');
   const [currentLastOptionId, setCurrentLastOptionId] = useState(1);
   const [options, setOptions] = useState([
@@ -35,7 +32,8 @@ export default function NewPoll({presentation, open, onClose} : {presentation: P
 
   const handleCreatePoll = async () => {
     try {
-      await createPoll(presentation, title, options.map((o) => o.value));
+      await createPoll(presentation, title, options.filter(o => o.value !== '').map(o => o.value));
+      onSuccess();
     } catch (exception) {
       console.error(exception);
     } finally {

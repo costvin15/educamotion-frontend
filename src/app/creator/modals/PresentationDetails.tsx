@@ -21,9 +21,26 @@ type SlidesInformation = {
   slides: Slide[];
 }
 
+type Activity = {
+  presentationId: string;
+  activityId: string;
+  activityType: string;
+  objectId: string;
+}
+
+type Activities = {
+  total: number;
+  activities: Activity[];
+}
+
 const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
 }));
+
+async function getActivities(presentationId: string) : Promise<Activities> {
+  const {data} = await client.get(`/activity/${presentationId}`);
+  return data;
+}
 
 async function getSlidesInformation(presentationId: string) : Promise<SlidesInformation> {
   const {data} = await client.get(`/presentation/${presentationId}`);
@@ -60,8 +77,15 @@ export default function PresentationDetails({presentation, open, onClose} : {pre
   useEffect(() => {
     if (slideInformation.totalSlides > 0) {
       (async () => {
+        const { activities } = await getActivities(presentation.presentationId);
         const slides = await Promise.all(slideInformation.slides.slice(0, 5).map(async (slide) => {
-          return await getSlideImage(presentation.presentationId, slide.objectId);
+          const activity = activities.find(activity => activity.objectId === slide.objectId);
+          if (activity === undefined) {
+            return await getSlideImage(presentation.presentationId, slide.objectId);
+          }
+
+          // TODO: Criar um objeto, onde seja possivel passar o tipo de imagem que será retornada
+          return new Promise<string>((resolve) => resolve('https://storage.googleapis.com/educamotion-static-images/poll-thumbnail.png'));
         }));
         setSlides(slides);
         setLoading(false);
