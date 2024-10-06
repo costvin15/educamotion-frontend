@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-import ImportPresentationModal from '@/app/creator/modals/ImportPresentation';
+import ImportPresentationModal from '@/app/dashboard/modals/ImportPresentation';
 
 const miniDrawerWidth = 80;
 const drawerWidth = 300;
@@ -99,7 +99,7 @@ export default function Drawer() : JSX.Element {
   }
 
   const redirectToDashboard = () => {
-    router.push('/creator');
+    router.push('/dashboard');
   }
 
   return (  

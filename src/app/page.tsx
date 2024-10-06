@@ -55,7 +55,7 @@ export default function Home() {
       <Grid className='h-dvh flex items-center justify-center bg-black text-white' item xs={6}>
         <div className='flex flex-col items-center'>
           <Typography>Gerenciar suas apresentações</Typography>
-          <Link href='creator'>
+          <Link href='dashboard'>
             <Button variant='contained'>
               Entrar como criador
             </Button>

@@ -8,8 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 
 import client from '@/client';
-import DocumentsGridSkeleton from '@/app/creator/components/DocumentsGridSkeleton';
-import PresentationDetails from '@/app/creator/modals/PresentationDetails';
+import DocumentsGridSkeleton from '@/app/dashboard/components/DocumentsGridSkeleton';
+import PresentationDetails from '@/app/dashboard/modals/PresentationDetails';
 
 type Presentations = {
   total: number;

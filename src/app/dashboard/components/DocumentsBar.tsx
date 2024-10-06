@@ -31,23 +31,6 @@ const RoundedButton = styled(Button)(({variant}) => ({
   backgroundColor: (variant == 'contained' ? backgroundColorWhenSelected : backgroundColorWhenUnselected)
 }));
 
-const SectionTitle = styled(Typography)(() => ({
-  flexGrow: 1,
-  paddingTop: '20px',
-  paddingBottom: '20px'
-}));
-
-const DotIcon = styled(CircleIcon)(() => ({
-  width: '12px',
-  height: '12px'
-}));
-
-const ContainerBox = styled(Box)(() => ({
-  flexGrow: 1,
-  padding: '24px',
-  paddingTop: 0,
-}));
-
 async function fetchRecentAvailablePresentations() : Promise<Presentations> {
   const { data } = await client.get('/presentation');
   return data;
@@ -74,20 +57,24 @@ export default function DocumentsBar() {
       </Grid>
 
       <Grid item>
-        <ContainerBox component='main'>
+        <Box className='flex-grow'>
           <Grid container>
             <Grid item md={12}>
-              <SectionTitle variant='body2'>Apresentações recentemente editadas</SectionTitle>
+              <Typography className='flex-grow pl-6 pt-5 pb-5' variant='body2'>Apresentações recentemente editadas</Typography>
               <Stack>
                 {presentations.map((presentation) => (
-                  <RoundedButton key={presentation.id} startIcon={<DotIcon />}>
+                  <Button
+                    className='text-white normal-case ml-6 mr-6 pt-3 pl-6 pb-3 rounded-3xl justify-start mb-1'
+                    key={presentation.id}
+                    startIcon={<CircleIcon className='w-3 h-3' />}
+                  >
                     <Typography className='text-ellipsis w-9/12 whitespace-nowrap overflow-hidden text-start'>{presentation.name}</Typography>
-                  </RoundedButton>
+                  </Button>
                 ))}
               </Stack>
             </Grid>
           </Grid>
-        </ContainerBox>
+        </Box>
       </Grid>
     </Grid>
   );
