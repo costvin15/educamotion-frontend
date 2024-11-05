@@ -20,7 +20,7 @@ export default function CreateSessionModal({ presentationId, open, onClose } : {
   const handleCreateSession = async () => {
     const session = await createSession(presentationId);
     console.log(session);
-    router.push(`/theather/${session.code}`);
+    router.push(`/showcase/${session.code}`);
   }
 
   return (

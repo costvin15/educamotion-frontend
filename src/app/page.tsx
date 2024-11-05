@@ -33,7 +33,7 @@ export default function Home() {
 
     const session = await submitAdmittance(presentationCode);
 
-    router.push(`/theather/${session.sessionId}`);
+    router.push(`/showcase/${session.sessionId}`);
   }
 
   return (
