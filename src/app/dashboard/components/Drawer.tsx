@@ -99,7 +99,7 @@ export default function Drawer() : JSX.Element {
   }
 
   const redirectToDashboard = () => {
-    router.push('/dashboard');
+    router.push('/');
   }
 
   return (  

@@ -1,6 +1,7 @@
 import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, styled } from "@mui/material";
 
 import client from '@/client';
+import { useRouter } from "next/navigation";
 
 const BackdropForModal = styled(Backdrop)(({theme}) => ({
   zIndex: theme.zIndex.modal,
@@ -14,9 +15,12 @@ async function createSession(presentationId: string) {
 }
 
 export default function CreateSessionModal({ presentationId, open, onClose } : { presentationId: string, open: boolean, onClose: () => void }) {
+  const router = useRouter();
+
   const handleCreateSession = async () => {
     const session = await createSession(presentationId);
     console.log(session);
+    router.push(`/theather/${session.code}`);
   }
 
   return (
