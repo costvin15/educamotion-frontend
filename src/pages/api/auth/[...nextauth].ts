@@ -51,9 +51,8 @@ export const authOptions : AuthOptions = {
       if (user && account) {
         token.accessToken = account.access_token!;
         token.refreshToken = account.refresh_token!;
-        token.accessTokenExpires = Date.now() + account.expires_at! * 1000;
+        token.accessTokenExpires = account.expires_at!;
         token.id = user.id;
-        return token;
       }
 
       if (Date.now() < token.accessTokenExpires) {
@@ -62,10 +61,11 @@ export const authOptions : AuthOptions = {
 
       return refreshAccessToken(token);
     },
-    session: async (data) => {
-      const {token, session} = data;
-      session.user = token;
-      session.user.token = token.accessToken;
+    session: async ({token, session}) => {
+      if (token) {
+        session.user = token;
+        session.user.token = token.accessToken;
+      }
       return session;
     },
   }
