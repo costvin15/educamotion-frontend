@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/Button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/DropdownMenu';
 import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import { SearchFilter } from '@/app/dashboard/components/SearchFilter';
 
 export default function Dashboard() {
   return (
-    <div className='container mx-auto px-4 py-4'>
+    <div>
       <Navbar>
         <ThemeSwitcher />
         <DropdownMenu>
@@ -34,6 +35,9 @@ export default function Dashboard() {
           </DropdownMenuContent>
         </DropdownMenu>
       </Navbar>
+      <div className="container mx-auto px-4 py-8">
+        <SearchFilter />
+      </div>
     </div>
   );
 }
