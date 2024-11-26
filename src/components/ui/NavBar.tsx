@@ -14,7 +14,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2 no-underline text-current">
-            <span className="text-2xl font-bold">EducaMotion</span>
+            <img src="/static/images/educamotion-logo.png" alt="EducaMotion" className="w-8 h-8" />
           </Link>
 
           {/* Desktop Navigation */}

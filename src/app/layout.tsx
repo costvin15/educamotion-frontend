@@ -7,6 +7,12 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon.ico',
+    }
+  ],
   title: 'EducaMotion - Apresentações Educacionais Interativas',
   description: 'Crie apresentações educacionais envolventes com nosso intuitivo editor de slides',
 };
