@@ -1,12 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { X, Menu } from 'lucide-react';
 
-import { Button } from '@/components/ui/Button';
-import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
-
-export function Navbar() {
+export function Navbar({ children } : Readonly<{ children: ReactNode }>) {
   const [ isOpen, setIsOpen ] = useState(false);
 
   return (
@@ -19,19 +16,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-8">
-            <Link href="#features" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
-              Funcionalidades
-            </Link>
-            <Link href="#resources" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
-              Recursos
-            </Link>
-            <ThemeSwitcher />
-            <Button size="lg" className="text-lg">
-              Comece a Ensinar
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg">
-              Veja Exemplos
-            </Button>
+            {children}
           </div>
 
           {/* Mobile Navigation Toggle */}
@@ -47,22 +32,7 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden py-4">
             <div className="flex flex-col space-y-4">
-              <Link
-                href="#features"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Funcionalidades
-              </Link>
-              <Link
-                href="#resources"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Recursos
-              </Link>
-              <Button variant="outline" className="w-full">Já tem uma conta?</Button>
-              <Button className="w-full">Comece agora</Button>
+              {children}
             </div>
           </div>
         )}

@@ -1,17 +1,39 @@
-import { Grid } from "@mui/material";
+import { User, LogOut } from 'lucide-react';
 
-import DocumentsBar from '@/app/dashboard/components/DocumentsBar';
-import DocumentsGrid from '@/app/dashboard/components/DocumentsGrid';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/DropdownMenu';
+import { Navbar } from '@/components/ui/NavBar';
+import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
-export default function dashboard() {
+export default function Dashboard() {
   return (
-    <Grid container>
-      <Grid item md={3}>
-        <DocumentsBar />
-      </Grid>
-      <Grid item md={9}>
-        <DocumentsGrid />
-      </Grid>
-    </Grid>
+    <div className='container mx-auto px-4 py-4'>
+      <Navbar>
+        <ThemeSwitcher />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant='ghost' className='relative h-10 w-10 rounded-full' asChild>
+              <div>
+                <Avatar>
+                  <AvatarImage src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=60' />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              Perfil
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Navbar>
+    </div>
   );
 }

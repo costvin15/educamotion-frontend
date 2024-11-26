@@ -3,6 +3,8 @@ import { PresentationIcon, Layers, Palette, Share2, Sparkles, Presentation, User
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Navbar } from '@/components/ui/NavBar';
+import Link from "next/link";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 function FeatureCard({ title, description, icon } : { title: string, description: string, icon: React.ReactNode }) {
   return (
@@ -19,7 +21,24 @@ function FeatureCard({ title, description, icon } : { title: string, description
 export default function Home() {
   return (
     <main className='flex min-h-screen flex-col'>
-      <Navbar />
+      <Navbar>
+        <Link href="#features" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
+          Funcionalidades
+        </Link>
+        <Link href="#resources" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
+          Recursos
+        </Link>
+        <ThemeSwitcher />
+        <Link href="/auth/signin" className="w-full">
+          <Button size="lg" className="text-lg w-full">
+            Comece a Ensinar
+          </Button>
+        </Link>
+        <Button size="lg" variant="outline" className="text-lg">
+          Veja Exemplos
+        </Button>
+      </Navbar>
+
       <section className='relative px-6 lg:px-8 py-24 md:py-32 bg-gradient-to-br from-primary/5 via-primary/10 to-background'>
         <div className='mx-auto max-w-7x1'>
           <div className='text-center'>
@@ -32,10 +51,12 @@ export default function Home() {
               Crie apresentações educacionais dinâmicas e interativas que envolvam os alunos e tornam a aprendizagem mais viva. Perfeito para professores e educadores.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" className="h-12 px-6">
-                Comece a Ensinar
-                <PresentationIcon className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/auth/signin">
+                <Button size="lg" className="h-12 px-6">
+                  Comece a Ensinar
+                  <PresentationIcon className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button variant="outline" size="lg" className="h-12 px-6">
                 Ver Exemplos
               </Button>
@@ -88,9 +109,11 @@ export default function Home() {
             <p className="mt-4 mb-8 text-lg text-muted-foreground">
               Junte-se a outros educadores criando aulas envolventes com a EducaMotion.
             </p>
-            <Button size="lg" className="text-lg">
-              Comece a Ensinar Hoje
-            </Button>
+            <Link href="/auth/signin">
+              <Button size="lg" className="text-lg">
+                Comece a Ensinar Hoje
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
