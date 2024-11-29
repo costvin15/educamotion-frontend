@@ -1,3 +1,4 @@
+'use client';
 import { ChevronDown, Plus, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
@@ -13,6 +14,7 @@ export function SearchFilter() {
         <Input
           placeholder='Pesquisar apresentações...'
           value=''
+          onChange={() => {}}
           className='pl-10'
         />
       </div>

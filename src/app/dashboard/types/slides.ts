@@ -3,5 +3,5 @@ export interface Slide {
   title: string;
   thumbnail: string;
   createAt: Date;
-  lastOpened: Date;
+  lastOpenedAt: Date;
 }

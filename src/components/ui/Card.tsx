@@ -13,6 +13,30 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
 );
 Card.displayName = 'Card';
 
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={mergeClassNames('p-6 pt-0', className)}
+      {...props}
+    />
+  )
+);
+CardContent.displayName = 'CardContent';
+
+const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={mergeClassNames('flex items-center p-6 pt-0', className)}
+      {...props}
+    />
+  )
+);
+CardFooter.displayName = 'CardFooter';
+
 export {
-  Card
+  Card,
+  CardContent,
+  CardFooter,
 };
