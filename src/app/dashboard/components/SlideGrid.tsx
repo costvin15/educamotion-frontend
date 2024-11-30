@@ -1,3 +1,5 @@
+'use client';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 
 import { Slide } from '@/app/dashboard/types/slides';
@@ -11,6 +13,12 @@ interface SlideGridProps {
 }
 
 export function SlideGrid ({ slides } : SlideGridProps) {
+  const router = useRouter();
+
+  const redirectToEditor = (slide: Slide) => {
+    router.push(`/edit/${slide.id}`);
+  }
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
       {slides.map(slide => (
@@ -22,7 +30,7 @@ export function SlideGrid ({ slides } : SlideGridProps) {
               className='w-full h-full object-cover rounded-t-lg'
             />
             <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center'>
-              <Button variant='secondary' className='mr-2'>
+              <Button variant='secondary' className='mr-2' onClick={() => redirectToEditor(slide)}>
                 Abrir
               </Button>
             </div>
