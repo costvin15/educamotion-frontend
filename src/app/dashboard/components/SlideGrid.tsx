@@ -1,7 +1,9 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 
+import client from '@/client';
 import { Slide } from '@/app/dashboard/types/slides';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
@@ -12,20 +14,41 @@ interface SlideGridProps {
   slides: Slide[];
 }
 
+const fetchPresentationThumbnail = async (presentationId: string) : Promise<string> => {
+  const response = await client.get(`/presentation/thumbnail/${presentationId}`, { responseType: 'arraybuffer' });
+  if (response.status === 204) {
+    // TODO: Criar um objeto, onde seja possivel passar o tipo de imagem que será retornada
+    return 'https://storage.googleapis.com/educamotion-static-images/poll-thumbnail.png';
+  }
+  const blob = new Blob([response.data], { type: 'image/png' });
+  return URL.createObjectURL(blob);
+}
+
 export function SlideGrid ({ slides } : SlideGridProps) {
   const router = useRouter();
+  const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
 
   const redirectToEditor = (slide: Slide) => {
-    router.push(`/edit/${slide.id}`);
+    router.push(`/edit/${slide.presentationId}`);
   }
+
+  useEffect(() => {
+    slides.map(async slide => {
+      const thumbnail = await fetchPresentationThumbnail(slide.presentationId);
+      setThumbnails((prevState) => ({
+        ...prevState,
+        [slide.presentationId]: thumbnail
+      }));
+    });
+  }, [slides]);
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
       {slides.map(slide => (
-        <Card key={slide.id} className='group hover:shadow-lg transition-shadow duration-200'>
+        <Card key={slide.presentationId} className='group hover:shadow-lg transition-shadow duration-200'>
           <CardContent className='p-0 relative aspect-video'>
             <img
-              src={slide.thumbnail}
+              src={thumbnails[slide.presentationId]}
               alt={slide.title}
               className='w-full h-full object-cover rounded-t-lg'
             />
@@ -39,7 +62,7 @@ export function SlideGrid ({ slides } : SlideGridProps) {
             <div>
               <h3 className="font-medium text-sm truncate">{slide.title}</h3>
               <p className='text-xs text-muted-foreground'>
-                Visitado em {format(slide.lastOpenedAt, 'dd MMM yyyy')}
+                Visitado em {format(slide.updatedAt, 'dd MMM yyyy')}
               </p>
             </div>
             <DropdownMenu>

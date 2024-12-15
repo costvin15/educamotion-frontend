@@ -1,7 +1,17 @@
 export interface Slide {
-  id: string;
+  presentationId: string;
   title: string;
-  thumbnail: string;
-  createAt: Date;
-  lastOpenedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Slides {
+  total: number;
+  presentations: Slide[];
+}
+
+export enum SortOptions {
+  Name = 'Name',
+  MostRecentOpened = 'MostRecentOpened',
+  Date = 'Date',
 }
