@@ -1,12 +1,49 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { Download, ImageIcon, Play, Plus, Redo, Type, Undo } from 'lucide-react';
+
+import client from '@/client';
+
 import { Button } from '@/components/ui/Button';
 import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
-import { Download, ImageIcon, Play, Plus, Redo, Type, Undo } from 'lucide-react';
+
+import { Pages } from '@/app/edit/[id]/types/pages';
+import { useEditorStore } from '@/app/edit/[id]/store/editor';
+
 import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 
-export default function Edit() {
+const fetchSlides = async (slideId: string) : Promise<Pages> => {
+  const { data } = await client.get(`/presentation/${slideId}`);
+  return data;
+}
+
+const fetchThumbnail = async (presentationId: string, slideId: string) : Promise<string> => {
+  const response = await client.get(`/presentation/thumbnail/${presentationId}/${slideId}`, { responseType: 'arraybuffer' });
+  const blob = new Blob([response.data], { type: 'image/png' });
+  return URL.createObjectURL(blob);
+}
+
+export default function Edit({ params } : { params: { id: string }}) {
+  const store = useEditorStore();
+
+  useEffect(() => {
+    store.reset();
+
+    (async () => {
+      const data = await fetchSlides(params.id);
+      store.setPresentationId(data.presentationId);
+      store.addSlides(data.slides);
+
+      for (const slide of data.slides) {
+        fetchThumbnail(data.presentationId, slide.objectId)
+          .then((thumbnail) => store.addThumbnail(slide.objectId, thumbnail));
+      }
+    })();
+  }, []);
+
   return (
     <div className='flex h-screen flex-col'>
       <Navbar>
