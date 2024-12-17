@@ -14,6 +14,7 @@ import { useEditorStore } from '@/app/edit/[id]/store/editor';
 import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
+import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 
 const fetchSlides = async (slideId: string) : Promise<Pages> => {
   const { data } = await client.get(`/presentation/${slideId}`);
@@ -27,6 +28,7 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 }
 
 export default function Edit({ params } : { params: { id: string }}) {
+  const [ isAddSlideModalOpen, setAddSlideModalOpen ] = useState(false);
   const store = useEditorStore();
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function Edit({ params } : { params: { id: string }}) {
 
       for (const slide of data.slides) {
         fetchThumbnail(data.presentationId, slide.objectId)
-          .then((thumbnail) => store.addThumbnail(slide.objectId, thumbnail));
+          .then((thumbnail) => store.addThumbnail(slide, thumbnail));
       }
     })();
   }, []);
@@ -49,7 +51,7 @@ export default function Edit({ params } : { params: { id: string }}) {
       <Navbar>
         <ThemeSwitcher />
 
-        <Button variant='outline' size='icon'>
+        <Button variant='outline' size='icon' onClick={() => setAddSlideModalOpen(true)}>
           <Plus className='h-4 w-4' />
         </Button>
         <Button variant='outline' size='icon'>
@@ -93,6 +95,8 @@ export default function Edit({ params } : { params: { id: string }}) {
           <Properties />
         </div>
       </div>
+
+      <AddSlideModal isOpen={isAddSlideModalOpen} onClose={() => setAddSlideModalOpen(false)} />
     </div>
   );
 }

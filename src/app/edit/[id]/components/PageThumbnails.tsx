@@ -13,6 +13,7 @@ export function PageThumbnails() {
       <div className='space-y-2 mx-1 mb-1'>
         {slides.map((slide: Page, index: number) => (
           <Button
+            key={index}
             variant='ghost'
             className={mergeClassNames(
               'h-[120px] w-full p-1 my-1',
