@@ -1,21 +1,21 @@
 import React, { useRef } from 'react';
 
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import { snapCenterToCursor, restrictToParentElement } from '@dnd-kit/modifiers';
+import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 import { Coordinate, Size, SlideElement, SlideElementType } from '@/app/edit/[id]/types/pages';
 import { Draggable } from '@/app/edit/[id]/components/Draggable';
 import { convertPercentilToPixel, convertPixelToPercentil } from '@/app/edit/[id]/utils/DimensionConverter';
-import { CSS } from '@dnd-kit/utilities';
 
 interface SlideElementProps extends React.HTMLAttributes<HTMLDivElement> {
   element: SlideElement;
+  isSelected: boolean;
 }
 
-const SlideElementComponent = React.forwardRef<HTMLDivElement, SlideElementProps>((({ element, ...props }, ref) => (
+const SlideElementComponent = React.forwardRef<HTMLDivElement, SlideElementProps>((({ element, isSelected, ...props }, ref) => (
   <Draggable
-    className='relative'
+    className={'absolute'}
     ref={ref}
     id={element.id}
     style={{
@@ -26,20 +26,23 @@ const SlideElementComponent = React.forwardRef<HTMLDivElement, SlideElementProps
     }}
   >
     <div
+      className={`w-full h-full ${isSelected && 'border-dashed border-4 border-secondary'}`}
       style={{
         ...element.style,
+        transform: `rotate(${element.rotation}deg)`,
       }}
+      {...props}
     >
-      {element.type === SlideElementType.TEXT && <div dangerouslySetInnerHTML={{ __html: element.content }} />}
-      {element.type === SlideElementType.IMAGE && <img src={element.content} alt="" />}
-      {element.type === SlideElementType.SHAPE && <div style={{ background: element.content }} />}
+      {element.type === SlideElementType.TEXT && <div className='w-full h-full' dangerouslySetInnerHTML={{ __html: element.content }} />}
+      {element.type === SlideElementType.IMAGE && <img className='w-full h-full' src={element.content} alt="" />}
+      {element.type === SlideElementType.SHAPE && <div className='w-full h-full' style={{ background: element.content }} />}
     </div>
   </Draggable>
 )));
 
 export function Canvas() {
   const containerReference = useRef<HTMLDivElement | null>(null);
-  const { slides, currentSlideIndex, updateSlide } = useEditorStore();
+  const { slides, currentSlideIndex, selectedElement, updateSlide, setSelectedElement, updateElement } = useEditorStore();
   const currentSlide = slides[currentSlideIndex];
 
   const updateElementPosition = ({ element, container, delta } : { element: SlideElement, container: Size, delta: Coordinate }) : Coordinate => {
@@ -50,6 +53,10 @@ export function Canvas() {
     };
     return convertPixelToPercentil({ element: updatePosition, container });
   }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setSelectedElement(String(event.active.id));
+  };
 
   const handleDragElement = (event: DragEndEvent) => {
     const element = currentSlide.elements.find((element) => element.id === event.active.id);
@@ -81,17 +88,25 @@ export function Canvas() {
   };
 
   return (
-    <div className='flex h-full items-center justify-center bg-muted p-8'>
-      <div ref={containerReference} className='aspect-video w-full max-w-5xl rounded-lg shadow-lg bg-white overflow-hidden'>
+    <div
+      className='flex h-full items-center justify-center bg-muted p-8'
+      onClick={() => setSelectedElement('')}
+    >
+      <div
+        ref={containerReference}
+        className='relative aspect-video w-full max-w-5xl rounded-lg shadow-lg bg-white overflow-hidden'
+        onClick={() => setSelectedElement('')}
+      >
         <DndContext
+          onDragStart={handleDragStart}
           onDragEnd={handleDragElement}
-          modifiers={[snapCenterToCursor, restrictToParentElement]}
+          modifiers={[restrictToParentElement]}
         >
           {currentSlide.elements.map((element, index) => (
             <SlideElementComponent
               key={index}
               element={element}
-              className='relative'
+              isSelected={selectedElement == String(element.id)}
             />
           ))}
         </DndContext>

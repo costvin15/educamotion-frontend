@@ -1,19 +1,23 @@
 import { create } from 'zustand';
 
-import { Page, SlideElementType } from '@/app/edit/[id]/types/pages';
+import { Page, SlideElement, SlideElementType } from '@/app/edit/[id]/types/pages';
 import { SlideTemplate } from '@/app/edit/[id]/store/templates';
 
-interface EditorState {
+export interface EditorState {
   presentationId: string;
   slides: Page[];
   thumbnails: { [key: string]: string };
   currentSlideIndex: number;
+  selectedElement: string;
   setPresentationId: (id: string) => void;
   addSlides: (slides: Page[]) => void;
   addSlideFromTemplate: (template: SlideTemplate) => void;
   updateSlide: (slide: Page) => void;
   addThumbnail: (slide: Page, thumbnail: string) => void;
   setCurrentSlide: (index: number) => void;
+  setSelectedElement: (id: string) => void;
+  addElementToSlide: (element: SlideElement) => void;
+  updateElement: (element: SlideElement) => void;
   reset: () => void;
 }
 
@@ -27,6 +31,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   slides: [initialState],
   thumbnails: {},
   currentSlideIndex: 0,
+  selectedElement: '',
   setPresentationId: (id) => set((state) => ({ presentationId: id })),
   addSlides: (slides) => set((state) => ({
     slides: slides.map((slide) => ({
@@ -66,8 +71,8 @@ export const useEditorStore = create<EditorState>((set) => ({
               content: thumbnail,
               x: 0,
               y: 0,
-              width: 50,
-              height: 50,
+              width: 100,
+              height: 100,
               rotation: 0,
             },
           ]
@@ -76,5 +81,30 @@ export const useEditorStore = create<EditorState>((set) => ({
     thumbnails: { ...state.thumbnails, [slide.objectId]: thumbnail }
   })),
   setCurrentSlide: (index) => set((state) => ({ currentSlideIndex: index })),
+  setSelectedElement: (id) => set((state) => ({ selectedElement: id })),
+  addElementToSlide: (element: SlideElement) => set((state) => ({
+    slides: state.slides.map(
+      (currentSlide, index) => (
+        index === state.currentSlideIndex ? {
+          ...currentSlide,
+          elements: [...currentSlide.elements, element],
+        } : currentSlide
+      )
+    ),
+  })),
+  updateElement: (element) => set((state) => ({
+    slides: state.slides.map(
+      (currentSlide, index) => (
+        index === state.currentSlideIndex ? {
+          ...currentSlide,
+          elements: currentSlide.elements.map(
+            (currentElement) => (
+              currentElement.id === element.id ? element : currentElement
+            )
+          ),
+        } : currentSlide
+      )
+    ),
+  })),
   reset: () => set((state) => ({ presentationId: '', slides: [initialState], thumbnails: {}, currentSlideIndex: 0 })),
 }));

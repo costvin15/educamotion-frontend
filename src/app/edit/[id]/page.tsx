@@ -15,6 +15,7 @@ import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
+import { addBlankTextToEditor } from '@/app/edit/[id]/utils/EditorElements';
 
 const fetchSlides = async (slideId: string) : Promise<Pages> => {
   const { data } = await client.get(`/presentation/${slideId}`);
@@ -54,7 +55,7 @@ export default function Edit({ params } : { params: { id: string }}) {
         <Button variant='outline' size='icon' onClick={() => setAddSlideModalOpen(true)}>
           <Plus className='h-4 w-4' />
         </Button>
-        <Button variant='outline' size='icon'>
+        <Button variant='outline' size='icon' onClick={() => addBlankTextToEditor(store)}>
           <Type className='h-4 w-4' />
         </Button>
         <Button variant='outline' size='icon'>

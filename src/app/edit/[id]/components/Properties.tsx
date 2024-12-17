@@ -2,7 +2,22 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Slider } from "@/components/ui/Slider";
 
+import { useEditorStore } from "@/app/edit/[id]/store/editor";
+import { SlideElementType } from "@/app/edit/[id]/types/pages";
+
 export function Properties() {
+  const { slides, currentSlideIndex, selectedElement, updateElement } = useEditorStore();
+  const slide = slides[currentSlideIndex];
+  const element = slide.elements.find((element) => element.id === selectedElement);
+
+  if (!element) {
+    return (
+      <div className='p-4 text-center text-muted-foreground'>
+        Selecione um elemento para ver suas propriedades
+      </div>
+    )
+  }
+
   return (
     <div className='space-y-4'>
       <h2 className='font-semibold'>Propriedades</h2>
@@ -11,6 +26,11 @@ export function Properties() {
         <Label>Posição X</Label>
         <Input
           type='number'
+          value={element.x}
+          onChange={(event) => {
+            const value = event.target.value;
+            updateElement({ ...element, x: Number(value) });
+          }}
         />
       </div>
 
@@ -18,6 +38,11 @@ export function Properties() {
         <Label>Posição Y</Label>
         <Input
           type='number'
+          value={element.y}
+          onChange={(event) => {
+            const value = event.target.value;
+            updateElement({ ...element, y: Number(value) });
+          }}
         />
       </div>
 
@@ -27,15 +52,64 @@ export function Properties() {
           min={0}
           max={360}
           step={1}
+          value={[element.rotation]}
+          onValueChange={([value]) => {
+            updateElement({ ...element, rotation: value });
+          }}
         />
       </div>
 
       <div className='space-y-2'>
-        <Label>Tamanho da Fonte</Label>
+        <Label>Largura</Label>
         <Input
           type='number'
+          value={element.width}
+          onChange={(event) => {
+            const value = event.target.value;
+            updateElement({ ...element, width: Number(value) });
+          }}
         />
       </div>
+
+      <div className='space-y-2'>
+        <Label>Altura</Label>
+        <Input
+          type='number'
+          value={element.height}
+          onChange={(event) => {
+            const value = event.target.value;
+            updateElement({ ...element, height: Number(value) });
+          }}
+        />
+      </div>
+
+      {element.type === SlideElementType.TEXT && (
+        <>
+          <div className='space-y-2'>
+            <Label>Texto</Label>
+            <Input
+              type='text'
+              value={element.content}
+              onChange={(event) => {
+                const value = event.target.value;
+                updateElement({ ...element, content: value });
+              }}
+            />
+          </div>
+
+          <div className='space-y-2'>
+          <Label>Tamanho da Fonte</Label>
+          <Input
+            type='number'
+            value={element.style?.fontSize || 16}
+            onChange={(event) => {
+              const value = event.target.value;
+              updateElement({ ...element, style: { ...element.style, fontSize: Number(value) } });
+            }}
+          />
+          </div>
+        </>
+      )}
     </div>
   );
 }
