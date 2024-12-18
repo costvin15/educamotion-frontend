@@ -55,7 +55,7 @@ export function ViewersList() {
         <h3 className='text-lg font-semibold'>Espectadores Ativos</h3>
         <span className='text-muted-foreground'>{viewers.length} online</span>
       </div>
-      <ScrollArea className='h-full'>
+      <ScrollArea className='h-[430px]'>
         <div className='space-y-4'>
           {viewers.map((viewer) => (
             <div

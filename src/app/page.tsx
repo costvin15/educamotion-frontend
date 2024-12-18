@@ -28,7 +28,9 @@ export default function Home() {
         <Link href="#resources" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
           Recursos
         </Link>
-        <ThemeSwitcher />
+        <div>
+          <ThemeSwitcher />
+        </div>
         <Link href="/auth/signin" className="w-full">
           <Button size="lg" className="text-lg w-full">
             Comece a Ensinar

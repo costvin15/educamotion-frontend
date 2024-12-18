@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ClipboardList, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, ClipboardList, LogOut, Users } from "lucide-react";
 
 import client from '@/client';
 
@@ -62,6 +62,11 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
         <Button variant='outline' onClick={() => store.currentSlideIndex < store.slides.length - 1 && store.setCurrentSlide(store.currentSlideIndex + 1)}>
           <ChevronRight className='h-4 w-4 mr-1' />
           Avançar
+        </Button>
+
+        <Button variant='outline'>
+          <LogOut className='h-4 w-4 mr-2' />
+          Encerrar Apresentação
         </Button>
       </Navbar>
 
