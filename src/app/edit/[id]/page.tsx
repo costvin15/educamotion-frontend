@@ -16,6 +16,7 @@ import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { addBlankTextToEditor } from '@/app/edit/[id]/utils/EditorElements';
+import Link from 'next/link';
 
 const fetchSlides = async (slideId: string) : Promise<Pages> => {
   const { data } = await client.get(`/presentation/${slideId}`);
@@ -77,10 +78,12 @@ export default function Edit({ params } : { params: { id: string }}) {
           <Download className='h-4 w-4' />
         </Button>
 
-        <Button>
-          <Play className='mr-2 h-4 w-4' />
-          Apresentar
-        </Button>
+        <Link href={`/control-panel/${params.id}`}>
+          <Button>
+            <Play className='mr-2 h-4 w-4' />
+            Apresentar
+          </Button>
+        </Link>
       </Navbar>
 
       <div className='flex flex-1 overflow-hidden'>
