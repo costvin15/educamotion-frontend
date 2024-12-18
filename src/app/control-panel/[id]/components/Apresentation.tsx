@@ -8,12 +8,8 @@ export function Apresentation() {
   const slide = slides[currentSlideIndex];
 
   return (
-    <Card className='col-span-2 p-6'>
-      <h2 className='text-2xl font-semibold mb-4'>
-        Introdução
-      </h2>
-
-      <div className='aspect-video bg-muted rounded-lg flex items-center justify-center'>
+    <Card className='col-span-2 p-6 w-full h-full'>
+      <div className='h-full w-full bg-muted rounded-lg flex items-center justify-center'>
         {slide.elements.map((element, index) => (
           <div
             key={element.id}
