@@ -36,7 +36,7 @@ const mockLogs : InteractionLog[] = [
     viewerId: '3',
     viewerName: 'Alice Doe',
     type: InteractionType.INTERACTIVE_OBJECT,
-    element: 'Questão Integrada do Cosmo',
+    element: 'Questão Integrada do LeetCode',
     timestamp: new Date(Date.now() - 1000 * 60 * 1),
     data: {
       questionId: 'two-sum',
@@ -50,7 +50,7 @@ const mockLogs : InteractionLog[] = [
     viewerId: '4',
     viewerName: 'Bob Doe',
     type: InteractionType.INTERACTIVE_OBJECT,
-    element: 'Questão Integrada do Cosmo',
+    element: 'Questão Integrada do LeetCode',
     timestamp: new Date(Date.now() - 1000 * 60 * 1),
     data: {
       questionId: '3sum',

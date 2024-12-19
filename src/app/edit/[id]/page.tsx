@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Download, ImageIcon, Play, Plus, Redo, Type, Undo } from 'lucide-react';
+import Link from 'next/link';
+import { Download, Play, Plus, Puzzle, Redo, Undo } from 'lucide-react';
 
 import client from '@/client';
 
@@ -15,8 +16,7 @@ import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
-import { addBlankTextToEditor } from '@/app/edit/[id]/utils/EditorElements';
-import Link from 'next/link';
+import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 
 const fetchSlides = async (slideId: string) : Promise<Pages> => {
   const { data } = await client.get(`/presentation/${slideId}`);
@@ -31,6 +31,7 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 
 export default function Edit({ params } : { params: { id: string }}) {
   const [ isAddSlideModalOpen, setAddSlideModalOpen ] = useState(false);
+  const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
   const store = useEditorStore();
 
   useEffect(() => {
@@ -56,11 +57,14 @@ export default function Edit({ params } : { params: { id: string }}) {
         <Button variant='outline' size='icon' onClick={() => setAddSlideModalOpen(true)}>
           <Plus className='h-4 w-4' />
         </Button>
-        <Button variant='outline' size='icon' onClick={() => addBlankTextToEditor(store)}>
+        {/* <Button variant='outline' size='icon' onClick={() => addBlankTextToEditor(store)}>
           <Type className='h-4 w-4' />
         </Button>
         <Button variant='outline' size='icon'>
           <ImageIcon className='h-4 w-4' />
+        </Button> */}
+        <Button variant='outline' size='icon' onClick={() => setAddResourceModalOpen(true)}>
+          <Puzzle className='h-4 w-4' />
         </Button>
 
         <div className='mx-2 h-6 w-px bg-border' />
@@ -101,6 +105,7 @@ export default function Edit({ params } : { params: { id: string }}) {
       </div>
 
       <AddSlideModal isOpen={isAddSlideModalOpen} onClose={() => setAddSlideModalOpen(false)} />
+      <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
     </div>
   );
 }

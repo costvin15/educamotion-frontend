@@ -17,3 +17,54 @@ export const addBlankTextToEditor = (store : EditorState) => {
     },
   });
 };
+
+export const addQuestionToEditor = (store : EditorState) => {
+  store.addElementToSlide({
+    id: Date.now().toString(),
+    type: SlideElementType.QUESTION,
+    x: 0,
+    y: 0,
+    width: 20,
+    height: 10,
+    rotation: 0,
+    content: 'What is the answer to life, the universe and everything?',
+    style: {
+      fontSize: 16,
+      color: '#000000',
+    },
+  });
+}
+
+export const addWordCloudToEditor = (store : EditorState) => {
+  store.addElementToSlide({
+    id: Date.now().toString(),
+    type: SlideElementType.WORDCLOUD,
+    x: 0,
+    y: 0,
+    width: 20,
+    height: 10,
+    rotation: 0,
+    content: 'Word Cloud',
+    style: {
+      fontSize: 16,
+      color: '#000000',
+    },
+  });
+}
+
+export const addLeetCodeToEditor = (store : EditorState) => {
+  store.addElementToSlide({
+    id: Date.now().toString(),
+    type: SlideElementType.LEETCODE,
+    x: 0,
+    y: 0,
+    width: 20,
+    height: 10,
+    rotation: 0,
+    content: '',
+    style: {
+      fontSize: 16,
+      color: '#000000',
+    },
+  });
+}

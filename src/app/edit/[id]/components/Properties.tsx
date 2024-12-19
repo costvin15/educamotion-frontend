@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/Slider";
 
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 import { SlideElementType } from "@/app/edit/[id]/types/pages";
+import { Button } from "@/components/ui/Button";
 
 export function Properties() {
   const { slides, currentSlideIndex, selectedElement, updateElement } = useEditorStore();
@@ -98,15 +99,74 @@ export function Properties() {
           </div>
 
           <div className='space-y-2'>
-          <Label>Tamanho da Fonte</Label>
-          <Input
-            type='number'
-            value={element.style?.fontSize || 16}
-            onChange={(event) => {
-              const value = event.target.value;
-              updateElement({ ...element, style: { ...element.style, fontSize: Number(value) } });
-            }}
-          />
+            <Label>Tamanho da Fonte</Label>
+            <Input
+              type='number'
+              value={element.style?.fontSize || 16}
+              onChange={(event) => {
+                const value = event.target.value;
+                updateElement({ ...element, style: { ...element.style, fontSize: Number(value) } });
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      {element.type === SlideElementType.QUESTION && (
+        <>
+          <div className='space-y-2'>
+            <Label>Questão</Label>
+            <Input
+              type='text'
+              value={element.content}
+              onChange={(event) => {
+                const value = event.target.value;
+                updateElement({ ...element, content: value });
+              }}
+            />
+          </div>
+
+          <div className='space-y-2'>
+            <Label>Alternativas</Label>
+            {element.data?.alternatives.map((alternative, index) => (
+              <Input
+                key={index}
+                type='text'
+                value={alternative.content}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  const alternatives = element.data?.alternatives || [];
+                  alternatives[index] = { ...alternative, content: value };
+                  updateElement({ ...element, data: { ...element.data, alternatives } });
+                }}
+              />
+            ))}
+            <div className='flex justify-start'>
+              <Button
+                onClick={() => {
+                  const alternatives = element.data?.alternatives || [];
+                  updateElement({ ...element, data: { ...element.data, alternatives: [...alternatives, { content: '' }] } });
+                }}
+              >
+                Adicionar Alternativa
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {element.type === SlideElementType.LEETCODE && (
+        <>
+          <div className='space-y-2'>
+            <Label>Link da Questão</Label>
+            <Input
+              type='text'
+              value={element.content}
+              onChange={(event) => {
+                const value = event.target.value;
+                updateElement({ ...element, content: value });
+              }}
+            />
           </div>
         </>
       )}

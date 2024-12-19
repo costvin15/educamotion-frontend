@@ -14,6 +14,9 @@ export enum SlideElementType {
   TEXT = 'TEXT',
   IMAGE = 'IMAGE',
   SHAPE = 'SHAPE',
+  QUESTION = 'QUESTION',
+  WORDCLOUD = 'WORDCLOUD',
+  LEETCODE = 'LEETCODE',
 }
 
 export interface SlideElement {
@@ -25,6 +28,11 @@ export interface SlideElement {
   width: number;
   height: number;
   rotation: number;
+  data?: {
+    alternatives: {
+      content: string;
+    }[]
+  },
   style?: {
     color?: string;
     fontSize?: number;
