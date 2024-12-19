@@ -7,6 +7,9 @@ import { useEditorStore } from "@/app/edit/[id]/store/editor";
 import { Coordinate, Size, SlideElement, SlideElementType } from '@/app/edit/[id]/types/pages';
 import { Draggable } from '@/app/edit/[id]/components/Draggable';
 import { convertPercentilToPixel, convertPixelToPercentil } from '@/app/edit/[id]/utils/DimensionConverter';
+import { Question } from '@/app/edit/[id]/components/elements/Question';
+import { WordCloudElement } from '@/app/edit/[id]/components/elements/WordCloud';
+import { LeetCode } from '@/app/edit/[id]/components/elements/LeetCode';
 
 interface SlideElementProps extends React.HTMLAttributes<HTMLDivElement> {
   element: SlideElement;
@@ -36,6 +39,9 @@ const SlideElementComponent = React.forwardRef<HTMLDivElement, SlideElementProps
       {element.type === SlideElementType.TEXT && <div className='w-full h-full' dangerouslySetInnerHTML={{ __html: element.content }} />}
       {element.type === SlideElementType.IMAGE && <img className='w-full h-full' src={element.content} alt="" />}
       {element.type === SlideElementType.SHAPE && <div className='w-full h-full' style={{ background: element.content }} />}
+      {element.type === SlideElementType.QUESTION && <Question element={element} />}
+      {element.type === SlideElementType.WORDCLOUD && <WordCloudElement element={element} />}
+      {element.type === SlideElementType.LEETCODE && <LeetCode element={element} />}
     </div>
   </Draggable>
 )));
