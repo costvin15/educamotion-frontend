@@ -2,7 +2,7 @@ export enum InteractionType {
   FORM_SUBMIT = 'Submissão de Formulário',
   BUTTON_CLICK = 'Clique em Botão',
   PAGE_VIEW = 'Visualização de Página',
-  INTERACTIVE_OBJECT = 'Objeto Interativo',
+  COSMO = 'Cosmo',
   CHAT_MESSAGE = 'Mensagem de Chat',
 }
 

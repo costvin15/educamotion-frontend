@@ -35,7 +35,7 @@ const mockLogs : InteractionLog[] = [
     id: '3',
     viewerId: '3',
     viewerName: 'Alice Doe',
-    type: InteractionType.INTERACTIVE_OBJECT,
+    type: InteractionType.COSMO,
     element: 'Questão Integrada do LeetCode',
     timestamp: new Date(Date.now() - 1000 * 60 * 1),
     data: {
@@ -49,8 +49,8 @@ const mockLogs : InteractionLog[] = [
     id: '4',
     viewerId: '4',
     viewerName: 'Bob Doe',
-    type: InteractionType.INTERACTIVE_OBJECT,
-    element: 'Questão Integrada do LeetCode',
+    type: InteractionType.COSMO,
+    element: 'Questão Integrada do Cosmo',
     timestamp: new Date(Date.now() - 1000 * 60 * 1),
     data: {
       questionId: '3sum',
@@ -94,6 +94,7 @@ export function InteractionLogs() {
                 {log.type === InteractionType.BUTTON_CLICK && `Clicou em ${log.element}`}
                 {log.type === InteractionType.FORM_SUBMIT && `Submeteu ${log.element}`}
                 {log.type === InteractionType.PAGE_VIEW && `Visualizou ${log.element}`}
+                {log.type === InteractionType.COSMO && `Submeteu questão do Cosmo: ${log.data?.question}`}
               </p>
               {log.data && (
                 <div className='text-sm bg-background/50 p-2 rounded'>

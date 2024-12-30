@@ -42,8 +42,8 @@ export const SlideResources : SlideResource[] = [
   },
   {
     id: 'leetcode',
-    name: 'LeetCode',
-    description: 'Adicione um problema do LeetCode ao seu slide',
+    name: 'Cosmo',
+    description: 'Adicione um problema do Cosmo ao seu slide',
     icon: <CodeXml className='h-6 w-6 text-muted-foreground' />,
     onAdd: (store) => addLeetCodeToEditor(store)
   }

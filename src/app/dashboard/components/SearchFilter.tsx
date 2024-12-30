@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
 import { Input } from '@/components/ui/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { SortOptions } from '../types/slides';
+import { SortOptions } from '@/app/dashboard/types/slides';
+import { ImportGoogleSlideModal } from '@/app/dashboard/components/ImportGoogleSlideModal';
 
 interface SearchFilterProps {
   onSearch: (query: string) => void;
@@ -15,6 +16,7 @@ interface SearchFilterProps {
 
 export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -58,12 +60,14 @@ export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
             <DropdownMenuItem>
               Utilizar template
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsImportModalOpen(true)}>
               Importar apresentação do Google Slides
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <ImportGoogleSlideModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
     </div>
   );
 }

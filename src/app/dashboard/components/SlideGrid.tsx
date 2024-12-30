@@ -26,29 +26,18 @@ const fetchPresentationThumbnail = async (presentationId: string) : Promise<stri
 
 export function SlideGrid ({ slides } : SlideGridProps) {
   const router = useRouter();
-  const [thumbnails, setThumbnails] = useState({} as {[key: string]: string});
 
   const redirectToEditor = (slide: Slide) => {
-    router.push(`/edit/${slide.presentationId}`);
+    router.push(`/edit/${slide.id}`);
   }
-
-  useEffect(() => {
-    slides.map(async slide => {
-      const thumbnail = await fetchPresentationThumbnail(slide.presentationId);
-      setThumbnails((prevState) => ({
-        ...prevState,
-        [slide.presentationId]: thumbnail
-      }));
-    });
-  }, [slides]);
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
       {slides.map(slide => (
-        <Card key={slide.presentationId} className='group hover:shadow-lg transition-shadow duration-200'>
+        <Card key={slide.id} className='group hover:shadow-lg transition-shadow duration-200'>
           <CardContent className='p-0 relative aspect-video'>
             <img
-              src={thumbnails[slide.presentationId]}
+              src={slide.thumbnail}
               alt={slide.title}
               className='w-full h-full object-cover rounded-t-lg'
             />
@@ -62,7 +51,7 @@ export function SlideGrid ({ slides } : SlideGridProps) {
             <div>
               <h3 className="font-medium text-sm truncate">{slide.title}</h3>
               <p className='text-xs text-muted-foreground'>
-                Visitado em {format(slide.updatedAt, 'dd MMM yyyy')}
+                Visitado em {format(slide.lastModified, 'dd MMM yyyy')}
               </p>
             </div>
             <DropdownMenu>

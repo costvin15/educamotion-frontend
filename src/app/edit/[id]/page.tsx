@@ -18,8 +18,8 @@ import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 
-const fetchSlides = async (slideId: string) : Promise<Pages> => {
-  const { data } = await client.get(`/presentation/${slideId}`);
+const fetchPresentationDetails = async (slideId: string) : Promise<Pages> => {
+  const { data } = await client.get(`/presentation/detail/${slideId}`);
   return data;
 }
 
@@ -38,7 +38,7 @@ export default function Edit({ params } : { params: { id: string }}) {
     store.reset();
 
     (async () => {
-      const data = await fetchSlides(params.id);
+      const data = await fetchPresentationDetails(params.id);
       store.setPresentationId(data.presentationId);
       store.addSlides(data.slides);
 
@@ -57,12 +57,6 @@ export default function Edit({ params } : { params: { id: string }}) {
         <Button variant='outline' size='icon' onClick={() => setAddSlideModalOpen(true)}>
           <Plus className='h-4 w-4' />
         </Button>
-        {/* <Button variant='outline' size='icon' onClick={() => addBlankTextToEditor(store)}>
-          <Type className='h-4 w-4' />
-        </Button>
-        <Button variant='outline' size='icon'>
-          <ImageIcon className='h-4 w-4' />
-        </Button> */}
         <Button variant='outline' size='icon' onClick={() => setAddResourceModalOpen(true)}>
           <Puzzle className='h-4 w-4' />
         </Button>

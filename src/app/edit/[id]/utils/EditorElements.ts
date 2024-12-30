@@ -47,7 +47,6 @@ export const addWordCloudToEditor = (store : EditorState) => {
     content: 'Word Cloud',
     style: {
       fontSize: 16,
-      color: '#000000',
     },
   });
 }

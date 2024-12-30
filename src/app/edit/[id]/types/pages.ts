@@ -1,6 +1,9 @@
+import { Element } from "@/app/edit/[id]/types/elements";
+
 export interface Page {
   objectId: string;
   elements: SlideElement[];
+  pageElements: Element[];
 }
 
 export interface Pages {
@@ -29,9 +32,10 @@ export interface SlideElement {
   height: number;
   rotation: number;
   data?: {
-    alternatives: {
+    alternatives?: {
       content: string;
-    }[]
+    }[],
+    initialWords?: string[];
   },
   style?: {
     color?: string;

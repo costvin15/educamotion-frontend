@@ -1,8 +1,8 @@
 export interface Slide {
-  presentationId: string;
+  id: string;
   title: string;
-  createdAt: Date;
-  updatedAt: Date;
+  thumbnail: string;
+  lastModified: string;
 }
 
 export interface Slides {

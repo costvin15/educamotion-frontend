@@ -24,6 +24,7 @@ export interface EditorState {
 const initialState: Page = {
   objectId: '',
   elements: [],
+  pageElements: []
 };
 
 export const useEditorStore = create<EditorState>((set) => ({
@@ -47,6 +48,7 @@ export const useEditorStore = create<EditorState>((set) => ({
           objectId: Date.now().toString(),
           elements: template.elements,
           background: '#ffffff',
+          pageElements: [],
         },
         ...state.slides.slice(state.currentSlideIndex + 1),
       ],

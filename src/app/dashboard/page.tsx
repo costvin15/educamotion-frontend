@@ -10,7 +10,7 @@ import { UserInformation } from '@/app/dashboard/components/UserInformation';
 import { Slide, Slides, SortOptions } from '@/app/dashboard/types/slides';
 
 const fetchSlides = async () : Promise<Slides> => {
-  const { data } = await client.get('/presentation/imported');
+  const { data } = await client.get('/presentation/list');
   return data;
 }
 
@@ -54,6 +54,7 @@ export default function Dashboard() {
         <ThemeSwitcher />
         <UserInformation />
       </Navbar>
+
       <div className="container mx-auto px-4 py-8">
         <SearchFilter onSearch={handleSearch} onSort={handleSort} />
         <SlideGrid slides={filteredSlides} />

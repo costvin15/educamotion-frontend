@@ -5,6 +5,42 @@ import { Slider } from "@/components/ui/Slider";
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 import { SlideElementType } from "@/app/edit/[id]/types/pages";
 import { Button } from "@/components/ui/Button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+
+const cosmoProblemas = [
+  {
+    id: '672428d88984f2e5ad616a9a',
+    nome: 'Olá, mundo!'
+  },
+  {
+    id: '672429378984f2e5ad616a9b',
+    nome: 'Soma de dois inteiros'
+  },
+  {
+    id: '672429b08984f2e5ad616a9c',
+    nome: 'Área de um triângulo'
+  },
+  {
+    id: '67242a0c8984f2e5ad616a9d',
+    nome: 'Imprimir "Jedi" 4 vezes'
+  },
+  {
+    id: '67242a708984f2e5ad616a9e',
+    nome: 'Troca do valor de variáveis'
+  },
+  {
+    id: '672b6b32e3a67da6fcc32543',
+    nome: 'Número par?'
+  },
+  {
+    id: '672b6c1fe3a67da6fcc32544',
+    nome: 'Número iguais'
+  },
+  {
+    id: '67446cb5b9a94baf1c38844b',
+    nome: 'Evaluate Reverse Polish Notation'
+  }
+];
 
 export function Properties() {
   const { slides, currentSlideIndex, selectedElement, updateElement } = useEditorStore();
@@ -128,7 +164,7 @@ export function Properties() {
 
           <div className='space-y-2'>
             <Label>Alternativas</Label>
-            {element.data?.alternatives.map((alternative, index) => (
+            {element.data?.alternatives?.map((alternative, index) => (
               <Input
                 key={index}
                 type='text'
@@ -158,13 +194,50 @@ export function Properties() {
       {element.type === SlideElementType.LEETCODE && (
         <>
           <div className='space-y-2'>
-            <Label>Link da Questão</Label>
+            <Label>Cosmo</Label>
+            <Select
+              onValueChange={(value) => {
+                updateElement({ ...element, content: value });
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder='Selecione um problema' />
+              </SelectTrigger>
+              <SelectContent>
+                {cosmoProblemas.map((problema, index) => (
+                  <SelectItem
+                    key={index}
+                    value={problema.id}
+                  >
+                    {problema.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </>
+      )}
+
+      {element.type === SlideElementType.WORDCLOUD && (
+        <>
+          <div className='space-y-2'>
+            <Label>Nuvem de Palavras</Label>
             <Input
               type='text'
+              placeholder='Qual o título da nuvem de palavras?'
               value={element.content}
               onChange={(event) => {
                 const value = event.target.value;
                 updateElement({ ...element, content: value });
+              }}
+            />
+            <Input
+              type='text'
+              placeholder='Palavras inicias'
+              value={element.data?.initialWords}
+              onChange={(event) => {
+                const value = event.target.value;
+                updateElement({ ...element, data: { ...element.data, initialWords: value.split(',') } });
               }}
             />
           </div>
