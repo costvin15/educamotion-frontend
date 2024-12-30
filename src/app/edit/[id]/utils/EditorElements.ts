@@ -4,7 +4,7 @@ import { SlideElementType } from "@/app/edit/[id]/types/pages";
 export const addBlankTextToEditor = (store : EditorState) => {
   store.addElementToSlide({
     id: Date.now().toString(),
-    type: SlideElementType.TEXT,
+    elementType: SlideElementType.TEXT,
     x: 0,
     y: 0,
     width: 20,
@@ -21,7 +21,7 @@ export const addBlankTextToEditor = (store : EditorState) => {
 export const addQuestionToEditor = (store : EditorState) => {
   store.addElementToSlide({
     id: Date.now().toString(),
-    type: SlideElementType.QUESTION,
+    elementType: SlideElementType.QUESTION,
     x: 0,
     y: 0,
     width: 20,
@@ -38,7 +38,7 @@ export const addQuestionToEditor = (store : EditorState) => {
 export const addWordCloudToEditor = (store : EditorState) => {
   store.addElementToSlide({
     id: Date.now().toString(),
-    type: SlideElementType.WORDCLOUD,
+    elementType: SlideElementType.WORDCLOUD,
     x: 0,
     y: 0,
     width: 20,
@@ -54,7 +54,7 @@ export const addWordCloudToEditor = (store : EditorState) => {
 export const addLeetCodeToEditor = (store : EditorState) => {
   store.addElementToSlide({
     id: Date.now().toString(),
-    type: SlideElementType.LEETCODE,
+    elementType: SlideElementType.LEETCODE,
     x: 0,
     y: 0,
     width: 20,

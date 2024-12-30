@@ -1,7 +1,7 @@
 import { SlideElement } from '@/app/edit/[id]/types/pages';
 import { Card, CardContent } from '@/components/ui/Card';
 
-export function LeetCode({ element } : { element: SlideElement }) {
+export function Cosmo({ element } : { element: SlideElement }) {
   if (!element.content || element.content === '') {
     return (
       <Card className='w-full h-full'>
@@ -16,7 +16,7 @@ export function LeetCode({ element } : { element: SlideElement }) {
     <Card className='w-full h-full'>
       <CardContent className='h-full w-full p-0 hover:p-6'>
         <iframe
-          src={element.content}
+          src={'http://localhost:3001/lesson/' + element.content}
           width='100%'
           height='500px'
           className='w-full h-full'

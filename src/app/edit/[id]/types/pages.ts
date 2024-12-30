@@ -1,57 +1,25 @@
-import { Element } from "@/app/edit/[id]/types/elements";
+import { ElementType } from "@/app/elements";
 
 export interface Page {
   objectId: string;
+  background: string;
   elements: SlideElement[];
-  pageElements: Element[];
 }
 
-export interface Pages {
-  presentationId: string;
-  slides: Page[];
+export interface DetailPresentation {
+  id: string;
   title: string;
-  totalSlides: number;
-}
-
-export enum SlideElementType {
-  TEXT = 'TEXT',
-  IMAGE = 'IMAGE',
-  SHAPE = 'SHAPE',
-  QUESTION = 'QUESTION',
-  WORDCLOUD = 'WORDCLOUD',
-  LEETCODE = 'LEETCODE',
+  thumbnail: string;
+  lastModified: string;
+  slidesIds: string[];
+  elements: Record<string, SlideElement[]>;
 }
 
 export interface SlideElement {
   id: string;
-  type: SlideElementType;
-  content: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  data?: {
-    alternatives?: {
-      content: string;
-    }[],
-    initialWords?: string[];
-  },
-  style?: {
-    color?: string;
-    fontSize?: number;
-    fontFamily?: string;
-    backgroundColor?: string;
-    opacity?: number;
-  };
-}
-
-export interface Coordinate {
-  x: number;
-  y: number;
-}
-
-export interface Size {
+  elementType: ElementType;
+  positionX: number;
+  positionY: number;
   width: number;
   height: number;
 }

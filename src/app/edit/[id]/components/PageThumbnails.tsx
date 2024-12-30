@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { mergeClassNames } from '@/components/utils';
 
 export function PageThumbnails() {
-  const { slides, thumbnails, currentSlideIndex, setCurrentSlide } = useEditorStore();
+  const { slides, currentSlideIndex, setCurrentSlide } = useEditorStore();
 
   return (
     <div className='space-y-2 h-[calc(100vh-90px)] overflow-y-auto'>
@@ -26,7 +26,7 @@ export function PageThumbnails() {
               style={{ background: 'white' }}
             >
               <img
-                src={thumbnails[slide.objectId]}
+                src={slide.background}
                 alt='Thumbnail'
                 className='h-full w-full object-cover rounded'
               />

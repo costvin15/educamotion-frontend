@@ -3,7 +3,6 @@ import { Label } from "@/components/ui/Label";
 import { Slider } from "@/components/ui/Slider";
 
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
-import { SlideElementType } from "@/app/edit/[id]/types/pages";
 import { Button } from "@/components/ui/Button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 
@@ -45,6 +44,9 @@ const cosmoProblemas = [
 export function Properties() {
   const { slides, currentSlideIndex, selectedElement, updateElement } = useEditorStore();
   const slide = slides[currentSlideIndex];
+  if (!slide) {
+    return null;
+  }
   const element = slide.elements.find((element) => element.id === selectedElement);
 
   if (!element) {
@@ -63,10 +65,10 @@ export function Properties() {
         <Label>Posição X</Label>
         <Input
           type='number'
-          value={element.x}
+          value={element.positionX}
           onChange={(event) => {
             const value = event.target.value;
-            updateElement({ ...element, x: Number(value) });
+            updateElement({ ...element, positionX: Number(value) });
           }}
         />
       </div>
@@ -75,15 +77,15 @@ export function Properties() {
         <Label>Posição Y</Label>
         <Input
           type='number'
-          value={element.y}
+          value={element.positionY}
           onChange={(event) => {
             const value = event.target.value;
-            updateElement({ ...element, y: Number(value) });
+            updateElement({ ...element, positionY: Number(value) });
           }}
         />
       </div>
 
-      <div className='space-y-2'>
+      {/* <div className='space-y-2'>
         <Label>Rotação</Label>
         <Slider
           min={0}
@@ -94,7 +96,7 @@ export function Properties() {
             updateElement({ ...element, rotation: value });
           }}
         />
-      </div>
+      </div> */}
 
       <div className='space-y-2'>
         <Label>Largura</Label>
@@ -120,7 +122,7 @@ export function Properties() {
         />
       </div>
 
-      {element.type === SlideElementType.TEXT && (
+      {/* {element.type === SlideElementType.TEXT && (
         <>
           <div className='space-y-2'>
             <Label>Texto</Label>
@@ -242,7 +244,7 @@ export function Properties() {
             />
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 }

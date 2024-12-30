@@ -9,13 +9,13 @@ import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
 import { Apresentation } from '@/app/control-panel/[id]/components/Apresentation';
-import { Pages } from '@/app/edit/[id]/types/pages';
+import { DetailPresentation } from '@/app/edit/[id]/types/pages';
 import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
 import { ChatPanel } from '@/app/watch/[id]/components/ChatPanel';
 import { useChatStore } from '@/app/watch/[id]/store/chat';
 
-const fetchSlides = async (slideId: string) : Promise<Pages> => {
+const fetchSlides = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/${slideId}`);
   return data;
 }

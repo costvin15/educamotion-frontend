@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
-import { Pages } from '@/app/edit/[id]/types/pages';
+import { DetailPresentation } from '@/app/edit/[id]/types/pages';
 import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
 import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
@@ -18,7 +18,7 @@ import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 
-const fetchPresentationDetails = async (slideId: string) : Promise<Pages> => {
+const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
   return data;
 }
@@ -38,14 +38,19 @@ export default function Edit({ params } : { params: { id: string }}) {
     store.reset();
 
     (async () => {
-      const data = await fetchPresentationDetails(params.id);
-      store.setPresentationId(data.presentationId);
-      store.addSlides(data.slides);
+      const presentation = await fetchPresentationDetails(params.id);
+      store.setPresentationId(presentation.id);
 
-      for (const slide of data.slides) {
-        fetchThumbnail(data.presentationId, slide.objectId)
-          .then((thumbnail) => store.addThumbnail(slide, thumbnail));
+      for (const slideId of presentation.slidesIds) {
+        fetchThumbnail(presentation.id, slideId)
+          .then((thumbnail) => store.addSlide({
+            objectId: presentation.id,
+            background: thumbnail,
+            elements: presentation.elements[slideId] || [],
+          }));
       }
+
+      store.removeSlide('initial-slide');
     })();
   }, []);
 

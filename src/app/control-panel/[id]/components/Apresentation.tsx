@@ -1,5 +1,5 @@
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
-import { SlideElementType } from "@/app/edit/[id]/types/pages";
+import { ElementType } from "@/app/elements";
 
 import { Card } from "@/components/ui/Card";
 
@@ -14,13 +14,13 @@ export function Apresentation() {
           <div
             key={element.id}
           >
-            {element.type === SlideElementType.IMAGE && (
+            {/* {element.type === ElementType.IMAGE && (
               <img
                 src={element.content}
                 alt='slide'
                 className='object-cover w-full h-full'
               />
-            )}
+            )} */}
           </div>
         ))}
       </div>

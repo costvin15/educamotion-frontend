@@ -13,10 +13,10 @@ import { Apresentation } from "@/app/control-panel/[id]/components/Apresentation
 import { ViewersList } from "@/app/control-panel/[id]/components/ViewersList";
 import { InteractionLogs } from "@/app/control-panel/[id]/components/InteractionLogs";
 
-import { Pages } from "@/app/edit/[id]/types/pages";
+import { DetailPresentation } from "@/app/edit/[id]/types/pages";
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 
-const fetchSlides = async (slideId: string) : Promise<Pages> => {
+const fetchSlides = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/${slideId}`);
   return data;
 };
@@ -34,14 +34,14 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
     store.reset();
 
     (async () => {
-      const data = await fetchSlides(params.id);
-      store.setPresentationId(data.presentationId);
-      store.addSlides(data.slides);
+      // const data = await fetchSlides(params.id);
+      // store.setPresentationId(data.presentationId);
+      // store.addSlides(data.slides);
  
-      for (const slide of data.slides) {
-        fetchThumbnail(data.presentationId, slide.objectId)
-          .then((thumbnail) => store.addThumbnail(slide, thumbnail));
-      }
+      // for (const slide of data.slides) {
+      //   fetchThumbnail(data.presentationId, slide.objectId)
+      //     .then((thumbnail) => store.addThumbnail(slide, thumbnail));
+      // }
     })();
   }, []);
 

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/Card";
 import { SlideElement } from "@/app/edit/[id]/types/pages";
 
-import WordCloud from 'react-d3-cloud';
+import * as Root from 'react-d3-cloud';
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import { Input } from "@/components/ui/Input";
@@ -18,7 +18,7 @@ const data = [
 
 const schemeCategory10ScaleOrdinal = scaleOrdinal(schemeCategory10);
 
-export function WordCloudElement({ element } : { element: SlideElement }) {
+export function WordCloud({ element } : { element: SlideElement }) {
   const [words, setWords] = useState<{ text: string, value: number }[]>([]);
 
   const makeWordFrequency = (words: string[]) => {
@@ -44,7 +44,7 @@ export function WordCloudElement({ element } : { element: SlideElement }) {
 
   return (
     <>
-      <WordCloud
+      <Root.default
         key={words.length}
         data={words}
         width={700}
