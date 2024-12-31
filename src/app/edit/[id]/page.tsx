@@ -44,7 +44,7 @@ export default function Edit({ params } : { params: { id: string }}) {
       for (const slideId of presentation.slidesIds) {
         fetchThumbnail(presentation.id, slideId)
           .then((thumbnail) => store.addSlide({
-            objectId: presentation.id,
+            objectId: slideId,
             background: thumbnail,
             elements: presentation.elements[slideId] || [],
           }));

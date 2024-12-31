@@ -127,12 +127,9 @@ export function Canvas() {
           onDragEnd={handleDragElement}
           modifiers={[restrictToParentElement]}
         >
-          {currentSlide.elements.map((element, index) => {
-            const Element = Elements[element.elementType];
-            return (
-              <ElementContainer key={index} element={element} isSelected={false} />
-            );
-          })}
+          {currentSlide.elements.map((element, index) => (
+            <ElementContainer key={index} element={element} isSelected={false} />
+          ))}
         </DndContext>
       </div>
     </div>

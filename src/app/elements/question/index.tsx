@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react';
 import { SlideElement } from "@/app/edit/[id]/types/pages";
 
 import client from "@/client";
-import { Question as QuestionType } from '@/app/elements/question/types';
+import { Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
 import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
 import { ObjectiveQuestion } from '@/app/elements/question/Objective';
 
-const fetchQuestionDetails = async (questionId: string) : Promise<QuestionType> => {
+const fetchQuestionDetails = async (questionId: string) : Promise<QuestionDetails> => {
   const { data } = await client.get(`/element/question/detail/${questionId}`);
   return data;
 }
 
 export function Question({ element } : { element: SlideElement }) {
-  const [question, setQuestion] = useState<QuestionType | null>(null);
+  const [question, setQuestion] = useState<QuestionDetails | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -26,11 +26,11 @@ export function Question({ element } : { element: SlideElement }) {
     return null;
   }
 
-  if (question.type == 'DISCURSIVE') {
+  if (question.type == QuestionType.DISCURSIVE) {
     return <DiscursiveQuestion question={question} />;
   }
 
-  if (question.type == 'OBJECTIVE') {
+  if (question.type == QuestionType.OBJECTIVE) {
     return <ObjectiveQuestion question={question} />;
   }
 

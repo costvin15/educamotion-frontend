@@ -1,6 +1,6 @@
 import { CircleHelp, Cloud, CodeXml, Image, Type } from 'lucide-react';
 
-import { addBlankTextToEditor, addLeetCodeToEditor as addLeetCodeToEditor, addQuestionToEditor, addWordCloudToEditor } from '@/app/edit/[id]/utils/EditorElements';
+import { addObjectiveQuestionToEditor, addLeetCodeToEditor as addLeetCodeToEditor, addQuestionToEditor, addWordCloudToEditor, addDiscursiveQuestionToEditor, addMultipleChoiceQuestionToEditor } from '@/app/edit/[id]/utils/EditorElements';
 import { EditorState } from '@/app/edit/[id]/store/editor';
 
 export interface SlideResource {
@@ -12,26 +12,40 @@ export interface SlideResource {
 }
 
 export const SlideResources : SlideResource[] = [
+  // {
+  //   id: 'text',
+  //   name: 'Texto',
+  //   description: 'Adicione um bloco de texto ao seu slide',
+  //   icon: <Type className='h-6 w-6 text-muted-foreground' />,
+  //   onAdd: (store) => addBlankTextToEditor(store)
+  // },
+  // {
+  //   id: 'image',
+  //   name: 'Imagem',
+  //   description: 'Adicione uma imagem ao seu slide',
+  //   icon: <Image className='h-6 w-6 text-muted-foreground' />,
+  //   onAdd: (store) => console.log('Add image')
+  // },
   {
-    id: 'text',
-    name: 'Texto',
-    description: 'Adicione um bloco de texto ao seu slide',
-    icon: <Type className='h-6 w-6 text-muted-foreground' />,
-    onAdd: (store) => addBlankTextToEditor(store)
-  },
-  {
-    id: 'image',
-    name: 'Imagem',
-    description: 'Adicione uma imagem ao seu slide',
-    icon: <Image className='h-6 w-6 text-muted-foreground' />,
-    onAdd: (store) => console.log('Add image')
-  },
-  {
-    id: 'question',
-    name: 'Pergunta',
-    description: 'Adicione uma pergunta ao seu slide',
+    id: 'objective-question',
+    name: 'Pergunta objetiva',
+    description: 'Adicione uma pergunta com alternativas pré-definidas e com uma única resposta ao seu slide',
     icon: <CircleHelp className='h-6 w-6 text-muted-foreground' />,
-    onAdd: (store) => addQuestionToEditor(store)
+    onAdd: (store) => addObjectiveQuestionToEditor(store)
+  },
+  {
+    id: 'discursive-question',
+    name: 'Pergunta discursiva',
+    description: 'Adicione uma pergunta discursiva ao seu slide',
+    icon: <CircleHelp className='h-6 w-6 text-muted-foreground' />,
+    onAdd: (store) => addDiscursiveQuestionToEditor(store)
+  },
+  {
+    id: 'multiple-choice-question',
+    name: 'Pergunta de múltipla escolha',
+    description: 'Adicione uma pergunta com alternativas pré-definidas e com múltiplas respostas ao seu slide',
+    icon: <CircleHelp className='h-6 w-6 text-muted-foreground' />,
+    onAdd: (store) => addMultipleChoiceQuestionToEditor(store)
   },
   {
     id: 'wordcloud',
@@ -41,7 +55,7 @@ export const SlideResources : SlideResource[] = [
     onAdd: (store) => addWordCloudToEditor(store)
   },
   {
-    id: 'leetcode',
+    id: 'cosmo',
     name: 'Cosmo',
     description: 'Adicione um problema do Cosmo ao seu slide',
     icon: <CodeXml className='h-6 w-6 text-muted-foreground' />,
