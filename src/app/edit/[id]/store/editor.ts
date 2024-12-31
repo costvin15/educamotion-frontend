@@ -10,6 +10,7 @@ export interface EditorState {
   selectedElement: string;
   setPresentationId: (id: string) => void;
   addSlide: (slide: Page) => void;
+  addSlideInPosition: (slide: Page, position: number) => void;
   addSlideFromTemplate: (template: SlideTemplate) => void;
   updateSlide: (slide: Page) => void;
   removeSlide: (id: string) => void;
@@ -34,6 +35,13 @@ export const useEditorStore = create<EditorState>((set) => ({
   setPresentationId: (id) => set((state) => ({ presentationId: id })),
   addSlide: (slide) => set((state) => ({
     slides: [...state.slides, slide],
+  })),
+  addSlideInPosition: (slide, position) => set((state) => ({
+    slides: [
+      ...state.slides.slice(0, position),
+      slide,
+      ...state.slides.slice(position),
+    ],
   })),
   addSlideFromTemplate: (template) => set(
     (state) => ({

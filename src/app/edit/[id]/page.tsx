@@ -41,13 +41,14 @@ export default function Edit({ params } : { params: { id: string }}) {
       const presentation = await fetchPresentationDetails(params.id);
       store.setPresentationId(presentation.id);
 
-      for (const slideId of presentation.slidesIds) {
+      for (let i = 0; i < presentation.slidesIds.length; i++) {
+        const slideId = presentation.slidesIds[i];
         fetchThumbnail(presentation.id, slideId)
-          .then((thumbnail) => store.addSlide({
+          .then((thumbnail) => store.addSlideInPosition({
             objectId: slideId,
             background: thumbnail,
             elements: presentation.elements[slideId] || [],
-          }));
+          }, i));
       }
 
       store.removeSlide('initial-slide');
