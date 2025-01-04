@@ -1,61 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
-import { SlideElement } from '@/app/edit/[id]/types/pages';
-import { Draggable } from '@/app/edit/[id]/components/Draggable';
-import { convertPercentilToPixel, convertPixelToPercentil } from '@/app/edit/[id]/utils/DimensionConverter';
-import { Question } from '@/app/elements/question';
-import { WordCloud } from '@/app/elements/WordCloud';
-import { Cosmo } from '@/app/elements/Cosmo';
-import { Elements } from '@/app/elements';
-
-interface SlideElementProps extends React.HTMLAttributes<HTMLDivElement> {
-  element: SlideElement;
-  isSelected: boolean;
-}
-
-const ElementContainer = React.forwardRef<HTMLDivElement, SlideElementProps>((({ element, isSelected, ...props }, ref) => {
-  const Element = Elements[element.elementType];
-
-  return (
-    <div className='sticky' style={{ top: element.positionY + '%', left: element.positionX + '%', width: element.width + '%', height: element.height + '%' }}>
-      <Element element={element} />
-    </div>
-  );
-}));
-
-// const SlideElementComponent = React.forwardRef<HTMLDivElement, SlideElementProps>((({ element, isSelected, ...props }, ref) => (
-//   // <Draggable
-//   //   className={'absolute'}
-//   //   ref={ref}
-//     // id={element.id}
-//     // style={{
-//     //   top: element.y + '%',
-//     //   left: element.x + '%',
-//     //   width: element.width + '%',
-//     //   height: element.height + '%',
-//     // }}
-//   // >
-//     // <div
-//     //   className={`w-full h-full ${isSelected && 'border-dashed border-4 border-secondary'}`}
-//     //   style={{
-//     //     ...element.style,
-//     //     transform: `rotate(${element.rotation}deg)`,
-//     //   }}
-//     //   {...props}
-//     // >
-//     //   {element.type === SlideElementType.TEXT && <div className='w-full h-full' dangerouslySetInnerHTML={{ __html: element.content }} />}
-//     //   {element.type === SlideElementType.IMAGE && <img className='w-full h-full' src={element.content} alt="" />}
-//     //   {element.type === SlideElementType.SHAPE && <div className='w-full h-full' style={{ background: element.content }} />}
-//     //   {element.type === SlideElementType.QUESTION && <Question element={element} />}
-//     //   {element.type === SlideElementType.WORDCLOUD && <WordCloudElement element={element} />}
-//     //   {element.type === SlideElementType.LEETCODE && <LeetCode element={element} />}
-//     // </div>
-//   // </Draggable>
-// )));
+import { CanvasElement, updateElementData } from '@/app/edit/[id]/components/CanvasElement';
 
 export function Canvas() {
   const containerReference = useRef<HTMLDivElement | null>(null);
@@ -80,15 +29,27 @@ export function Canvas() {
   };
 
   const handleDragElement = (event: DragEndEvent) => {
-    // const element = currentSlide.elements.find((element) => element.id === event.active.id);
-    // if (!element) {
-    //   throw new Error('Element not found');
-    // }
+    const element = currentSlide.elements.find((element) => element.id === event.active.id);
+    if (!element) {
+      throw new Error('Element not found');
+    }
+    const updatedElement = {
+      ...element,
+      positionX: element.positionX + event.delta.x,
+      positionY: element.positionY + event.delta.y,
+    };
 
-    // const containerCoordinates : Size = {
-    //   width: containerReference.current?.offsetWidth || 0,
-    //   height: containerReference.current?.offsetHeight || 0,
-    // };
+    updateElementData(updatedElement, { x: updatedElement.positionX, y: updatedElement.positionY }, { width: updatedElement.width, height: updatedElement.height });
+
+    updateSlide({
+      ...currentSlide,
+      elements: currentSlide.elements.map((currentElement) => {
+        if (currentElement.id === updatedElement.id) {
+          return updatedElement;
+        }
+        return currentElement;
+      }),
+    });
 
     // const elementUpdated = updateElementPosition({ element, container: containerCoordinates, delta: event.delta });
     // const updatedElements = currentSlide.elements.map((currentElement) => {
@@ -128,7 +89,12 @@ export function Canvas() {
           modifiers={[restrictToParentElement]}
         >
           {currentSlide.elements.map((element, index) => (
-            <ElementContainer key={index} element={element} isSelected={false} />
+            <CanvasElement
+              key={index}
+              element={element}
+              isSelected={selectedElement === element.id}
+              onClick={() => setSelectedElement(element.id)}
+            />
           ))}
         </DndContext>
       </div>

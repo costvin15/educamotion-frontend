@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Download, Play, Plus, Puzzle, Redo, Undo } from 'lucide-react';
+import { Download, Play, Plus, Puzzle, Radio, Redo, Undo } from 'lucide-react';
 
 import client from '@/client';
 
@@ -17,6 +17,7 @@ import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
+import { Classroom } from '@/app/edit/[id]/types/classroom';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -29,9 +30,15 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
   return URL.createObjectURL(blob);
 }
 
+const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
+  const { data } = await client.get(`/classroom/get/${presentationId}`);
+  return data;
+}
+
 export default function Edit({ params } : { params: { id: string }}) {
   const [ isAddSlideModalOpen, setAddSlideModalOpen ] = useState(false);
   const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
+  const [ currentClassroom, setCurrentClassroom ] = useState<Classroom | null>(null);
   const store = useEditorStore();
 
   useEffect(() => {
@@ -53,6 +60,15 @@ export default function Edit({ params } : { params: { id: string }}) {
 
       store.removeSlide('initial-slide');
     })();
+  }, []);
+
+  useEffect(() => {
+    try {
+      fetchClassroom(params.id)
+        .then((classroom) => setCurrentClassroom(classroom));
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
 
   return (
@@ -82,12 +98,19 @@ export default function Edit({ params } : { params: { id: string }}) {
           <Download className='h-4 w-4' />
         </Button>
 
-        <Link href={`/control-panel/${params.id}`}>
+        {currentClassroom ? (
+          <Link href={`/control-panel/${params.id}`}>
+            <Button>
+              <Radio className='mr-2 h-4 w-4' />
+              Apresentando
+            </Button>
+          </Link>
+        ) : (
           <Button>
             <Play className='mr-2 h-4 w-4' />
             Apresentar
           </Button>
-        </Link>
+        )}
       </Navbar>
 
       <div className='flex flex-1 overflow-hidden'>

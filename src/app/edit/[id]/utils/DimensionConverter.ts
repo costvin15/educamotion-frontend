@@ -1,4 +1,4 @@
-import { Coordinate, Size, SlideElement } from "@/app/edit/[id]/types/pages";
+import { SlideElement } from "@/app/edit/[id]/types/pages";
 
 export const convertPercentilToPixel = ({ element, container } : { element: SlideElement, container: Size }) : Coordinate => {
   return {
