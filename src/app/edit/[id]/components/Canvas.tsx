@@ -1,78 +1,99 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { restrictToParentElement } from '@dnd-kit/modifiers';
-
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 import { CanvasElement, updateElementData } from '@/app/edit/[id]/components/CanvasElement';
+import { convertPositionAsPercentilToPixel, convertPositionAsPixelToPercentil, convertSizeAsPercentilToPixel, convertSizeAsPixelToPercentil } from '../utils/DimensionConverter';
 
 export function Canvas() {
   const containerReference = useRef<HTMLDivElement | null>(null);
-  const { slides, currentSlideIndex, selectedElement, updateSlide, setSelectedElement, updateElement } = useEditorStore();
+  const { slides, currentSlideIndex, selectedElement, updateSlide, setSelectedElement } = useEditorStore();
   const currentSlide = slides[currentSlideIndex];
 
   if (!currentSlide) {
     return null;
   }
 
-  // const updateElementPosition = ({ element, container, delta } : { element: SlideElement, container: Size, delta: Coordinate }) : Coordinate => {
-  //   const pixelPosition = convertPercentilToPixel({ element, container });
-  //   const updatePosition = {
-  //     x: pixelPosition.x + delta.x,
-  //     y: pixelPosition.y + delta.y,
-  //   };
-  //   return convertPixelToPercentil({ element: updatePosition, container });
-  // }
+  const getContainerSize = () => {
+    if (!containerReference.current) {
+      return null;
+    }
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setSelectedElement(String(event.active.id));
-  };
+    return {
+      width: containerReference.current.offsetWidth || 1024,
+      height: containerReference.current.offsetHeight || 720,
+    };
+  }
 
-  const handleDragElement = (event: DragEndEvent) => {
-    const element = currentSlide.elements.find((element) => element.id === event.active.id);
+  const handleDragElement = (elementId: string, x: number, y: number) => {
+    const element = currentSlide.elements.find((element) => element.id === elementId);
     if (!element) {
       throw new Error('Element not found');
     }
+
+    const containerCoordinates = getContainerSize();
+    if (!containerCoordinates) {
+      return;
+    }
     const updatedElement = {
       ...element,
-      positionX: element.positionX + event.delta.x,
-      positionY: element.positionY + event.delta.y,
+      positionX: x,
+      positionY: y,
     };
+    const positionAsPercentil = convertPositionAsPixelToPercentil(updatedElement, containerCoordinates);
 
-    updateElementData(updatedElement, { x: updatedElement.positionX, y: updatedElement.positionY }, { width: updatedElement.width, height: updatedElement.height });
+    updateElementData(updatedElement, { x: positionAsPercentil.x, y: positionAsPercentil.y }, { width: updatedElement.width, height: updatedElement.height });
 
     updateSlide({
       ...currentSlide,
       elements: currentSlide.elements.map((currentElement) => {
         if (currentElement.id === updatedElement.id) {
-          return updatedElement;
+          return {
+            ...currentElement,
+            positionX: positionAsPercentil.x,
+            positionY: positionAsPercentil.y,
+          };
         }
         return currentElement;
       }),
     });
+  };
 
-    // const elementUpdated = updateElementPosition({ element, container: containerCoordinates, delta: event.delta });
-    // const updatedElements = currentSlide.elements.map((currentElement) => {
-    //   if (currentElement.id === element.id) {
-    //     return {
-    //       ...currentElement,
-    //       x: elementUpdated.x,
-    //       y: elementUpdated.y,
-    //     };
-    //   }
-    //   return currentElement;
-    // });
+  const handleResizeElement = (elementId: string, width: number, height: number) => {
+    const element = currentSlide.elements.find((element) => element.id === elementId);
+    if (!element) {
+      throw new Error('Element not found');
+    }
 
-    // updateSlide({
-    //   ...currentSlide,
-    //   elements: updatedElements,
-    // });
+    const containerCoordinates = getContainerSize();
+    if (!containerCoordinates) {
+      return;
+    }
+    const updatedElement = {
+      ...element,
+      width,
+      height,
+    };
+
+    const sizeAsPercentil = convertSizeAsPixelToPercentil(updatedElement, containerCoordinates);
+    updateElementData(updatedElement, { x: updatedElement.positionX, y: updatedElement.positionY }, { width: sizeAsPercentil.width, height: sizeAsPercentil.height });
+    updateSlide({
+      ...currentSlide,
+      elements: currentSlide.elements.map((currentElement) => {
+        if (currentElement.id === updatedElement.id) {
+          return {
+            ...currentElement,
+            width: sizeAsPercentil.width,
+            height: sizeAsPercentil.height,
+          };
+        }
+        return currentElement;
+      }),
+    });
   };
 
   return (
     <div
       className='flex h-full items-center justify-center bg-muted p-8'
-      onClick={() => setSelectedElement('')}
     >
       <div
         ref={containerReference}
@@ -81,22 +102,35 @@ export function Canvas() {
           backgroundImage: `url(${currentSlide.background})`,
           backgroundSize: 'cover',
         }}
-        onClick={() => setSelectedElement('')}
       >
-        <DndContext
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragElement}
-          modifiers={[restrictToParentElement]}
-        >
-          {currentSlide.elements.map((element, index) => (
+        {currentSlide.elements.map((element, index) => {
+          const containerSize = getContainerSize();
+          if (!containerSize) {
+            return <div key={element.id}></div>;
+          }
+          const { x, y } = convertPositionAsPercentilToPixel(element, containerSize);
+          const { width, height } = convertSizeAsPercentilToPixel(element, containerSize);
+          const currentElement = {
+            ...element,
+            positionX: x,
+            positionY: y,
+            width,
+            height,
+          };
+
+          return (
             <CanvasElement
-              key={index}
-              element={element}
-              isSelected={selectedElement === element.id}
-              onClick={() => setSelectedElement(element.id)}
+              key={element.id}
+              element={currentElement}
+              onDragStop={(x, y) => handleDragElement(currentElement.id, x, y)}
+              onResizeStop={(width, height) => {
+                handleResizeElement(currentElement.id, width, height);
+              }}
+              isSelected={selectedElement === currentElement.id}
+              onSelect={() => setSelectedElement(currentElement.id)}
             />
-          ))}
-        </DndContext>
+          );
+        })}
       </div>
     </div>
   );

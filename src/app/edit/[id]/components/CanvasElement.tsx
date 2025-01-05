@@ -1,66 +1,75 @@
 import { forwardRef, useState, useEffect } from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
+import { Rnd } from 'react-rnd';
 
 import client from '@/client';
 
 import { Elements } from '@/app/elements';
 import { SlideElement } from '@/app/edit/[id]/types/pages';
-import { ResizablePanel } from '@/app/edit/[id]/components/ResizablePanel';
 
 interface CanvasElementProps extends React.HTMLAttributes<HTMLDivElement> {
   element: SlideElement;
   isSelected: boolean;
+  onSelect : () => void;
+  onDragStop: (x: number, y: number) => void;
+  onResizeStop: (width: number, height: number) => void;
 }
 
 export const updateElementData = async (element: SlideElement, position: { x: number, y: number }, size: { width: number, height: number }) => {
-    await client.put(`/element/update`, {
-        elementId: element.id,
-        positionX: position.x,
-        positionY: position.y,
-        width: size.width,
-        height: size.height,
-    });
+  await client.put(`/element/update`, {
+    elementId: element.id,
+    positionX: position.x,
+    positionY: position.y,
+    width: size.width,
+    height: size.height,
+  });
 };
 
-export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ element, isSelected, ...props }, ref) => {
+export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ element, onDragStop, onResizeStop, onSelect, isSelected, ...props }, ref) => {
   const Element = Elements[element.elementType];
-  const [width, setWidth] = useState(element.width);
-  const [height, setHeight] = useState(element.height);
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: element.id });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    updateElementData(element, { x: element.positionX, y: element.positionY }, { width, height });
-  }, [width, height]);
+    setPosition({
+      x: element.positionX,
+      y: element.positionY,
+    });
+    setSize({
+      width: element.width,
+      height: element.height,
+    });
+  }, [element.id]);
 
   return (
-    <div
-      className='absolute'
-      ref={setNodeRef}
-      style={{
-        top: element.positionY,
-        left: element.positionX,
-        transform: CSS.Translate.toString(transform),
+    <Rnd
+      className={isSelected ? 'border-4 border-dashed border-sky-500 rounded-lg' : ''}
+      position={position}
+      size={size}
+      onDragStart={onSelect}
+      onResizeStart={onSelect}
+      onDragStop={(e, d) => {
+        onDragStop(d.x, d.y);
+        setPosition({ x: d.x, y: d.y });
       }}
-      {...props}
+      onResizeStop={(e, direction, ref, delta, position) => {
+        onDragStop(position.x, position.y);
+        onResizeStop(size.width + delta.width, size.height + delta.height);
+        setSize({ width: size.width + delta.width, height: size.height + delta.height });
+        setPosition({ x: position.x, y: position.y });
+      }}
+      bounds={'parent'}
     >
-      <ResizablePanel
-        isSelected={isSelected}
-        width={width}
-        height={height}
-        onSizeChange={(width, height) => {
-          setWidth(width);
-          setHeight(height);
-        }}
-      >
-        <div
-          className='sticky w-full h-full'
-          {...attributes}
-          {...listeners}
-        >
-          <Element element={element} />
-        </div>
-      </ResizablePanel>
-    </div>
+      <div className='sticky w-full h-full'>
+        <Element element={element} />
+      </div>
+      {isSelected && (
+        <>
+          <div className='w-3 h-3 top-[-5px] left-[-5px] bg-sky-500 rounded-full absolute'></div>
+          <div className='w-3 h-3 top-[-5px] right-[-5px] bg-sky-500 rounded-full absolute'></div>
+          <div className='w-3 h-3 bottom-[-5px] left-[-5px] bg-sky-500 rounded-full absolute'></div>
+          <div className='w-3 h-3 bottom-[-5px] right-[-5px] bg-sky-500 rounded-full absolute'></div>
+        </>
+      )}
+    </Rnd>
   );
 }));
