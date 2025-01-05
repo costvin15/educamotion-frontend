@@ -15,18 +15,42 @@ const fetchQuestionDetails = async (questionId: string) : Promise<QuestionDetail
   return data;
 }
 
+export async function updateQuestionDetails(details: Partial<QuestionDetails>) {
+  await client.put(`/element/question/update`, {
+    ...details,
+    question: details.title,
+  });
+}
+
 export function QuestionProperties({ element } : { element: SlideElement }) {
   const [question, setQuestion] = useState<QuestionDetails | null>(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     (async () => {
       const question = await fetchQuestionDetails(element.id);
       setQuestion(question);
+      setTitle(question.title);
+      setDescription(question.description);
     })();
   }, [element.id]);
 
+  useEffect(() => {
+    if (!title || !description) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      updateQuestionDetails({ ...question, title, description });
+      setTitle(title);
+      setDescription(description);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [title, description]);
+
   if (!question) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -35,14 +59,16 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
         <Label>Título</Label>
         <Input
           type='text'
-          value={question.title}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
         />
       </div>
       <div className='space-y-2'>
         <Label>Descrição</Label>
         <Input
           type='text'
-          value={question.description}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         />
       </div>
       <div className='space-y-2'>
