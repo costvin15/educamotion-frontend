@@ -1,16 +1,12 @@
-import { Elements } from "@/app/elements";
-
-import { useEditorStore } from "@/app/edit/[id]/store/editor";
-
 import { Card } from "@/components/ui/Card";
 
-export function Apresentation() {
-  const { slides, currentSlideIndex } = useEditorStore();
-  const currentSlide = slides[currentSlideIndex];
+import { Elements } from "@/app/elements";
 
-  if (!currentSlide) {
-    return null;
-  }
+import { useControlPanelStore } from "@/app/control-panel/[id]/store";
+
+export function Apresentation() {
+  const store = useControlPanelStore();
+  const currentSlide = store.currentSlide;
 
   return (
     <Card className='col-span-2 p-6 w-full h-full'>

@@ -13,11 +13,16 @@ import { Apresentation } from "@/app/control-panel/[id]/components/Apresentation
 import { ViewersList } from "@/app/control-panel/[id]/components/ViewersList";
 import { InteractionLogs } from "@/app/control-panel/[id]/components/InteractionLogs";
 
-import { DetailPresentation } from "@/app/edit/[id]/types/pages";
-import { useEditorStore } from "@/app/edit/[id]/store/editor";
+import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
+import { useControlPanelStore } from '@/app/control-panel/[id]/store';
 
-const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
-  const { data } = await client.get(`/presentation/detail/${slideId}`);
+const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
+  const { data } = await client.get(`/classroom/presentation/${presentationId}`);
+  return data;
+};
+
+const fetchPresentationDetails = async (presentationId: string) : Promise<DetailPresentation> => {
+  const { data } = await client.get(`/presentation/detail/${presentationId}`);
   return data;
 };
 
@@ -28,35 +33,48 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 }
 
 export default function ControlPanel({ params } : { params: { id: string }}) {
-  const store = useEditorStore();
+  const store = useControlPanelStore();
 
   useEffect(() => {
     store.reset();
 
     (async () => {
-      const presentation = await fetchPresentationDetails(params.id);
-      store.setPresentationId(presentation.id);
+      const [classroom, presentation] = await Promise.all([
+        fetchClassroomDetails(params.id),
+        fetchPresentationDetails(params.id),
+      ]);
 
-      for (let i = 0; i < presentation.slidesIds.length; i++) {
-        const slideId = presentation.slidesIds[i];
-        fetchThumbnail(presentation.id, slideId)
-          .then((thumbnail) => store.addSlideInPosition({
-            objectId: slideId,
-            background: thumbnail,
-            elements: presentation.elements[slideId] || [],
-          }, i));
-      }
-
-      store.removeSlide('initial-slide');
+      store.setClassroomId(classroom.id);
+      store.setPresentationId(classroom.presentation.id);
+      store.setNumberOfPages(presentation.slidesIds.length);
+      store.setSlidesIds(presentation.slidesIds);
+      store.setElements(presentation.elements);
+      console.log(store, classroom, presentation);
     })();
   }, [params.id]);
 
+  useEffect(() => {
+    if (store.presentationId === '') return;
+    (async () => {
+      const slideId = store.slidesIds[store.currentSlideIndex];
+      const thumbnail = await fetchThumbnail(store.presentationId, slideId);
+      store.setCurrentSlide({
+        objectId: slideId,
+        background: thumbnail,
+        elements: store.elements[slideId] || [],
+      });
+    })();
+  }, [store.presentationId, store.currentSlideIndex]);
+
+  const handleSlideChange = async (slideId: string) => {
+  }
+
   const performNextSlide = () => {
-    store.setCurrentSlide(store.currentSlideIndex + 1);
+    store.setCurrentSlideIndex(store.currentSlideIndex + 1);
   }
 
   const performPreviousSlide = () => {
-    store.setCurrentSlide(store.currentSlideIndex - 1);
+    store.setCurrentSlideIndex(store.currentSlideIndex - 1);
   }
 
   return (
@@ -64,16 +82,27 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
       <Navbar>
         <ThemeSwitcher />
 
-        <Button variant='outline' onClick={performPreviousSlide} disabled={store.currentSlideIndex === 0}>
+        <Button
+          variant='outline'
+          onClick={performPreviousSlide}
+          disabled={store.currentSlideIndex === 0}
+        >
           <ChevronLeft className='h-4 w-4 mr-1' />
           Retroceder
         </Button>
 
-        <Button variant='outline' disabled>
-          Slide {store.currentSlideIndex + 1} de {store.slides.length}
+        <Button
+          variant='outline'
+          disabled
+        >
+          Slide {store.currentSlideIndex + 1} de {store.numberOfPages}
         </Button>
 
-        <Button variant='outline' onClick={performNextSlide} disabled={store.currentSlideIndex === store.slides.length - 1}>
+        <Button
+          variant='outline'
+          onClick={performNextSlide}
+          disabled={store.currentSlideIndex === store.slidesIds.length - 1}
+        >
           <ChevronRight className='h-4 w-4 mr-1' />
           Avançar
         </Button>

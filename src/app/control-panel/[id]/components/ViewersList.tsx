@@ -1,53 +1,69 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Clock, User } from 'lucide-react';
+
+import client from '@/client';
 
 import { Card } from '@/components/ui/Card';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 import { Viewer } from '@/app/control-panel/[id]/types/Viewer';
+import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
-const mockViewers : Viewer[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 30),
-    lastActivity: new Date(),
-  },
-  {
-    id: '2',
-    name: 'Jane Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 15),
-    lastActivity: new Date(Date.now() - 1000 * 60 * 2),
-  },
-  {
-    id: '3',
-    name: 'Alice Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 10),
-    lastActivity: new Date(Date.now() - 1000 * 60 * 5),
-  },
-  {
-    id: '4',
-    name: 'Bob Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 5),
-    lastActivity: new Date(Date.now() - 1000 * 60 * 1),
-  },
-  {
-    id: '5',
-    name: 'Eve Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 2),
-    lastActivity: new Date(Date.now() - 1000 * 60 * 1),
-  },
-  {
-    id: '6',
-    name: 'Mallory Doe',
-    joinedAt: new Date(Date.now() - 1000 * 60 * 1),
-    lastActivity: new Date(),
-  }
-];
+// const mockViewers : Viewer[] = [
+//   {
+//     id: '1',
+//     name: 'John Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 30),
+//     lastActivity: new Date(),
+//   },
+//   {
+//     id: '2',
+//     name: 'Jane Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 15),
+//     lastActivity: new Date(Date.now() - 1000 * 60 * 2),
+//   },
+//   {
+//     id: '3',
+//     name: 'Alice Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 10),
+//     lastActivity: new Date(Date.now() - 1000 * 60 * 5),
+//   },
+//   {
+//     id: '4',
+//     name: 'Bob Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 5),
+//     lastActivity: new Date(Date.now() - 1000 * 60 * 1),
+//   },
+//   {
+//     id: '5',
+//     name: 'Eve Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 2),
+//     lastActivity: new Date(Date.now() - 1000 * 60 * 1),
+//   },
+//   {
+//     id: '6',
+//     name: 'Mallory Doe',
+//     joinedAt: new Date(Date.now() - 1000 * 60 * 1),
+//     lastActivity: new Date(),
+//   }
+// ];
+
+async function fetchViewers(presentationId: string) {
+  const { data } = await client.get(`/classroom/attendances/${presentationId}`);
+  return data;
+}
 
 export function ViewersList() {
-  const [viewers, setViewers] = useState(mockViewers);
+  const store = useEditorStore();
+  const [viewers, setViewers] = useState([] as Viewer[]);
+
+  useEffect(() => {
+    (async () => {
+      // const viewers = await fetchViewers(store.presentationId);
+      // setViewers(viewers);
+    })();
+  }, [store.presentationId]);
 
   return (
     <Card className='p-4'>
@@ -70,7 +86,7 @@ export function ViewersList() {
                   <p className='font-medium'>{viewer.name}</p>
                   <p className='text-sm text-muted-foreground flex items-center gap-1'>
                     <Clock className='w-3 h-3' />
-                    Entrou {Math.round((Date.now() - viewer.joinedAt.getTime()) / 1000 /60)} minutos atrás
+                    {/* Entrou {Math.round((Date.now() - viewer.joinedAt.getTime()) / 1000 /60)} minutos atrás */}
                   </p>
                 </div>
               </div>
