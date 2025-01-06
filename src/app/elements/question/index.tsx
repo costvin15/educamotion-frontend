@@ -9,6 +9,7 @@ import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/q
 import { Label } from '@/components/ui/Label';
 import { Input } from '@/components/ui/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { useQuestionStore } from '@/app/elements/question/store';
 
 const fetchQuestionDetails = async (questionId: string) : Promise<QuestionDetails> => {
   const { data } = await client.get(`/element/question/detail/${questionId}`);
@@ -23,33 +24,26 @@ export async function updateQuestionDetails(details: Partial<QuestionDetails>) {
 }
 
 export function QuestionProperties({ element } : { element: SlideElement }) {
-  const [question, setQuestion] = useState<QuestionDetails | null>(null);
+  const store = useQuestionStore();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [type, setType] = useState<QuestionType>(QuestionType.DISCURSIVE);
 
   useEffect(() => {
-    (async () => {
-      const question = await fetchQuestionDetails(element.id);
-      setQuestion(question);
-      setTitle(question.title);
-      setDescription(question.description);
-    })();
+    setTitle(store.question.title);
+    setDescription(store.question.description);
+    setType(store.question.type);
   }, [element.id]);
 
   useEffect(() => {
-    if (!title || !description) {
-      return;
-    }
-
+    store.setQuestion({ ...store.question, title, description, type });
     const timeout = setTimeout(() => {
-      updateQuestionDetails({ ...question, title, description });
-      setTitle(title);
-      setDescription(description);
+      updateQuestionDetails({ ...store.question, title, description, type });
     }, 500);
     return () => clearTimeout(timeout);
-  }, [title, description]);
+  }, [title, description, type]);
 
-  if (!question) {
+  if (!store.question) {
     return <></>;
   }
 
@@ -74,7 +68,10 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
       <div className='space-y-2'>
         <Label>Tipo de Questão</Label>
         <Select
-          value={question.type}
+          value={type}
+          onValueChange={(value) => {
+            setType(value as QuestionType);
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder='Selecione um tipo de questão' />
@@ -86,39 +83,35 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
           </SelectContent>
         </Select>
       </div>
-      {question.type == QuestionType.OBJECTIVE && (
-        <ObjectiveQuestionProperties question={question} />
+      {store.question.type == QuestionType.OBJECTIVE && (
+        <ObjectiveQuestionProperties />
       )}
     </>
   );
 };
 
 export function Question({ element } : { element: SlideElement }) {
-  const [question, setQuestion] = useState<QuestionDetails | null>(null);
+  const store = useQuestionStore();
 
   useEffect(() => {
     (async () => {
       const question = await fetchQuestionDetails(element.id);
-      setQuestion(question);
+      store.setQuestion(question);
     })();
   }, [element.id]);
 
-  if (!question) {
-    return null;
+  if (store.question.type == QuestionType.DISCURSIVE) {
+    return <DiscursiveQuestion question={store.question} />;
   }
 
-  if (question.type == QuestionType.DISCURSIVE) {
-    return <DiscursiveQuestion question={question} />;
-  }
-
-  if (question.type == QuestionType.OBJECTIVE) {
-    return <ObjectiveQuestion question={question} />;
+  if (store.question.type == QuestionType.OBJECTIVE) {
+    return <ObjectiveQuestion question={store.question} />;
   }
 
   return (
     <div className='w-full h-full bg-white p-4 rounded-lg shadow-md'>
-      <h3 className='font-semibold text-lg text-black'>{question.title}</h3>
-      <p className='text-gray-500'>{question.description}</p>
+      <h3 className='font-semibold text-lg text-black'>{store.question.title}</h3>
+      <p className='text-gray-500'>{store.question.description}</p>
       <span className='text-red-500'>Tipo de questão não suportado</span>
     </div>
   );

@@ -10,5 +10,5 @@ export interface Question {
   description: string;
   type: QuestionType;
   options: string[];
-  correctAnswer: string;
+  correctOption: string;
 }
