@@ -9,15 +9,17 @@ import { Button } from '@/components/ui/Button';
 import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
+import { Classroom } from '@/app/edit/[id]/types/classroom';
 import { DetailPresentation } from '@/app/edit/[id]/types/pages';
+
 import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
-import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
 import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
+import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
-import { Classroom } from '@/app/edit/[id]/types/classroom';
+import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -31,13 +33,15 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 }
 
 const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
-  const { data } = await client.get(`/classroom/get/${presentationId}`);
+  const { data } = await client.get(`/classroom/presentation/${presentationId}`);
+  console.log(data);
   return data;
 }
 
 export default function Edit({ params } : { params: { id: string }}) {
   const [ isAddSlideModalOpen, setAddSlideModalOpen ] = useState(false);
   const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
+  const [ isNewClassroomModalOpen, setNewClassroomModalOpen ] = useState(false);
   const [ currentClassroom, setCurrentClassroom ] = useState<Classroom | null>(null);
   const store = useEditorStore();
 
@@ -106,7 +110,7 @@ export default function Edit({ params } : { params: { id: string }}) {
             </Button>
           </Link>
         ) : (
-          <Button>
+          <Button onClick={() => setNewClassroomModalOpen(true)}>
             <Play className='mr-2 h-4 w-4' />
             Apresentar
           </Button>
@@ -129,6 +133,7 @@ export default function Edit({ params } : { params: { id: string }}) {
 
       <AddSlideModal isOpen={isAddSlideModalOpen} onClose={() => setAddSlideModalOpen(false)} />
       <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
+      <NewClassroomModal isOpen={isNewClassroomModalOpen} onClose={() => setNewClassroomModalOpen(false)} />
     </div>
   );
 }
