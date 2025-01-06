@@ -16,8 +16,8 @@ import { InteractionLogs } from "@/app/control-panel/[id]/components/Interaction
 import { DetailPresentation } from "@/app/edit/[id]/types/pages";
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
 
-const fetchSlides = async (slideId: string) : Promise<DetailPresentation> => {
-  const { data } = await client.get(`/presentation/${slideId}`);
+const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
+  const { data } = await client.get(`/presentation/detail/${slideId}`);
   return data;
 };
 
@@ -34,23 +34,37 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
     store.reset();
 
     (async () => {
-      // const data = await fetchSlides(params.id);
-      // store.setPresentationId(data.presentationId);
-      // store.addSlides(data.slides);
- 
-      // for (const slide of data.slides) {
-      //   fetchThumbnail(data.presentationId, slide.objectId)
-      //     .then((thumbnail) => store.addThumbnail(slide, thumbnail));
-      // }
+      const presentation = await fetchPresentationDetails(params.id);
+      store.setPresentationId(presentation.id);
+
+      for (let i = 0; i < presentation.slidesIds.length; i++) {
+        const slideId = presentation.slidesIds[i];
+        fetchThumbnail(presentation.id, slideId)
+          .then((thumbnail) => store.addSlideInPosition({
+            objectId: slideId,
+            background: thumbnail,
+            elements: presentation.elements[slideId] || [],
+          }, i));
+      }
+
+      store.removeSlide('initial-slide');
     })();
-  }, []);
+  }, [params.id]);
+
+  const performNextSlide = () => {
+    store.setCurrentSlide(store.currentSlideIndex + 1);
+  }
+
+  const performPreviousSlide = () => {
+    store.setCurrentSlide(store.currentSlideIndex - 1);
+  }
 
   return (
     <div className='flex h-screen flex-col'>
       <Navbar>
         <ThemeSwitcher />
 
-        <Button variant='outline' onClick={() => store.currentSlideIndex > 0 && store.setCurrentSlide(store.currentSlideIndex - 1)}>
+        <Button variant='outline' onClick={performPreviousSlide} disabled={store.currentSlideIndex === 0}>
           <ChevronLeft className='h-4 w-4 mr-1' />
           Retroceder
         </Button>
@@ -59,7 +73,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
           Slide {store.currentSlideIndex + 1} de {store.slides.length}
         </Button>
 
-        <Button variant='outline' onClick={() => store.currentSlideIndex < store.slides.length - 1 && store.setCurrentSlide(store.currentSlideIndex + 1)}>
+        <Button variant='outline' onClick={performNextSlide} disabled={store.currentSlideIndex === store.slides.length - 1}>
           <ChevronRight className='h-4 w-4 mr-1' />
           Avançar
         </Button>
