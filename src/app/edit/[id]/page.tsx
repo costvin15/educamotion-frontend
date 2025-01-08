@@ -34,7 +34,6 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 
 const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
-  console.log(data);
   return data;
 }
 

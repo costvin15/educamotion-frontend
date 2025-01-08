@@ -7,6 +7,7 @@ export interface Classroom {
     title: string;
   },
   active: boolean;
+  currentSlide: number;
 };
 
 export interface SlideElement {

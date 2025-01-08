@@ -1,6 +1,9 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, ClipboardList, LogOut, Users } from "lucide-react";
+import * as Ably from 'ably';
+import { useSession } from 'next-auth/react';
+import { AblyProvider, ChannelProvider } from 'ably/react';
 
 import client from '@/client';
 
@@ -30,10 +33,23 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
   const response = await client.get(`/presentation/thumbnail/${presentationId}/${slideId}`, { responseType: 'arraybuffer' });
   const blob = new Blob([response.data], { type: 'image/png' });
   return URL.createObjectURL(blob);
-}
+};
+
+const performChangeSlide = async (presentationId: string, slideIndex: number) : Promise<Classroom> => {
+  const { data } = await client.put(`/classroom/change-slide/${presentationId}/${slideIndex}`);
+  return data;
+};
 
 export default function ControlPanel({ params } : { params: { id: string }}) {
   const store = useControlPanelStore();
+  const session = useSession();
+  const [ablyClient, setAblyClient] = useState<Ably.Realtime | null>(null);
+
+  useEffect(() => {
+    if (!session.data?.user.id) return;
+    const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: session.data.user.id });
+    setAblyClient(client);
+  }, [session.data?.user.id]);
 
   useEffect(() => {
     store.reset();
@@ -44,12 +60,12 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
         fetchPresentationDetails(params.id),
       ]);
 
+      store.setCurrentSlideIndex(classroom.currentSlide);
       store.setClassroomId(classroom.id);
       store.setPresentationId(classroom.presentation.id);
       store.setNumberOfPages(presentation.slidesIds.length);
       store.setSlidesIds(presentation.slidesIds);
       store.setElements(presentation.elements);
-      console.log(store, classroom, presentation);
     })();
   }, [params.id]);
 
@@ -66,15 +82,23 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
     })();
   }, [store.presentationId, store.currentSlideIndex]);
 
-  const handleSlideChange = async (slideId: string) => {
+  const handleSlideChange = (slideIndex: number) => {
+    if (!ablyClient) {
+      console.error('Ably client is not ready');
+      return;
+    }
+
+    store.setCurrentSlideIndex(slideIndex);
+    performChangeSlide(store.classroomId, slideIndex);
+    ablyClient.channels.get(store.classroomId).publish('change-slide', { slideIndex: slideIndex });
   }
 
   const performNextSlide = () => {
-    store.setCurrentSlideIndex(store.currentSlideIndex + 1);
+    handleSlideChange(store.currentSlideIndex + 1);
   }
 
   const performPreviousSlide = () => {
-    store.setCurrentSlideIndex(store.currentSlideIndex - 1);
+    handleSlideChange(store.currentSlideIndex - 1);
   }
 
   return (
@@ -129,7 +153,13 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
               </TabsTrigger>
             </TabsList>
             <TabsContent value='viewers'>
-              <ViewersList />
+              {ablyClient && store.classroomId && (
+                <AblyProvider client={ablyClient}>
+                  <ChannelProvider channelName={store.classroomId}>
+                    <ViewersList />
+                  </ChannelProvider>
+                </AblyProvider>
+              )}
             </TabsContent>
             <TabsContent value='logs'>
               <InteractionLogs />

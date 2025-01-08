@@ -23,6 +23,7 @@ export function Apresentation() {
             const Element = Elements[element.elementType];
             return (
               <div
+                key={index}
                 className='absolute'
                 style={{
                   top: `${element.positionY}%`,
