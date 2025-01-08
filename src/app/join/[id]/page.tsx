@@ -9,16 +9,9 @@ import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
 import { Apresentation } from '@/app/control-panel/[id]/components/Apresentation';
-import { DetailPresentation } from '@/app/edit/[id]/types/pages';
-import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
-import { ChatPanel } from '@/app/watch/[id]/components/ChatPanel';
-import { useChatStore } from '@/app/watch/[id]/store/chat';
-
-const fetchSlides = async (slideId: string) : Promise<DetailPresentation> => {
-  const { data } = await client.get(`/presentation/${slideId}`);
-  return data;
-}
+import { ChatPanel } from '@/app/join/[id]/components/ChatPanel';
+import { useChatStore } from '@/app/join/[id]/store/chat';
 
 const fetchThumbnail = async (presentationId: string, slideId: string) : Promise<string> => {
   const response = await client.get(`/presentation/thumbnail/${presentationId}/${slideId}`, { responseType: 'arraybuffer' });
@@ -28,20 +21,19 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 
 export default function Watch({ params } : { params: { id: string }}) {
   const { panelOpened, openPanel, closePanel } = useChatStore();
-  const store = useEditorStore();
 
   useEffect(() => {
-    store.reset();
+    // store.reset();
 
     (async () => {
-      const data = await fetchSlides(params.id);
-      store.setPresentationId(data.presentationId);
-      store.addSlides(data.slides);
+      // const data = await fetchSlides(params.id);
+      // store.setPresentationId(data.presentationId);
+      // store.addSlides(data.slides);
 
-      for (const slide of data.slides) {
-        fetchThumbnail(data.presentationId, slide.objectId)
-          .then((thumbnail) => store.addThumbnail(slide, thumbnail));
-      }
+      // for (const slide of data.slides) {
+      //   fetchThumbnail(data.presentationId, slide.objectId)
+      //     .then((thumbnail) => store.addThumbnail(slide, thumbnail));
+      // }
     })();
   }, []);
 

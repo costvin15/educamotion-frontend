@@ -1,9 +1,9 @@
 import { MessageSquare } from "lucide-react";
 
 import { mergeClassNames } from "@/components/utils";
-import { MessageList } from "@/app/watch/[id]/components/MessageList";
-import { MessageInput } from "@/app/watch/[id]/components/MessageInput";
-import { useChatStore } from "@/app/watch/[id]/store/chat";
+import { MessageList } from "@/app/join/[id]/components/MessageList";
+import { MessageInput } from "@/app/join/[id]/components/MessageInput";
+import { useChatStore } from "@/app/join/[id]/store/chat";
 
 export function ChatPanel() {
   const { panelOpened } = useChatStore();
