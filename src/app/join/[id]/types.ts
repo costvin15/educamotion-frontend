@@ -10,6 +10,13 @@ export interface Classroom {
   currentSlide: number;
 };
 
+export interface Message {
+  id: string;
+  user: string;
+  content: string;
+  timestamp: Date;
+};
+
 export interface SlideElement {
   id: string;
   elementType: ElementType;
@@ -19,6 +26,13 @@ export interface SlideElement {
   height: number;
 };
 
+export interface Page {
+  objectId: string;
+  background: string;
+  elements: SlideElement[];
+};
+
+
 export interface DetailPresentation {
   id: string;
   title: string;
@@ -26,10 +40,4 @@ export interface DetailPresentation {
   lastModified: string;
   slidesIds: string[];
   elements: Record<string, SlideElement[]>;
-};
-
-export interface Page {
-  objectId: string;
-  background: string;
-  elements: SlideElement[];
 };

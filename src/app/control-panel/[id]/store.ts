@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
-import { Page } from "@/app/edit/[id]/types/pages";
-import { SlideElement } from "@/app/control-panel/[id]/types";
+import { SlideElement, Page } from "@/app/control-panel/[id]/types";
 
 export interface ControlPanelState {
   presentationId: string;

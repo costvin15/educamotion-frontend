@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Message } from "@/app/join/[id]/types/Message";
+import { Message } from "@/app/join/[id]/types";
 
 const messages : Message[] = [
   {
