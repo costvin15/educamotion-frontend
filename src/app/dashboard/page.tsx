@@ -28,14 +28,16 @@ export default function Dashboard() {
   const handleSort = (value: SortOptions) => {
     const sorted = [...filteredSlides].sort((a, b) => {
       switch (value) {
+        default:
         case SortOptions.Name:
           return a.title.localeCompare(b.title);
-        case SortOptions.MostRecentOpened:
-          return b.updatedAt > a.updatedAt ? -1 : 1;
-        case SortOptions.Date:
-        default:
-          return b.createdAt > a.createdAt ? -1 : 1;
       }
+      //   case SortOptions.MostRecentOpened:
+      //     return b.updatedAt > a.updatedAt ? -1 : 1;
+      //   case SortOptions.Date:
+      //   default:
+      //     return b.createdAt > a.createdAt ? -1 : 1;
+      // }
     });
     setFilteredSlides(sorted);
   }

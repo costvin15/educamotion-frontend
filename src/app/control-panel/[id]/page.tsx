@@ -35,7 +35,7 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
   return URL.createObjectURL(blob);
 };
 
-const performChangeSlide = async (presentationId: string, slideIndex: number) : Promise<Classroom> => {
+const performChangeSlide = async (presentationId: string, slideIndex: string) : Promise<Classroom> => {
   const { data } = await client.put(`/classroom/change-slide/${presentationId}/${slideIndex}`);
   return data;
 };
@@ -60,7 +60,11 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
         fetchPresentationDetails(params.id),
       ]);
 
-      store.setCurrentSlideIndex(classroom.currentSlide);
+      store.setCurrentSlideIndex(0);
+      if (classroom.currentSlide) {
+        const slideIndex = presentation.slidesIds.findIndex((id) => id === classroom.currentSlide);
+        store.setCurrentSlideIndex(slideIndex);
+      }
       store.setClassroomId(classroom.id);
       store.setPresentationId(classroom.presentation.id);
       store.setNumberOfPages(presentation.slidesIds.length);
@@ -89,7 +93,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
     }
 
     store.setCurrentSlideIndex(slideIndex);
-    performChangeSlide(store.classroomId, slideIndex);
+    performChangeSlide(store.classroomId, store.slidesIds[slideIndex]);
     ablyClient.channels.get(store.classroomId).publish('change-slide', { slideIndex: slideIndex });
   }
 

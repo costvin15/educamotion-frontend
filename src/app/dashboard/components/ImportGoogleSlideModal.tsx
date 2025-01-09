@@ -15,14 +15,12 @@ interface ImportGoogleSlideModalProps {
 }
 
 async function getPresentationAvailable() : Promise<Presentations> {
-  const { data } = await client.get('/presentation/list');
+  const { data } = await client.get('/presentation/available?search=');
   return data;
 }
 
-async function performImportPresentation(presentations: Presentation[]) {
-  await client.post('/presentation/import', {
-    presentationIds: presentations.map((presentation) => presentation.id)
-  });
+async function performImportPresentation(presentationId: string) {
+  await client.post(`/presentation/add/${presentationId}`);
 }
 
 export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideModalProps) {
@@ -40,7 +38,7 @@ export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideMo
 
   const handleImport = async (presentation: Presentation) => {
     console.log('Importing presentation', presentation);
-    await performImportPresentation([ presentation ]);
+    await performImportPresentation(presentation.id);
     console.log('Presentation imported');
     onClose();
   }

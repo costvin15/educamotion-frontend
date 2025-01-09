@@ -1,7 +1,8 @@
 'use client';
-import { useEffect } from 'react';
-import { LogOut, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { LogOut, Send } from 'lucide-react';
+import * as Ably from 'ably';
 
 import client from '@/client';
 
@@ -16,8 +17,8 @@ import { Classroom, DetailPresentation } from '@/app/join/[id]/types';
 import { ChatPanel } from '@/app/join/[id]/components/ChatPanel';
 import { Apresentation } from '@/app/join/[id]/components/Apresentation';
 
-const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
-  const { data } = await client.get(`/classroom/presentation/${presentationId}`);
+const fetchClassroomDetails = async (entryCode: string) : Promise<Classroom> => {
+  const { data } = await client.get(`/classroom/entry-code/${entryCode}`);
   return data;
 };
 
@@ -36,22 +37,43 @@ export default function Watch({ params } : { params: { id: string }}) {
   const session = useSession();
   const store = usePresentationStore();
   const { panelOpened, openPanel, closePanel } = useChatStore();
+  const [ ablyClient, setAblyClient ] = useState<Ably.Realtime | null>(null);
+
+  useEffect(() => {
+    if (!session.data?.user?.id)
+      return;
+    if (!store.classroomId)
+      return;
+    const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_ABLY_API_KEY, clientId: session.data.user.id });
+    setAblyClient(client);
+    client.channels.get(store.classroomId)
+      .subscribe('change-slide', async (message) => {
+        store.setCurrentSlideIndex(message.data.slideIndex);
+      });
+    client.channels.get(store.classroomId).presence.enter();
+    return () => {
+      client.channels.get(store.classroomId).presence.leave();
+      client.close();
+    }
+  }, [session.data, store.classroomId]);
 
   useEffect(() => {
     (async () => {
-      const [classroom, presentation] = await Promise.all([
-        fetchClassroomDetails(params.id),
-        fetchPresentationDetails(params.id),
-      ]);
+      const classroom = await fetchClassroomDetails(params.id);
+      const presentation = await fetchPresentationDetails(classroom.presentation.id);
 
       if (session.data?.user?.id) {
         store.setUserId(session.data.user.id);
       }
       store.setClassroomId(classroom.id);
       store.setPresentationId(presentation.id);
-      store.setCurrentSlideIndex(classroom.currentSlide);
       store.setSlidesIds(presentation.slidesIds);
       store.setElements(presentation.elements);
+      store.setCurrentSlideIndex(0);
+      if (classroom.currentSlide) {
+        const slideIndex = presentation.slidesIds.findIndex((id) => id === classroom.currentSlide);
+        store.setCurrentSlideIndex(slideIndex);
+      }
     })();
   }, [params.id, session.data]);
 
@@ -92,7 +114,7 @@ export default function Watch({ params } : { params: { id: string }}) {
           Sair
         </Button>
       </Navbar>
-
+  
       <div className='h-screen p-6'>
         <Apresentation />
       </div>

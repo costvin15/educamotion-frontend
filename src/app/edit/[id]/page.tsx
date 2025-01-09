@@ -66,12 +66,9 @@ export default function Edit({ params } : { params: { id: string }}) {
   }, []);
 
   useEffect(() => {
-    try {
       fetchClassroom(params.id)
-        .then((classroom) => setCurrentClassroom(classroom));
-    } catch (error) {
-      console.error(error);
-    }
+        .then((classroom) => setCurrentClassroom(classroom))
+        .catch(() => console.log('No classroom found'));
   }, []);
 
   return (
