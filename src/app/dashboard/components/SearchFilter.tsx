@@ -45,7 +45,7 @@ export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
             <SelectItem value='Date'>Data de criação</SelectItem>
           </SelectContent>
         </Select>
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button>
               <Plus className='mr-2 h-4 w-4' />
