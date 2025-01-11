@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 import { SlideElement } from "@/app/edit/[id]/types/pages";
 
 import client from "@/client";
-import { Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
-import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
-import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/question/Objective';
+
 import { Label } from '@/components/ui/Label';
 import { Input } from '@/components/ui/Input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+
+import { toast } from '@/hooks/use-toast';
+
+import { ElementProps } from '@/app/elements';
 import { useQuestionStore } from '@/app/elements/question/store';
+import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
+import { Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
+import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/question/Objective';
 
 const fetchQuestionDetails = async (questionId: string) : Promise<QuestionDetails> => {
   const { data } = await client.get(`/element/question/detail/${questionId}`);
@@ -90,15 +96,52 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
   );
 };
 
-export function Question({ element } : { element: SlideElement }) {
+export function Question({ element, onLoaded } : ElementProps) {
   const store = useQuestionStore();
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    (async () => {
+  const fetchQuestion = async () => {
+    setLoading(true);
+    try {
       const question = await fetchQuestionDetails(element.id);
       store.setQuestion(question);
-    })();
+      if (onLoaded) {
+        onLoaded();
+      }
+    } catch (error) {
+      setHasError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchQuestion();
   }, [element.id]);
+
+  if (loading) {
+    return (
+      <div className='w-full h-full bg-white text-black p-4 rounded-lg shadow-md flex items-center justify-center'>
+        <Loader2 className='w-8 h-8 animate-spin' />
+      </div>
+    );
+  }
+
+  if (hasError) {
+    toast({
+      title: 'Oops!',
+      description: 'Não foi possível carregar o conteúdo do objeto interativo.',
+      variant: 'destructive',
+    });
+
+    return (
+      <div className='w-full h-full bg-white text-black p-4 rounded-lg shadow-md'>
+        <h3 className='font-semibold text-lg text-black'>Ocorreu um erro</h3>
+        <p className='text-gray-500'>Não foi possível carregar o conteúdo do objeto interativo.</p>
+      </div>
+    );
+  }
 
   if (store.question.type == QuestionType.DISCURSIVE) {
     return <DiscursiveQuestion question={store.question} />;

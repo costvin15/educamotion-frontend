@@ -28,6 +28,7 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
   const Element = Elements[element.elementType];
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setPosition({
@@ -40,11 +41,17 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
     });
   }, [element.id]);
 
+  const onLoaded = () => {
+    setLoading(false);
+  }
+
   return (
     <Rnd
       className={isSelected ? 'border-4 border-dashed border-sky-500 rounded-lg' : ''}
       position={position}
       size={size}
+      disableDragging={loading}
+      enableResizing={!loading}
       onDragStart={onSelect}
       onResizeStart={onSelect}
       onDragStop={(e, d) => {
@@ -60,7 +67,10 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
       bounds={'parent'}
     >
       <div className='sticky w-full h-full'>
-        <Element element={element} />
+        <Element
+          element={element}
+          onLoaded={onLoaded}
+        />
       </div>
       {isSelected && (
         <>

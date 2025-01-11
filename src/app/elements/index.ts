@@ -15,7 +15,12 @@ export enum ElementType {
   COSMO = COSMO_ELEMENT_TYPE,
 };
 
-export const Elements : Record<string, React.FC<{ element: SlideElement }>> = {
+export interface ElementProps {
+  element: SlideElement;
+  onLoaded?: () => void;
+}
+
+export const Elements : Record<string, React.FC<ElementProps>> = {
   [QUESTION_ELEMENT_TYPE]: Question,
   [WORDCLOUD_ELEMENT_TYPE]: WordCloud,
   [COSMO_ELEMENT_TYPE]: Cosmo,

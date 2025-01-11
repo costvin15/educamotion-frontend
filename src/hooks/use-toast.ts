@@ -45,7 +45,6 @@ let memoryState: State = { toasts: [] };
 
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action);
-  console.log('dispatch', action, memoryState);
   listeners.forEach(listener => {
     listener(memoryState);
   });
@@ -116,7 +115,6 @@ export const reducer = (state: State, action: Action): State => {
 
 export function toast({ ...props }: Toast) {
   const id = generateId();
-  console.log('toast', id, props);
 
   const update = (props: ToasterToast) => {
     return dispatch({
@@ -157,7 +155,6 @@ export function useToast() {
   const [state, setState] = useState<State>(memoryState);
 
   useEffect(() => {
-    console.log('useEffect', state);
     listeners.push(setState);
     return () => {
       const index = listeners.indexOf(setState);
