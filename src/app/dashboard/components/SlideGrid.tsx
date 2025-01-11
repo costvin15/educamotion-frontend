@@ -3,25 +3,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 
-import client from '@/client';
 import { Slide } from '@/app/dashboard/types/slides';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu';
 import { Copy, MoreHorizontal, Share2, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface SlideGridProps {
   slides: Slide[];
-}
-
-const fetchPresentationThumbnail = async (presentationId: string) : Promise<string> => {
-  const response = await client.get(`/presentation/thumbnail/${presentationId}`, { responseType: 'arraybuffer' });
-  if (response.status === 204) {
-    // TODO: Criar um objeto, onde seja possivel passar o tipo de imagem que será retornada
-    return 'https://storage.googleapis.com/educamotion-static-images/poll-thumbnail.png';
-  }
-  const blob = new Blob([response.data], { type: 'image/png' });
-  return URL.createObjectURL(blob);
 }
 
 export function SlideGrid ({ slides } : SlideGridProps) {
@@ -33,13 +23,21 @@ export function SlideGrid ({ slides } : SlideGridProps) {
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+      {slides.length === 0 && (
+        <div className='flex items-center justify-center col-span-full'>
+          <p className='text-muted-foreground text-sm'>Nenhuma apresentação encontrada</p>
+        </div>
+      )}
+
       {slides.map(slide => (
         <Card key={slide.id} className='group hover:shadow-lg transition-shadow duration-200'>
           <CardContent className='p-0 relative aspect-video'>
-            <img
+            <Image
               src={slide.thumbnail}
               alt={slide.title}
-              className='w-full h-full object-cover rounded-t-lg'
+              layout='fill'
+              objectFit='cover'
+              className='rounded-t-lg'
             />
             <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center'>
               <Button variant='secondary' className='mr-2' onClick={() => redirectToEditor(slide)}>
