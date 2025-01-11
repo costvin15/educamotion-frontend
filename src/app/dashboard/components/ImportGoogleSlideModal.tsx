@@ -12,6 +12,8 @@ import { Presentation, Presentations } from '@/app/dashboard/types/presentations
 interface ImportGoogleSlideModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccessfulImport?: () => void;
+  onError?: () => void;
 }
 
 async function getPresentationAvailable(searchQuery: string, nextPageToken: string) : Promise<Presentations> {
@@ -23,13 +25,15 @@ async function performImportPresentation(presentationId: string) {
   await client.post(`/presentation/add/${presentationId}`);
 }
 
-export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideModalProps) {
+export function ImportGoogleSlideModal({ isOpen, onClose, onSuccessfulImport = () => {}, onError = () => {} }: ImportGoogleSlideModalProps) {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPageToken, setCurrentPageToken] = useState('');
   const [nextPageToken, setNextPageToken] = useState('');
   const [presentations, setPresentations] = useState([] as Presentation[]);
+
+  const [importationInProgress, setImportationInProgress] = useState(false);
 
   const observer = useCallback((node: HTMLDivElement | null) => {
     if (!node) {
@@ -69,10 +73,16 @@ export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideMo
   }, [currentPageToken, loadMore]);
 
   const handleImport = async (presentation: Presentation) => {
-    console.log('Importing presentation', presentation);
-    await performImportPresentation(presentation.id);
-    console.log('Presentation imported');
-    onClose();
+    setImportationInProgress(true);
+    try {
+      await performImportPresentation(presentation.id);
+      onSuccessfulImport();
+    } catch (error) {
+      onError();
+    } finally {
+      onClose();
+      setImportationInProgress(false);
+    }
   }
 
   return (
@@ -94,7 +104,7 @@ export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideMo
             />
           </div>
 
-          <ScrollArea className='h-[300px] pr-4 pt-4'>
+          <ScrollArea className={`h-[300px] pr-4 pt-4 ${importationInProgress ? 'pointer-events-none' : ''}`}>
             <div className='space-y-2'>
               {filteredPresentations.length === 0 && (
                 <div className='text-center text-muted-foreground py-4'>
@@ -126,6 +136,12 @@ export function ImportGoogleSlideModal({ isOpen, onClose } : ImportGoogleSlideMo
                 </div>
               )}
             </div>
+
+            {importationInProgress && (
+              <div className='absolute inset-0 bg-background/80 flex items-center justify-center'>
+                <Loader2 className='animate-spin h-8 w-8' />
+              </div>
+            )}
           </ScrollArea>
         </DialogHeader>
       </DialogContent>

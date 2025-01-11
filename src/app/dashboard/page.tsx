@@ -8,6 +8,7 @@ import { SearchFilter } from '@/app/dashboard/components/SearchFilter';
 import { SlideGrid } from '@/app/dashboard/components/SlideGrid';
 import { UserInformation } from '@/app/dashboard/components/UserInformation';
 import { Slide, Slides, SortOptions } from '@/app/dashboard/types/slides';
+import { useToast } from '@/hooks/use-toast';
 
 const fetchSlides = async () : Promise<Slides> => {
   const { data } = await client.get('/presentation/list');
@@ -15,8 +16,31 @@ const fetchSlides = async () : Promise<Slides> => {
 }
 
 export default function Dashboard() {
+  const { toast } = useToast();
+
   const [slides, setSlides] = useState([] as Slide[]);
   const [filteredSlides, setFilteredSlides] = useState([] as Slide[]);
+
+  useEffect(() => {
+    handleLoadSlides();
+  }, []);
+
+  const handleImportError = () => {
+    toast({
+      title: 'Falha ao importar apresentação',
+      description: 'Não foi possível importar a apresentação. Tente novamente mais tarde.',
+      variant: 'destructive',
+    });
+  };
+
+  const handleImportSuccess = () => {
+    toast({
+      title: 'Apresentação importada com sucesso',
+      description: 'A apresentação foi importada com sucesso.',
+      variant: 'default',
+    });
+    handleLoadSlides();
+  }
 
   const handleSearch = (query: string) => {
     const filtered = slides.filter((slide) =>
@@ -42,13 +66,11 @@ export default function Dashboard() {
     setFilteredSlides(sorted);
   }
 
-  useEffect(() => {
-    (async () => {
-      const slides = await fetchSlides();
-      setSlides(slides.presentations);
-      setFilteredSlides(slides.presentations);
-    })();
-  }, []);
+  const handleLoadSlides = async () => {
+    const slides = await fetchSlides();
+    setSlides(slides.presentations);
+    setFilteredSlides(slides.presentations);
+  }
 
   return (
     <div>
@@ -58,7 +80,12 @@ export default function Dashboard() {
       </Navbar>
 
       <div className="container mx-auto px-4 py-8">
-        <SearchFilter onSearch={handleSearch} onSort={handleSort} />
+        <SearchFilter
+          onSearch={handleSearch}
+          onSort={handleSort}
+          onImport={handleImportSuccess}
+          onError={handleImportError}
+        />
         <SlideGrid slides={filteredSlides} />
       </div>
     </div>

@@ -12,9 +12,11 @@ import { ImportGoogleSlideModal } from '@/app/dashboard/components/ImportGoogleS
 interface SearchFilterProps {
   onSearch: (query: string) => void;
   onSort: (value: SortOptions) => void;
+  onImport: () => void;
+  onError: () => void;
 }
 
-export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
+export function SearchFilter({ onSearch, onSort, onImport, onError } : SearchFilterProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
@@ -54,12 +56,6 @@ export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
-              Apresentação em branco
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Utilizar template
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setIsImportModalOpen(true)}>
               Importar apresentação do Google Slides
             </DropdownMenuItem>
@@ -67,7 +63,12 @@ export function SearchFilter({ onSearch, onSort } : SearchFilterProps) {
         </DropdownMenu>
       </div>
 
-      <ImportGoogleSlideModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
+      <ImportGoogleSlideModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccessfulImport={onImport}
+        onError={onError}
+      />
     </div>
   );
 }
