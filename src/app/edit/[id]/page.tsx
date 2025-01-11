@@ -20,6 +20,7 @@ import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
+import { ClassroomCreatedModal } from '@/app/edit/[id]/components/ClassroomCreatedModal';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -42,7 +43,13 @@ export default function Edit({ params } : { params: { id: string }}) {
   const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
   const [ isNewClassroomModalOpen, setNewClassroomModalOpen ] = useState(false);
   const [ currentClassroom, setCurrentClassroom ] = useState<Classroom | null>(null);
+  const [ displayClassroomCreatedModal, setDisplayClassroomCreatedModal ] = useState(false);
   const store = useEditorStore();
+
+  const onClassroomCreated = (classroom: Classroom) => {
+    setCurrentClassroom(classroom);
+    setDisplayClassroomCreatedModal(true);
+  }
 
   useEffect(() => {
     store.reset();
@@ -68,7 +75,7 @@ export default function Edit({ params } : { params: { id: string }}) {
 
   useEffect(() => {
       fetchClassroom(params.id)
-        .then((classroom) => setCurrentClassroom(classroom))
+        .then((classroom) => onClassroomCreated(classroom))
         .catch(() => console.log('No classroom found'));
   }, []);
 
@@ -90,7 +97,7 @@ export default function Edit({ params } : { params: { id: string }}) {
           <Link href={`/control-panel/${params.id}`}>
             <Button>
               <Radio className='mr-2 h-4 w-4' />
-              Apresentando
+              Apresentando: {currentClassroom.entryCode}
             </Button>
           </Link>
         ) : (
@@ -117,7 +124,18 @@ export default function Edit({ params } : { params: { id: string }}) {
 
       <AddSlideModal isOpen={isAddSlideModalOpen} onClose={() => setAddSlideModalOpen(false)} />
       <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
-      <NewClassroomModal isOpen={isNewClassroomModalOpen} onClose={() => setNewClassroomModalOpen(false)} />
+      <NewClassroomModal
+        isOpen={isNewClassroomModalOpen}
+        onClose={() => setNewClassroomModalOpen(false)}
+        onSuccessfulCreate={onClassroomCreated}
+      />
+      {currentClassroom && (
+        <ClassroomCreatedModal
+          isOpen={displayClassroomCreatedModal}
+          onClose={() => setDisplayClassroomCreatedModal(false)}
+          classroom={currentClassroom}
+        />
+      )}
     </div>
   );
 }

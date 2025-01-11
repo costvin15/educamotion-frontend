@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 
 import client from "@/client";
 
@@ -7,25 +7,33 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Button } from "@/components/ui/Button";
 
 import { useEditorStore } from "@/app/edit/[id]/store/editor";
+import { Classroom } from "@/app/edit/[id]/types/classroom";
+import { Loader2 } from "lucide-react";
 
 interface NewClassroomModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccessfulCreate?: (classroom: Classroom) => void;
 };
 
-export async function createClassrom(presentationId: string) {
+export async function createClassrom(presentationId: string) : Promise<Classroom> {
   const { data } = await client.post(`/classroom/create/${presentationId}`);
   return data;
 };
 
 export const NewClassroomModal = forwardRef<HTMLDivElement, NewClassroomModalProps>(
-  ({ isOpen, onClose }, ref) => {
+  ({ isOpen, onClose, onSuccessfulCreate }, ref) => {
     const { presentationId } = useEditorStore();
+    const [ isCreating, setIsCreating ] = useState(false);
 
     const handleCreateClassroom = async () => {
+      setIsCreating(true);
       const data = await createClassrom(presentationId);
-      console.log(data);
       onClose();
+      if (onSuccessfulCreate) {
+        onSuccessfulCreate(data);
+      }
+      setIsCreating(false);
     };
 
     return (
@@ -57,6 +65,12 @@ export const NewClassroomModal = forwardRef<HTMLDivElement, NewClassroomModalPro
                   Cancelar
                 </Button>
               </div>
+
+              {isCreating && (
+                <div className='absolute inset-0 bg-background/80 flex items-center justify-center'>
+                  <Loader2 className='animate-spin h-8 w-8' />
+                </div>
+              )}
             </ScrollArea>
           </DialogContent>
         </Dialog>

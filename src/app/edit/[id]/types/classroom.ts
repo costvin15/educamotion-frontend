@@ -5,6 +5,7 @@ export type Classroom = {
     id: string;
   }
   active: boolean;
+  entryCode: string;
   createdAt: string;
   updatedAt: string;
   closedAt: string | null;
