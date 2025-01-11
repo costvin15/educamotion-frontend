@@ -4,6 +4,7 @@ export interface Page {
   objectId: string;
   background: string;
   elements: SlideElement[];
+  isLoading?: boolean;
 }
 
 export interface DetailPresentation {

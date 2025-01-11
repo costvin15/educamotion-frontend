@@ -50,6 +50,7 @@ export default function Edit({ params } : { params: { id: string }}) {
     (async () => {
       const presentation = await fetchPresentationDetails(params.id);
       store.setPresentationId(presentation.id);
+      store.initializeSlides(presentation.slidesIds.length);
 
       for (let i = 0; i < presentation.slidesIds.length; i++) {
         const slideId = presentation.slidesIds[i];

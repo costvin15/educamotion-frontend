@@ -9,7 +9,7 @@ export interface EditorState {
   currentSlideIndex: number;
   selectedElement: string;
   setPresentationId: (id: string) => void;
-  addSlide: (slide: Page) => void;
+  initializeSlides: (size: number) => void;
   addSlideInPosition: (slide: Page, position: number) => void;
   addSlideFromTemplate: (template: SlideTemplate) => void;
   updateSlide: (slide: Page) => void;
@@ -25,6 +25,7 @@ const initialState: Page = {
   objectId: 'initial-slide',
   background: '',
   elements: [],
+  isLoading: true,
 };
 
 export const useEditorStore = create<EditorState>((set) => ({
@@ -33,16 +34,20 @@ export const useEditorStore = create<EditorState>((set) => ({
   currentSlideIndex: 0,
   selectedElement: '',
   setPresentationId: (id) => set((state) => ({ presentationId: id })),
-  addSlide: (slide) => set((state) => ({
-    slides: [...state.slides, slide],
+  initializeSlides: (size) => set((state) => ({
+    slides: Array.from({ length: size }, (_, index) => ({
+      objectId: index.toString(),
+      background: '',
+      elements: [],
+      isLoading: true,
+    })),
   })),
-  addSlideInPosition: (slide, position) => set((state) => ({
-    slides: [
-      ...state.slides.slice(0, position),
-      slide,
-      ...state.slides.slice(position),
-    ],
-  })),
+  addSlideInPosition: (slide, position) => set((state) => {
+    const slides = [...state.slides];
+    slides[position] = slide;
+    slides[position].isLoading = false;
+    return { slides };
+  }),
   addSlideFromTemplate: (template) => set(
     (state) => ({
       slides: [
