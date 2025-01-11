@@ -26,42 +26,6 @@ export function Properties() {
     <div className='space-y-4'>
       <h2 className='font-semibold'>Propriedades</h2>
 
-      <div className='space-y-2'>
-        <Label>Posição X</Label>
-        <Input
-          type='number'
-          value={element.positionX}
-          onChange={(event) => {}}
-        />
-      </div>
-
-      <div className='space-y-2'>
-        <Label>Posição Y</Label>
-        <Input
-          type='number'
-          value={element.positionY}
-          onChange={(event) => {}}
-        />
-      </div>
-
-      <div className='space-y-2'>
-        <Label>Largura</Label>
-        <Input
-          type='number'
-          value={element.width}
-          onChange={(event) => {}}
-        />
-      </div>
-
-      <div className='space-y-2'>
-        <Label>Altura</Label>
-        <Input
-          type='number'
-          value={element.height}
-          onChange={(event) => {}}
-        />
-      </div>
-
       <Properties element={element} />
     </div>
   );
