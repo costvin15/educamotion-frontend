@@ -2,6 +2,7 @@ export interface Slide {
   id: string;
   title: string;
   thumbnail: string;
+  createdAt: string;
   lastModified: string;
 }
 

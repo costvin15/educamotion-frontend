@@ -59,8 +59,7 @@ export default function Dashboard() {
           return b.lastModified > a.lastModified ? -1 : 1;
         case SortOptions.Date:
         default:
-          return b.lastModified > a.lastModified ? -1 : 1;
-          // return b.createdAt > a.createdAt ? -1 : 1;
+          return b.createdAt > a.createdAt ? -1 : 1;
       }
     });
     setFilteredSlides(sorted);
