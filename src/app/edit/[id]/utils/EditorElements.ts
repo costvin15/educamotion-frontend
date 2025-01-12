@@ -13,9 +13,9 @@ const createElement = async (presentationId: string, slideId: string, elementTyp
     elementType,
   });
   return data;
-}
+};
 
-const createQuestion = async (presentationId: string, slideId: string, questionType : QuestionType) => {
+const createQuestion = async (presentationId: string, slideId: string, questionType : QuestionType) : Promise<SlideElement> => {
   const element = await createElement(presentationId, slideId, ElementType.QUESTION);
 
   const { data } = await client.post('/element/question/add', {
@@ -27,49 +27,35 @@ const createQuestion = async (presentationId: string, slideId: string, questionT
     correctOption: 'Option 1'
   });
 
-  console.log(data);
-}
+  return element;
+};
 
-// export const addBlankTextToEditor = (store : EditorState) => {
-  // store.addElementToSlide({
-  //   id: Date.now().toString(),
-  //   elementType: SlideElementType.TEXT,
-  //   x: 0,
-  //   y: 0,
-  //   width: 20,
-  //   height: 10,
-  //   rotation: 0,
-  //   content: 'Hello World',
-  //   style: {
-  //     fontSize: 16,
-  //     color: '#000000',
-  //   },
-  // });
-// };
-
-export const addObjectiveQuestionToEditor = (store : EditorState) => {
+export const addObjectiveQuestionToEditor = async (store : EditorState) => {
   const slide = store.slides[store.currentSlideIndex];
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  createQuestion(presentationId, slideId, QuestionType.OBJECTIVE);
-}
+  const question = await createQuestion(presentationId, slideId, QuestionType.OBJECTIVE);
+  store.addElementToSlide(question);
+};
 
-export const addDiscursiveQuestionToEditor = (store : EditorState) => {
+export const addDiscursiveQuestionToEditor = async (store : EditorState) => {
   const slide = store.slides[store.currentSlideIndex];
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  createQuestion(presentationId, slideId, QuestionType.DISCURSIVE);
-}
+  const question = await createQuestion(presentationId, slideId, QuestionType.DISCURSIVE);
+  store.addElementToSlide(question);
+};
 
-export const addMultipleChoiceQuestionToEditor = (store : EditorState) => {
+export const addMultipleChoiceQuestionToEditor = async (store : EditorState) => {
   const slide = store.slides[store.currentSlideIndex];
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  createQuestion(presentationId, slideId, QuestionType.MULTIPLE_CHOICE);
-}
+  const question = await createQuestion(presentationId, slideId, QuestionType.MULTIPLE_CHOICE);
+  store.addElementToSlide(question);
+};
 
 export const addQuestionToEditor = (store : EditorState) => {
   // store.addElementToSlide({

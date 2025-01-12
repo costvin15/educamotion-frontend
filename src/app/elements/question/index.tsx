@@ -31,25 +31,34 @@ export async function updateQuestionDetails(details: Partial<QuestionDetails>) {
 
 export function QuestionProperties({ element } : { element: SlideElement }) {
   const store = useQuestionStore();
+  const question = store.questions.get(element.id);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<QuestionType>(QuestionType.DISCURSIVE);
 
   useEffect(() => {
-    setTitle(store.question.title);
-    setDescription(store.question.description);
-    setType(store.question.type);
+    if (!question) {
+      return;
+    }
+
+    setTitle(question.title);
+    setDescription(question.description);
+    setType(question.type);
   }, [element.id]);
 
   useEffect(() => {
-    store.setQuestion({ ...store.question, title, description, type });
+    if (!question) {
+      return;
+    }
+
+    store.setQuestion({ ...question, title, description, type });
     const timeout = setTimeout(() => {
-      updateQuestionDetails({ ...store.question, title, description, type });
+      updateQuestionDetails({ ...question, title, description, type });
     }, 500);
     return () => clearTimeout(timeout);
   }, [title, description, type]);
 
-  if (!store.question) {
+  if (!question) {
     return <></>;
   }
 
@@ -89,8 +98,8 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
           </SelectContent>
         </Select>
       </div>
-      {store.question.type == QuestionType.OBJECTIVE && (
-        <ObjectiveQuestionProperties />
+      {question.type == QuestionType.OBJECTIVE && (
+        <ObjectiveQuestionProperties questionId={question.id} />
       )}
     </>
   );
@@ -98,6 +107,7 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
 
 export function Question({ element, onLoaded } : ElementProps) {
   const store = useQuestionStore();
+  const question = store.questions.get(element.id);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -143,18 +153,27 @@ export function Question({ element, onLoaded } : ElementProps) {
     );
   }
 
-  if (store.question.type == QuestionType.DISCURSIVE) {
-    return <DiscursiveQuestion question={store.question} />;
+  if (!question) {
+    return (
+      <div className='w-full h-full bg-white text-black p-4 rounded-lg shadow-md'>
+        <h3 className='font-semibold text-lg text-black'>Questão não encontrada</h3>
+        <p className='text-gray-500'>A questão não foi encontrada no banco de dados.</p>
+      </div>
+    );
   }
 
-  if (store.question.type == QuestionType.OBJECTIVE) {
-    return <ObjectiveQuestion question={store.question} />;
+  if (question.type == QuestionType.DISCURSIVE) {
+    return <DiscursiveQuestion question={question} />;
+  }
+
+  if (question.type == QuestionType.OBJECTIVE) {
+    return <ObjectiveQuestion question={question} />;
   }
 
   return (
     <div className='w-full h-full bg-white p-4 rounded-lg shadow-md'>
-      <h3 className='font-semibold text-lg text-black'>{store.question.title}</h3>
-      <p className='text-gray-500'>{store.question.description}</p>
+      <h3 className='font-semibold text-lg text-black'>{question.title}</h3>
+      <p className='text-gray-500'>{question.description}</p>
       <span className='text-red-500'>Tipo de questão não suportado</span>
     </div>
   );

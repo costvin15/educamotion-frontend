@@ -9,19 +9,28 @@ import { Question } from "@/app/elements/question/types";
 import { updateQuestionDetails } from "@/app/elements/question";
 import { useQuestionStore } from "@/app/elements/question/store";
 
-export function ObjectiveQuestionProperties() {
+export function ObjectiveQuestionProperties({ questionId } : { questionId: string }) {
   const store = useQuestionStore();
-  const [options, setOptions] = useState<string[]>(store.question.options);
-  const [correctOption, setCorrectOption] = useState<string>(store.question.correctOption);
+  const question = store.questions.get(questionId);
+  const [options, setOptions] = useState<string[]>(question?.options || []);
+  const [correctOption, setCorrectOption] = useState<string>(question?.correctOption || '');
 
   useEffect(() => {
-    store.setQuestion({ ...store.question, options, correctOption });
+    if (!question) {
+      return;
+    }
+
+    store.setQuestion({ ...question, options, correctOption });
 
     const timeout = setTimeout(() => {
-      updateQuestionDetails({ ...store.question, options, correctOption });
+      updateQuestionDetails({ ...question, options, correctOption });
     }, 500);
     return () => clearTimeout(timeout);
   }, [options, correctOption]);
+
+  if (!question) {
+    return <></>;
+  }
 
   return (
     <>
