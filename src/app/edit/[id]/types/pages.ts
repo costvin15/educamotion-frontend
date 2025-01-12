@@ -23,4 +23,5 @@ export interface SlideElement {
   positionY: number;
   width: number;
   height: number;
+  owner: boolean;
 }

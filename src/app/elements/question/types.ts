@@ -12,3 +12,11 @@ export interface Question {
   options: string[];
   correctOption: string;
 }
+
+export interface QuestionProps {
+  question: Question;
+}
+
+export interface QuestionPropertiesProps {
+  questionId: string;
+}

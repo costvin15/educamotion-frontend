@@ -68,7 +68,7 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
       }}
       bounds={'parent'}
     >
-      <div className='sticky w-full h-full'>
+      <div className='sticky w-full h-full pointer-events-none'>
         <Element
           element={element}
           onLoaded={onLoaded}

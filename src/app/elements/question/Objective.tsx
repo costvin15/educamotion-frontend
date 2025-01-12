@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 
-import { Question } from "@/app/elements/question/types";
+import { QuestionPropertiesProps, QuestionProps } from "@/app/elements/question/types";
 import { updateQuestionDetails } from "@/app/elements/question";
 import { useQuestionStore } from "@/app/elements/question/store";
 
-export function ObjectiveQuestionProperties({ questionId } : { questionId: string }) {
+export function ObjectiveQuestionProperties({ questionId } : QuestionPropertiesProps) {
   const store = useQuestionStore();
   const question = store.questions.get(questionId);
   const [options, setOptions] = useState<string[]>(question?.options || []);
@@ -90,7 +90,7 @@ export function ObjectiveQuestionProperties({ questionId } : { questionId: strin
   );
 }
 
-export function ObjectiveQuestion({ question } : { question: Question }) {
+export function ObjectiveQuestion({ question } : QuestionProps) {
   if (!question) {
     return null;
   }

@@ -13,9 +13,10 @@ import { toast } from '@/hooks/use-toast';
 
 import { ElementProps } from '@/app/elements';
 import { useQuestionStore } from '@/app/elements/question/store';
-import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
 import { Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
+import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
 import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/question/Objective';
+import { MultipleChoiceQuestion, MultipleChoiceQuestionProperties } from '@/app/elements/question/MultipleChoice';
 
 const fetchQuestionDetails = async (questionId: string) : Promise<QuestionDetails> => {
   const { data } = await client.get(`/element/question/detail/${questionId}`);
@@ -98,8 +99,13 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
           </SelectContent>
         </Select>
       </div>
+
       {question.type == QuestionType.OBJECTIVE && (
         <ObjectiveQuestionProperties questionId={question.id} />
+      )}
+
+      {question.type == QuestionType.MULTIPLE_CHOICE && (
+        <MultipleChoiceQuestionProperties questionId={question.id} />
       )}
     </>
   );
@@ -168,6 +174,10 @@ export function Question({ element, onLoaded } : ElementProps) {
 
   if (question.type == QuestionType.OBJECTIVE) {
     return <ObjectiveQuestion question={question} />;
+  }
+
+  if (question.type == QuestionType.MULTIPLE_CHOICE) {
+    return <MultipleChoiceQuestion question={question} />;
   }
 
   return (

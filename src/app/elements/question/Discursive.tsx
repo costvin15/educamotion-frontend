@@ -1,7 +1,7 @@
-import { Question } from '@/app/elements/question/types';
+import { QuestionProps } from '@/app/elements/question/types';
 import { Input } from '@/components/ui/Input';
 
-export function DiscursiveQuestion({ question } : { question: Question }) {
+export function DiscursiveQuestion({ question } : QuestionProps) {
   if (!question) {
     return null;
   }
