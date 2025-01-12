@@ -13,7 +13,8 @@ export function DiscursiveQuestion({ question } : { question: Question }) {
       <div className='flex-grow mb-4'>
         {/* TODO: Use TextArea */}
         <Input className='mt-4 h-full'
-          placeholder='Digite sua resposta...' />
+          placeholder='Digite sua resposta...'
+        />
       </div>
     </div>
   );

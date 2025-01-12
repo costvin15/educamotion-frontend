@@ -1,28 +1,9 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Message } from "@/app/join/[id]/types";
-
-const messages : Message[] = [
-  {
-    id: '1',
-    user: 'Vinicius',
-    content: 'Olá, tudo bem?',
-    timestamp: new Date(new Date().getTime() - 1000 * 60 * 5)
-  },
-  {
-    id: '2',
-    user: 'Lucas',
-    content: 'Oi, tudo sim e você?',
-    timestamp: new Date(new Date().getTime() - 1000 * 60 * 3)
-  },
-  {
-    id: '3',
-    user: 'Vinicius',
-    content: 'Tudo ótimo!',
-    timestamp: new Date(new Date().getTime() - 1000 * 60 * 2)
-  }
-];
+import { useChatStore } from "@/app/join/[id]/store/chat";
 
 export function MessageList() {
+  const { messages } = useChatStore();
+
   return (
     <ScrollArea className='flex-1 p-4'>
       <div className='space-y-4'>
