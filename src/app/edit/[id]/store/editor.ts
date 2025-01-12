@@ -17,7 +17,7 @@ export interface EditorState {
   setCurrentSlide: (index: number) => void;
   setSelectedElement: (id: string) => void;
   addElementToSlide: (element: SlideElement) => void;
-  updateElement: (element: SlideElement) => void;
+  removeElementFromSlide: (elementId: string) => void;
   reset: () => void;
 }
 
@@ -83,16 +83,12 @@ export const useEditorStore = create<EditorState>((set) => ({
       )
     ),
   })),
-  updateElement: (element) => set((state) => ({
+  removeElementFromSlide: (elementId) => set((state) => ({
     slides: state.slides.map(
       (currentSlide, index) => (
         index === state.currentSlideIndex ? {
           ...currentSlide,
-          elements: currentSlide.elements.map(
-            (currentElement) => (
-              currentElement.id === element.id ? element : currentElement
-            )
-          ),
+          elements: currentSlide.elements.filter((element) => element.id !== elementId),
         } : currentSlide
       )
     ),
