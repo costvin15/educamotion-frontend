@@ -77,5 +77,11 @@ export const useEditorStore = create<EditorState>((set) => ({
       )
     ),
   })),
-  reset: () => set((state) => ({ presentationId: 'initial-slide', slides: [initialState], thumbnails: {}, currentSlideIndex: 0 })),
+  reset: () => set((state) => ({
+    presentationId: 'initial-slide',
+    slides: [initialState],
+    thumbnails: {},
+    currentSlideIndex: 0,
+    selectedElement: '',
+  })),
 }));

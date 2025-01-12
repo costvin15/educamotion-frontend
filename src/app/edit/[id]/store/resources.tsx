@@ -12,20 +12,6 @@ export interface SlideResource {
 }
 
 export const SlideResources : SlideResource[] = [
-  // {
-  //   id: 'text',
-  //   name: 'Texto',
-  //   description: 'Adicione um bloco de texto ao seu slide',
-  //   icon: <Type className='h-6 w-6 text-muted-foreground' />,
-  //   onAdd: (store) => addBlankTextToEditor(store)
-  // },
-  // {
-  //   id: 'image',
-  //   name: 'Imagem',
-  //   description: 'Adicione uma imagem ao seu slide',
-  //   icon: <Image className='h-6 w-6 text-muted-foreground' />,
-  //   onAdd: (store) => console.log('Add image')
-  // },
   {
     id: 'objective-question',
     name: 'Pergunta objetiva',
