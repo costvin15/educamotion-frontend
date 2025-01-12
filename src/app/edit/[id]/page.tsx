@@ -16,7 +16,6 @@ import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
 import { Canvas } from '@/app/edit/[id]/components/Canvas';
 import { Properties } from '@/app/edit/[id]/components/Properties';
-import { AddSlideModal } from '@/app/edit/[id]/components/AddSlideModal';
 import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
@@ -39,7 +38,6 @@ const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
 }
 
 export default function Edit({ params } : { params: { id: string }}) {
-  const [ isAddSlideModalOpen, setAddSlideModalOpen ] = useState(false);
   const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
   const [ isNewClassroomModalOpen, setNewClassroomModalOpen ] = useState(false);
   const [ currentClassroom, setCurrentClassroom ] = useState<Classroom | null>(null);
@@ -84,9 +82,6 @@ export default function Edit({ params } : { params: { id: string }}) {
       <Navbar>
         <ThemeSwitcher />
 
-        <Button variant='outline' size='icon' onClick={() => setAddSlideModalOpen(true)}>
-          <Plus className='h-4 w-4' />
-        </Button>
         <Button variant='outline' size='icon' onClick={() => setAddResourceModalOpen(true)}>
           <Puzzle className='h-4 w-4' />
         </Button>
@@ -122,7 +117,6 @@ export default function Edit({ params } : { params: { id: string }}) {
         </div>
       </div>
 
-      <AddSlideModal isOpen={isAddSlideModalOpen} onClose={() => setAddSlideModalOpen(false)} />
       <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
       <NewClassroomModal
         isOpen={isNewClassroomModalOpen}
