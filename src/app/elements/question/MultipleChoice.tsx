@@ -147,9 +147,9 @@ export function MultipleChoiceQuestion({ question, onAnswer } : QuestionProps) {
   }
 
   return (
-    <div className='w-full h-full bg-white p-4 rounded-lg shadow-md flex flex-col'>
-      <h3 className='font-semibold text-lg text-black'>{question.title}</h3>
-      <p className='text-gray-500'>{question.description}</p>
+    <div className='w-full h-full bg-primary p-4 rounded-lg shadow-md flex flex-col'>
+      <h3 className='font-semibold text-lg text-secondary'>{question.title}</h3>
+      <p className='text-secondary/75'>{question.description}</p>
       <div className='flex-grow mb-4 mt-4'>
         <div className='grid gap-4'>
           {question.options.map((option, index) => (
