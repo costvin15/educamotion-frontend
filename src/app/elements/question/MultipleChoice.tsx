@@ -23,7 +23,6 @@ export function MultipleChoiceQuestionProperties({ questionId } : QuestionProper
       return;
     }
 
-    console.log(correctOptions, correctOptions.join(','));
     let answers = correctOptions.join(',');
     store.setQuestion({ ...question, options, correctOption: answers });
 
@@ -126,8 +125,22 @@ export function MultipleChoiceQuestionProperties({ questionId } : QuestionProper
   );
 }
 
-export function MultipleChoiceQuestion({ question } : QuestionProps) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+export function MultipleChoiceQuestion({ question, onAnswer } : QuestionProps) {
+  const store = useQuestionStore();
+  const storedAnswer = store.answers.get(question.id);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(storedAnswer?.answer.split(',') || []);
+
+  useEffect(() => {
+    if (!question) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      // TODO: Corrigir considerando a ordem em que as opções foram selecionadas
+      onAnswer(selectedOptions.join(','));
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [selectedOptions]);
 
   if (!question) {
     return null;
@@ -161,11 +174,6 @@ export function MultipleChoiceQuestion({ question } : QuestionProps) {
               <Label>{option}</Label>
             </div>
           ))}
-        </div>
-        <div className='mt-4'>
-          <Button className="w-full" variant='secondary'>
-            Enviar
-          </Button>
         </div>
       </div>
     </div>
