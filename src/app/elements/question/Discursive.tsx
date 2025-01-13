@@ -3,9 +3,12 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { QuestionProps } from '@/app/elements/question/types';
 import { Textarea } from '@/components/ui/Textarea';
 import { mergeClassNames } from '@/components/utils';
+import { useQuestionStore } from '@/app/elements/question/store';
 
 export function DiscursiveQuestion({ question, onAnswer } : QuestionProps) {
-  const [answer, setAnswer] = useState('');
+  const store = useQuestionStore();
+  const storedAnswer = store.answers.get(question.id);
+  const [answer, setAnswer] = useState(storedAnswer?.answer || '');
   const [charCount, setCharCount] = useState(0);
   const maxLength = 255;
 

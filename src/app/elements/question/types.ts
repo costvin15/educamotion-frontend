@@ -21,3 +21,9 @@ export interface QuestionProps {
 export interface QuestionPropertiesProps {
   questionId: string;
 }
+
+export interface QuestionAnswer {
+  questionId: string;
+  answer: string;
+  answeredAt: Date;
+}

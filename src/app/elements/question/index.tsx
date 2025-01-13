@@ -13,7 +13,7 @@ import { toast } from '@/hooks/use-toast';
 
 import { ElementProps } from '@/app/elements';
 import { useQuestionStore } from '@/app/elements/question/store';
-import { Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
+import { QuestionAnswer, Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
 import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
 import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/question/Objective';
 import { MultipleChoiceQuestion, MultipleChoiceQuestionProperties } from '@/app/elements/question/MultipleChoice';
@@ -35,6 +35,11 @@ async function sendAnswer(questionId: string, answer: string) {
     id: questionId,
     answer,
   });
+}
+
+async function fetchAnswerDetails(questionId: string) : Promise<QuestionAnswer> {
+  const { data } = await client.get(`/element/question/answer/${questionId}`);
+  return data;
 }
 
 export function QuestionProperties({ element } : { element: SlideElement }) {
@@ -124,9 +129,23 @@ export function Question({ element, onLoaded } : ElementProps) {
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
+  const fetchAnswer = async () => {
+    try {
+      const answer = await fetchAnswerDetails(element.id);
+      store.setAnswer(element.id, answer);
+    } catch (error) {
+      toast({
+        title: 'Oops!',
+        description: 'Não foi possível carregar a resposta da questão.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const fetchQuestion = async () => {
     setLoading(true);
     try {
+      await fetchAnswer();
       const question = await fetchQuestionDetails(element.id);
       store.setQuestion(question);
       if (onLoaded) {
