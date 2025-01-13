@@ -30,6 +30,13 @@ export async function updateQuestionDetails(details: Partial<QuestionDetails>) {
   });
 }
 
+async function sendAnswer(questionId: string, answer: string) {
+  await client.post('/element/question/answer', {
+    id: questionId,
+    answer,
+  });
+}
+
 export function QuestionProperties({ element } : { element: SlideElement }) {
   const store = useQuestionStore();
   const question = store.questions.get(element.id);
@@ -130,7 +137,19 @@ export function Question({ element, onLoaded } : ElementProps) {
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const onAnswer = (answer: string) => {
+    try {
+      sendAnswer(element.id, answer);
+    } catch (error) {
+      toast({
+        title: 'Oops!',
+        description: 'Não foi possível enviar a resposta da questão.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   useEffect(() => {
     fetchQuestion();
@@ -169,15 +188,15 @@ export function Question({ element, onLoaded } : ElementProps) {
   }
 
   if (question.type == QuestionType.DISCURSIVE) {
-    return <DiscursiveQuestion question={question} />;
+    return <DiscursiveQuestion question={question} onAnswer={onAnswer} />;
   }
 
   if (question.type == QuestionType.OBJECTIVE) {
-    return <ObjectiveQuestion question={question} />;
+    return <ObjectiveQuestion question={question} onAnswer={onAnswer} />;
   }
 
   if (question.type == QuestionType.MULTIPLE_CHOICE) {
-    return <MultipleChoiceQuestion question={question} />;
+    return <MultipleChoiceQuestion question={question} onAnswer={onAnswer} />;
   }
 
   return (

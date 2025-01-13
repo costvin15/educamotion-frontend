@@ -15,6 +15,7 @@ export interface Question {
 
 export interface QuestionProps {
   question: Question;
+  onAnswer: (answer: string) => void;
 }
 
 export interface QuestionPropertiesProps {
