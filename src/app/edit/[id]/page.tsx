@@ -20,6 +20,7 @@ import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
 import { ClassroomCreatedModal } from '@/app/edit/[id]/components/ClassroomCreatedModal';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -112,9 +113,9 @@ export default function Edit({ params } : { params: { id: string }}) {
           <Canvas />
         </div>
 
-        <div className='w-80 border-l border-border bg-card p-4'>
+        <ScrollArea className='w-80 border-l border-border bg-card p-4'>
           <Properties />
-        </div>
+        </ScrollArea>
       </div>
 
       <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
