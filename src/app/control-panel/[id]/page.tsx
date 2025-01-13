@@ -18,6 +18,7 @@ import { InteractionLogs } from "@/app/control-panel/[id]/components/Interaction
 
 import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
 import { useControlPanelStore } from '@/app/control-panel/[id]/store';
+import { useRouter } from 'next/navigation';
 
 const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
@@ -40,9 +41,14 @@ const performChangeSlide = async (presentationId: string, slideIndex: string) : 
   return data;
 };
 
+const sendCloseClassroom = async (classroomId: string) => {
+  await client.post(`/classroom/close/${classroomId}`);
+};
+
 export default function ControlPanel({ params } : { params: { id: string }}) {
   const store = useControlPanelStore();
   const session = useSession();
+  const router = useRouter();
   const [ablyClient, setAblyClient] = useState<Ably.Realtime | null>(null);
 
   useEffect(() => {
@@ -105,6 +111,12 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
     handleSlideChange(store.currentSlideIndex - 1);
   }
 
+  const handleCloseClassroom = async () => {
+    // TODO: Exibir mensagem de confirmação antes do fechamento da sala
+    await sendCloseClassroom(store.classroomId);
+    router.push('/dashboard');
+  }
+
   return (
     <div className='flex h-screen flex-col'>
       <Navbar>
@@ -135,7 +147,10 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
           Avançar
         </Button>
 
-        <Button variant='outline'>
+        <Button
+          variant='outline'
+          onClick={handleCloseClassroom}
+        >
           <LogOut className='h-4 w-4 mr-2' />
           Encerrar Apresentação
         </Button>
