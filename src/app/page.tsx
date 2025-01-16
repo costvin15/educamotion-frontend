@@ -33,7 +33,7 @@ export default function Home() {
         </div>
         <Link href="/auth/signin" className="w-full">
           <Button size="lg" className="text-lg w-full">
-            Comece a Ensinar
+            Comece a Usar
           </Button>
         </Link>
         <Button size="lg" variant="outline" className="text-lg">
@@ -55,7 +55,7 @@ export default function Home() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link href="/auth/signin">
                 <Button size="lg" className="h-12 px-6">
-                  Comece a Ensinar
+                  Comece a Usar
                   <PresentationIcon className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -113,7 +113,7 @@ export default function Home() {
             </p>
             <Link href="/auth/signin">
               <Button size="lg" className="text-lg">
-                Comece a Ensinar Hoje
+                Comece a Usar Hoje
               </Button>
             </Link>
           </div>
