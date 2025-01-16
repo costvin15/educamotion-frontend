@@ -13,6 +13,9 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Navbar } from '@/components/ui/NavBar';
+import { KeyRound } from 'lucide-react';
+import { Label } from '@/components/ui/Label';
+import { Input } from '@/components/ui/Input';
 
 function LoginButtons({ providers } : InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
@@ -65,25 +68,55 @@ export default function Login({ providers } : InferGetServerSidePropsType<typeof
           </Navbar>
         </div>
 
-        <Card className='w-full max-w-md'>
-          <CardHeader className='space-y-1'>
-            <CardTitle className='font-bold text-center'>Bem vindo ao EducaMotion</CardTitle>
-            <CardDescription className='text-center'>Entre com sua conta para continuar</CardDescription>
-            <CardContent className='pt-6'>
-              <LoginButtons providers={providers} />
+        <div className='max-w-5xl w-full grid md:grid-cols-2 gap-6'>
+          <Card className='w-full backdrop-blur-sm bg-card/50 shadow-xl'>
+            <CardHeader className='space-y-1'>
+              <div className='flex items-center gap-2'>
+                <KeyRound className='w-5 h-5 text-primary' />
+                <CardTitle>Assistir Apresentação</CardTitle>
+              </div>
+              <CardDescription>
+                Por favor, insira o código de apresentação fornecido pelo apresentador.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='grid gap-4'>
+                <div className='grid gap-2'>
+                  <Label htmlFor='code'>Código de Apresentação</Label>
+                  <Input
+                    id='code'
+                    type='text'
+                    placeholder='Insira o código de apresentação'
+                    className='text-lg tracking-wider'
+                  />
+                </div>
+                <Button className='w-full'>
+                  Entrar
+                </Button>
+              </div>
             </CardContent>
-            <div className='relative'>
-              <div className='pb-6 flex items-center'>
-                <span className='w-full border-t' />
+          </Card>
+
+          <Card className='w-full max-w-md'>
+            <CardHeader className='space-y-1'>
+              <CardTitle className='font-bold text-center'>Bem vindo ao EducaMotion</CardTitle>
+              <CardDescription className='text-center'>Entre com sua conta para acessar o painel de apresentador</CardDescription>
+              <CardContent className='pt-6'>
+                <LoginButtons providers={providers} />
+              </CardContent>
+              <div className='relative'>
+                <div className='pb-6 flex items-center'>
+                  <span className='w-full border-t' />
+                </div>
               </div>
-            </div>
-            <CardFooter className='flex flex-col space-y-2 text-center text-sm text-muted-foreground'>
-              <div>
-                Dúvidas? Entre em contato através do <a href='mailto:costacastrovinicius7@gmail.com'>email</a>.
-              </div>
-            </CardFooter>
-          </CardHeader>
-        </Card>
+              <CardFooter className='flex flex-col space-y-2 text-center text-sm text-muted-foreground'>
+                <div>
+                  Dúvidas? Entre em contato através do <a href='mailto:costacastrovinicius7@gmail.com'>email</a>.
+                </div>
+              </CardFooter>
+            </CardHeader>
+          </Card>
+        </div>
       </div>
     </ThemeProvider>
   )
