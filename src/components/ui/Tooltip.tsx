@@ -21,3 +21,26 @@ export const TooltipContent = forwardRef<ElementRef<typeof Content>, ComponentPr
   )
 );
 TooltipContent.displayName = 'TooltipContent';
+
+interface TooltipProps {
+  children: React.ReactNode;
+  text: string;
+  sideOffset?: number;
+}
+
+export const TooltipButton = forwardRef<ElementRef<'button'>, TooltipProps>(
+  ({ children, text, sideOffset = 5 }, ref) => (
+    <div className="flex items-center justify-center">
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger ref={ref} asChild>
+            {children}
+          </TooltipTrigger>
+          <TooltipContent className='bg-primary text-primary-foreground' sideOffset={sideOffset}>
+            <p>{text}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  )
+);
