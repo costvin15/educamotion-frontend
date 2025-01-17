@@ -61,8 +61,9 @@ export const authOptions : AuthOptions = {
 
       return refreshAccessToken(token);
     },
-    session: async ({token, session}) => {
+    session: async ({ token, session }: { token: JWT; session: any }) => {
       if (token) {
+        session.user.id = token.id;
         session.user.token = token.accessToken;
       }
       return session;

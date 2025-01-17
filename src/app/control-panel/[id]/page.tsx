@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, ClipboardList, LogOut, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, ClipboardList, Loader2, LogOut, Users } from "lucide-react";
 import * as Ably from 'ably';
 import { useSession } from 'next-auth/react';
 import { AblyProvider, ChannelProvider } from 'ably/react';
@@ -50,6 +50,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   const session = useSession();
   const router = useRouter();
   const [ablyClient, setAblyClient] = useState<Ably.Realtime | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!session.data?.user.id) return;
@@ -82,6 +83,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   useEffect(() => {
     if (store.presentationId === '') return;
     (async () => {
+      setLoading(true);
       const slideId = store.slidesIds[store.currentSlideIndex];
       const thumbnail = await fetchThumbnail(store.presentationId, slideId);
       store.setCurrentSlide({
@@ -89,6 +91,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
         background: thumbnail,
         elements: store.elements[slideId] || [],
       });
+      setLoading(false);
     })();
   }, [store.presentationId, store.currentSlideIndex]);
 
@@ -155,6 +158,13 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
           Encerrar Apresentação
         </Button>
       </Navbar>
+
+      {loading && (
+        <div className='absolute z-50 inset-0 flex items-center justify-center bg-secondary/80'>
+          <p>Carregando...</p>
+          <Loader2 className='animate-spin h-6 w-6 ml-2' />
+        </div>
+      )}
 
       <div className='grid grid-cols-3 gap-6 p-6'>
         <Apresentation />
