@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Download, Play, Plus, Puzzle, Radio, Redo, Undo } from 'lucide-react';
+import { ChartArea, Download, Play, Plus, Puzzle, Radio, Redo, Undo } from 'lucide-react';
 
 import client from '@/client';
 
@@ -21,6 +21,7 @@ import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
 import { ClassroomCreatedModal } from '@/app/edit/[id]/components/ClassroomCreatedModal';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -86,6 +87,24 @@ export default function Edit({ params } : { params: { id: string }}) {
         <Button variant='outline' size='icon' onClick={() => setAddResourceModalOpen(true)}>
           <Puzzle className='h-4 w-4' />
         </Button>
+
+        <div className='mx-2 h-6 w-px bg-border' />
+
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='outline' size='icon'>
+                <ChartArea className='h-4 w-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent
+              className='bg-primary text-primary-foreground'
+              sideOffset={5}
+            >
+              <p>Resultados</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <div className='mx-2 h-6 w-px bg-border' />
 
