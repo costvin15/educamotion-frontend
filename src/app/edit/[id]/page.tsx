@@ -84,18 +84,20 @@ export default function Edit({ params } : { params: { id: string }}) {
       <Navbar>
         <ThemeSwitcher />
 
+        <div className='mx-2 h-6 w-px bg-border' />
+
         <Button variant='outline' size='icon' onClick={() => setAddResourceModalOpen(true)}>
           <Puzzle className='h-4 w-4' />
         </Button>
 
-        <div className='mx-2 h-6 w-px bg-border' />
-
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant='outline' size='icon'>
-                <ChartArea className='h-4 w-4' />
-              </Button>
+              <Link href={`/results/${params.id}`}>
+                <Button variant='outline' size='icon'>
+                  <ChartArea className='h-4 w-4' />
+                </Button>
+              </Link>
             </TooltipTrigger>
             <TooltipContent
               className='bg-primary text-primary-foreground'
