@@ -3,10 +3,12 @@ import '@/app/globals.css';
 
 import Head from 'next/head';
 import { getServerSession } from 'next-auth';
-import { getProviders, signIn } from 'next-auth/react';
+import { ClientSafeProvider, getProviders, signIn } from 'next-auth/react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+
+import client from '@/client';
 
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -16,13 +18,25 @@ import { Navbar } from '@/components/ui/NavBar';
 import { KeyRound } from 'lucide-react';
 import { Label } from '@/components/ui/Label';
 import { Input } from '@/components/ui/Input';
+import { useState } from 'react';
+import { toast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/Toaster';
 
-function LoginButtons({ providers } : InferGetServerSidePropsType<typeof getServerSideProps>) {
+async function checkClassroom(code: string) : Promise<boolean> {
+  try {  
+    await client.get(`/classroom/entry-code/${code}`);
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
+
+function PresenterLoginButtons({ providers } : InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div className='space-y-4'>
       <div className='space-y-2'>
         {Object.values(providers).map(provider => (
-          <Button variant='outline' className='w-full' onClick={() => signIn(provider.id)}>
+          <Button key={provider.id} variant='outline' className='w-full' onClick={() => signIn(provider.id)}>
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -49,7 +63,38 @@ function LoginButtons({ providers } : InferGetServerSidePropsType<typeof getServ
   );
 }
 
+interface SpectatorLoginButtonsProps extends InferGetServerSidePropsType<typeof getServerSideProps> {
+  code: string;
+}
+
+function SpectatorLoginButtons({ providers, code } : SpectatorLoginButtonsProps) {
+  const handleJoin = async (provider: ClientSafeProvider) => {
+    if (!await checkClassroom(code)) {
+      console.log('Código inválido');
+      toast({
+        title: 'Código inválido',
+        description: 'O código de apresentação fornecido é inválido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    return signIn(provider.id, { callbackUrl: `/join/${code}` });
+  };
+
+  return (
+    <>
+      {Object.values(providers).map(provider => (
+        <Button key={provider.id} className='w-full' onClick={() => handleJoin(provider)}>
+          Entrar
+        </Button>
+      ))}
+    </>
+  );
+}
+
 export default function Login({ providers } : InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [code, setCode] = useState('');
+
   return (
     <ThemeProvider
       attribute='class'
@@ -88,11 +133,11 @@ export default function Login({ providers } : InferGetServerSidePropsType<typeof
                     type='text'
                     placeholder='Insira o código de apresentação'
                     className='text-lg tracking-wider'
+                    value={code}
+                    onChange={e => setCode(e.target.value)}
                   />
                 </div>
-                <Button className='w-full'>
-                  Entrar
-                </Button>
+                <SpectatorLoginButtons code={code} providers={providers} />
               </div>
             </CardContent>
           </Card>
@@ -102,7 +147,7 @@ export default function Login({ providers } : InferGetServerSidePropsType<typeof
               <CardTitle className='font-bold text-center'>Bem vindo ao EducaMotion</CardTitle>
               <CardDescription className='text-center'>Entre com sua conta para acessar o painel de apresentador</CardDescription>
               <CardContent className='pt-6'>
-                <LoginButtons providers={providers} />
+                <PresenterLoginButtons providers={providers} />
               </CardContent>
               <div className='relative'>
                 <div className='pb-6 flex items-center'>
@@ -118,6 +163,7 @@ export default function Login({ providers } : InferGetServerSidePropsType<typeof
           </Card>
         </div>
       </div>
+      <Toaster />
     </ThemeProvider>
   )
 };
@@ -126,6 +172,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (session) {
+    if (context.query.code) {
+      return { redirect: { destination: `/join/${context.query.code}` } };
+    }
     return { redirect: { destination: '/dashboard' } };
   }
 
