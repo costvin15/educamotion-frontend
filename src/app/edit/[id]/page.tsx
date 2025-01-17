@@ -10,7 +10,7 @@ import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
 import { Classroom } from '@/app/edit/[id]/types/classroom';
-import { DetailPresentation } from '@/app/edit/[id]/types/pages';
+import { DetailPresentation, InteractiveElements } from '@/app/edit/[id]/types/pages';
 
 import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
@@ -21,7 +21,7 @@ import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
 import { ClassroomCreatedModal } from '@/app/edit/[id]/components/ClassroomCreatedModal';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Tooltip, TooltipButton, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip';
+import { TooltipButton } from '@/components/ui/Tooltip';
 
 const fetchPresentationDetails = async (slideId: string) : Promise<DetailPresentation> => {
   const { data } = await client.get(`/presentation/detail/${slideId}`);
@@ -36,6 +36,11 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 
 const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
+  return data;
+}
+
+const fetchElementsGenerated = async(presentationId: string, slideId: string) : Promise<InteractiveElements> => {
+  const { data } = await client.get(`/presentation/generate-elements/${presentationId}/${slideId}`);
   return data;
 }
 
@@ -79,6 +84,12 @@ export default function Edit({ params } : { params: { id: string }}) {
         .catch(() => console.log('No classroom found'));
   }, []);
 
+  const handleGenerateElements = async () => {
+    const slide = store.slides[store.currentSlideIndex];
+    const elements = await fetchElementsGenerated(params.id, slide.objectId);
+    console.log(elements);
+  }
+
   return (
     <div className='flex h-screen flex-col'>
       <Navbar>
@@ -93,7 +104,7 @@ export default function Edit({ params } : { params: { id: string }}) {
         </TooltipButton>
 
         <TooltipButton text='Analisar página com IA'>
-          <Button variant='outline' size='icon'>
+          <Button variant='outline' size='icon' onClick={handleGenerateElements}>
             <Sparkles className='h-4 w-4' />
           </Button>
         </TooltipButton>
