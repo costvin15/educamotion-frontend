@@ -15,27 +15,39 @@ const createElement = async (presentationId: string, slideId: string, elementTyp
   return data;
 };
 
-const createQuestion = async (presentationId: string, slideId: string, questionType : QuestionType) : Promise<SlideElement> => {
+export const createQuestion = async (presentationId: string, slideId: string, title: string, description: string, questionType : QuestionType, options: string[], correct_option: string) : Promise<SlideElement> => {
   const element = await createElement(presentationId, slideId, ElementType.QUESTION);
 
-  const { data } = await client.post('/element/question/add', {
+  await client.post('/element/question/add', {
     id: element.id,
-    question: 'What is the answer to life, the universe and everything?',
-    description: 'The answer to life, the universe and everything is 42.',
+    question: title,
+    description: description,
     type: questionType,
-    options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
-    correctOption: 'Option 1'
+    options: options,
+    correctOption: correct_option,
   });
 
   return element;
 };
+
+const createDefaultQuestion = async (presentationId: string, slideId: string, questionType : QuestionType) : Promise<SlideElement> => {
+  return createQuestion(
+    presentationId,
+    slideId,
+    'What is the answer to life, the universe and everything?',
+    'The answer to life, the universe and everything is 42.',
+    questionType,
+    ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+    'Option 1'
+  );
+}
 
 export const addObjectiveQuestionToEditor = async (store : EditorState) => {
   const slide = store.slides[store.currentSlideIndex];
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  const question = await createQuestion(presentationId, slideId, QuestionType.OBJECTIVE);
+  const question = await createDefaultQuestion(presentationId, slideId, QuestionType.OBJECTIVE);
   store.addElementToSlide(question);
 };
 
@@ -44,7 +56,7 @@ export const addDiscursiveQuestionToEditor = async (store : EditorState) => {
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  const question = await createQuestion(presentationId, slideId, QuestionType.DISCURSIVE);
+  const question = await createDefaultQuestion(presentationId, slideId, QuestionType.DISCURSIVE);
   store.addElementToSlide(question);
 };
 
@@ -53,7 +65,7 @@ export const addMultipleChoiceQuestionToEditor = async (store : EditorState) => 
   const presentationId = store.presentationId;
   const slideId = slide.objectId;
 
-  const question = await createQuestion(presentationId, slideId, QuestionType.MULTIPLE_CHOICE);
+  const question = await createDefaultQuestion(presentationId, slideId, QuestionType.MULTIPLE_CHOICE);
   store.addElementToSlide(question);
 };
 

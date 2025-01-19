@@ -10,7 +10,7 @@ import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
 import { Classroom } from '@/app/edit/[id]/types/classroom';
-import { DetailPresentation, InteractiveElements } from '@/app/edit/[id]/types/pages';
+import { DetailPresentation } from '@/app/edit/[id]/types/pages';
 
 import { useEditorStore } from '@/app/edit/[id]/store/editor';
 
@@ -20,6 +20,7 @@ import { PageThumbnails } from '@/app/edit/[id]/components/PageThumbnails';
 import { AddResourceModal } from '@/app/edit/[id]/components/AddResourceModal';
 import { NewClassroomModal } from '@/app/edit/[id]/components/NewClassroomModal';
 import { ClassroomCreatedModal } from '@/app/edit/[id]/components/ClassroomCreatedModal';
+import { GenerateElementsModal } from '@/app/edit/[id]/components/GenerateElementsModal';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { TooltipButton } from '@/components/ui/Tooltip';
 
@@ -39,16 +40,12 @@ const fetchClassroom = async(presentationId: string) : Promise<Classroom> => {
   return data;
 }
 
-const fetchElementsGenerated = async(presentationId: string, slideId: string) : Promise<InteractiveElements> => {
-  const { data } = await client.get(`/presentation/generate-elements/${presentationId}/${slideId}`);
-  return data;
-}
-
 export default function Edit({ params } : { params: { id: string }}) {
   const [ isAddResourceModalOpen, setAddResourceModalOpen ] = useState(false);
   const [ isNewClassroomModalOpen, setNewClassroomModalOpen ] = useState(false);
   const [ currentClassroom, setCurrentClassroom ] = useState<Classroom | null>(null);
   const [ displayClassroomCreatedModal, setDisplayClassroomCreatedModal ] = useState(false);
+  const [ displayGenerateElementsModal, setDisplayGenerateElementsModal ] = useState(false);
   const store = useEditorStore();
 
   const onClassroomCreated = (classroom: Classroom) => {
@@ -84,12 +81,6 @@ export default function Edit({ params } : { params: { id: string }}) {
         .catch(() => console.log('No classroom found'));
   }, []);
 
-  const handleGenerateElements = async () => {
-    const slide = store.slides[store.currentSlideIndex];
-    const elements = await fetchElementsGenerated(params.id, slide.objectId);
-    console.log(elements);
-  }
-
   return (
     <div className='flex h-screen flex-col'>
       <Navbar>
@@ -104,7 +95,7 @@ export default function Edit({ params } : { params: { id: string }}) {
         </TooltipButton>
 
         <TooltipButton text='Analisar página com IA'>
-          <Button variant='outline' size='icon' onClick={handleGenerateElements}>
+          <Button variant='outline' size='icon' onClick={() => setDisplayGenerateElementsModal(true)}>
             <Sparkles className='h-4 w-4' />
           </Button>
         </TooltipButton>
@@ -148,6 +139,7 @@ export default function Edit({ params } : { params: { id: string }}) {
         </ScrollArea>
       </div>
 
+      <GenerateElementsModal isOpen={displayGenerateElementsModal} onClose={() => setDisplayGenerateElementsModal(false)} />
       <AddResourceModal isOpen={isAddResourceModalOpen} onClose={() => setAddResourceModalOpen(false)} />
       <NewClassroomModal
         isOpen={isNewClassroomModalOpen}
