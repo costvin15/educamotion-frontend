@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { QuestionPropertiesProps, QuestionProps } from "@/app/elements/question/types";
 import { updateQuestionDetails } from "@/app/elements/question";
-import { useQuestionStore } from "@/app/elements/question/store";
+import { useQuestionStore } from "@/app/elements/question/store/question";
 import { mergeClassNames } from "@/components/utils";
 import { PlusCircle, X } from "lucide-react";
 

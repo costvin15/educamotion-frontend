@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useQuestionStore } from "@/app/elements/question/store";
+import { useQuestionStore } from "@/app/elements/question/store/question";
 import { QuestionPropertiesProps, QuestionProps } from "@/app/elements/question/types";
 
 import { Button } from "@/components/ui/Button";

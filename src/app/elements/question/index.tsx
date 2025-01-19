@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/hooks/use-toast';
 
 import { ElementProps } from '@/app/elements';
-import { useQuestionStore } from '@/app/elements/question/store';
+import { useQuestionStore } from '@/app/elements/question/store/question';
 import { QuestionAnswer, Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
 import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
 import { ObjectiveQuestion, ObjectiveQuestionProperties } from '@/app/elements/question/Objective';

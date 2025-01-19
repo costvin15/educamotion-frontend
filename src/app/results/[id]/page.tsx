@@ -1,10 +1,23 @@
+'use client';
+import { useEffect } from "react";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
+
+import { useResultsStore } from "@/app/results/[id]/store";
+
 import { Button } from "@/components/ui/Button";
 import { Navbar } from "@/components/ui/NavBar";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
-import { Pencil } from "lucide-react";
-import Link from "next/link";
+
+import QuestionReport from '@/app/elements/question/report';
 
 export default function ResultsLayout({ params } : { params : { id: string }}) {
+  const store = useResultsStore();
+
+  useEffect(() => {
+    store.setPresentationId(params.id);
+  }, []);
+
   return (
     <div className='flex h-screel flex-col'>
       <Navbar>
@@ -19,8 +32,8 @@ export default function ResultsLayout({ params } : { params : { id: string }}) {
         </Link>
       </Navbar>
 
-      <div className='flex-1 flex flex-col'>
-        <p>Results for {params.id}</p>
+      <div className='grid grid-cols-4 gap-4 p-4'>
+        <QuestionReport presentationId={params.id} />
       </div>
     </div>
   );

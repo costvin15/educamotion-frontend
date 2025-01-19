@@ -9,15 +9,6 @@ export interface QuestionState {
   setAnswer: (questionId: string, answer: QuestionAnswer) => void;
 };
 
-const initialState: Question = {
-  id: '',
-  title: '',
-  description: '',
-  type: QuestionType.DISCURSIVE,
-  options: [],
-  correctOption: '',
-};
-
 export const useQuestionStore = create<QuestionState>((set) => ({
   questions: new Map<string, Question>(),
   answers: new Map<string, QuestionAnswer>(),

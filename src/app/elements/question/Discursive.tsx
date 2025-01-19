@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { QuestionProps } from '@/app/elements/question/types';
 import { Textarea } from '@/components/ui/Textarea';
 import { mergeClassNames } from '@/components/utils';
-import { useQuestionStore } from '@/app/elements/question/store';
+import { useQuestionStore } from '@/app/elements/question/store/question';
 
 export function DiscursiveQuestion({ question, onAnswer } : QuestionProps) {
   const store = useQuestionStore();
