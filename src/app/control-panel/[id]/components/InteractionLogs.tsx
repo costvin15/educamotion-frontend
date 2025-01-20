@@ -42,7 +42,6 @@ export function InteractionLogs() {
           viewerId: message.data.userId,
           viewerName: user.name,
           type: InteractionType[message.data.type as keyof typeof InteractionType],
-          element: 'Teste',
           timestamp: new Date(),
           data: content,
         };
@@ -84,6 +83,7 @@ export function InteractionLogs() {
               </div>
               <p className='text-sm'>
                 {log.type === InteractionType.QUESTION && `Respondeu questão`}
+                {log.type === InteractionType.MESSAGE && `Enviou mensagem no chat`}
                 {/* {log.type === InteractionType.CHAT_MESSAGE && `Enviou mensagem no chat`} */}
                 {/* {log.type === InteractionType.BUTTON_CLICK && `Clicou em ${log.element}`}
                 {log.type === InteractionType.FORM_SUBMIT && `Submeteu ${log.element}`}

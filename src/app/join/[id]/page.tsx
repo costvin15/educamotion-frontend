@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { LogOut, Send } from 'lucide-react';
-import * as Ably from 'ably';
+import Link from 'next/link';
 
 import client from '@/client';
 
@@ -115,10 +115,12 @@ export default function Join({ params } : { params: { id: string }}) {
           Chat
         </Button>
 
-        <Button variant='outline'>
-          <LogOut className='h-4 w-4 mr-2' />
-          Sair
-        </Button>
+        <Link href='/'>
+          <Button variant='outline'>
+            <LogOut className='h-4 w-4 mr-2' />
+            Sair
+          </Button>
+        </Link>
       </Navbar>
   
       <div className='h-screen p-6'>

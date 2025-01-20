@@ -5,6 +5,7 @@ export enum InteractionType {
   COSMO = 'Cosmo',
   CHAT_MESSAGE = 'Mensagem de Chat',
   QUESTION = 'Questão respondida',
+  MESSAGE = 'Mensagem de Chat',
 }
 
 export interface InteractionLog {
@@ -12,7 +13,6 @@ export interface InteractionLog {
   viewerId: string;
   viewerName: string;
   type: InteractionType;
-  element: string;
   timestamp: Date;
   data?: Record<string, any>;
 };

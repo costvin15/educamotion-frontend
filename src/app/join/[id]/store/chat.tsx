@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface Message {
   id: string;
-  user: string;
+  userId: string;
   content: string;
   timestamp: Date;
 };
@@ -12,7 +12,7 @@ export interface ChatState {
   messages: Message[];
   openPanel: () => void;
   closePanel: () => void;
-  sendMessage: (message: string) => void;
+  addMessage: (message: string, userId: string) => void;
 };
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -20,12 +20,12 @@ export const useChatStore = create<ChatState>((set) => ({
   messages: [],
   openPanel: () => set((state) => ({ panelOpened: true })),
   closePanel: () => set((state) => ({ panelOpened: false })),
-  sendMessage: (message) => set((state) => ({
+  addMessage: (message, userId) => set((state) => ({
     messages: [
       ...state.messages,
       {
-        id: String(state.messages.length + 1),
-        user: 'Vinicius',
+        id: Math.random().toString(36).substr(2, 9),
+        userId,
         content: message,
         timestamp: new Date()
       }
