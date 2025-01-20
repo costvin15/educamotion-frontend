@@ -54,6 +54,7 @@ export const ToastDescription = forwardRef<ElementRef<typeof Description>, Compo
     />
   )
 );
+ToastDescription.displayName = Description.displayName;
 
 export const ToastClose = forwardRef<ElementRef<typeof Close>, ComponentPropsWithoutRef<typeof Close>>(
   ({ className, ...props }, ref) => (

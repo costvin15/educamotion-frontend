@@ -132,3 +132,4 @@ export const GenerateElementsModal = forwardRef<HTMLDivElement, GenerateElements
     );
   }
 );
+GenerateElementsModal.displayName = 'GenerateElementsModal';

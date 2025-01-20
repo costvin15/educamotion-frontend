@@ -44,3 +44,4 @@ export const TooltipButton = forwardRef<ElementRef<'button'>, TooltipProps>(
     </div>
   )
 );
+TooltipButton.displayName = 'TooltipButton';

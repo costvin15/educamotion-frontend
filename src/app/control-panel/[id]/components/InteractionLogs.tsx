@@ -103,4 +103,5 @@ export function InteractionLogs() {
       </ScrollArea>
     </Card>
   );
-}
+};
+InteractionLogs.displayName = 'InteractionLogs';

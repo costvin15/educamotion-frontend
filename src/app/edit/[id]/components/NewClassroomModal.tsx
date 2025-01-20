@@ -78,3 +78,4 @@ export const NewClassroomModal = forwardRef<HTMLDivElement, NewClassroomModalPro
     );
   }
 );
+NewClassroomModal.displayName = 'NewClassroomModal';

@@ -66,3 +66,4 @@ export const ViewerCard = forwardRef<HTMLDivElement, ViewerCardProps>(
     );
   }
 );
+ViewerCard.displayName = 'ViewerCard';

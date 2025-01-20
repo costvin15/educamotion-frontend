@@ -45,3 +45,4 @@ export const ClassroomCreatedModal = forwardRef<HTMLDivElement, ClassroomCreated
     </div>
   )
 );
+ClassroomCreatedModal.displayName = 'ClassroomCreatedModal';
