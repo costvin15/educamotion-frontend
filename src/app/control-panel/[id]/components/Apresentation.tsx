@@ -34,7 +34,8 @@ export function Apresentation() {
               >
                 <Element
                   key={element.id}
-                  element={element}
+                  element={{ ...element, owner: true }}
+                  onAnswerSend={() => {}}
                 />
               </div>
             );

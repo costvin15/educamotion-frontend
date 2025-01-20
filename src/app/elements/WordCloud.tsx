@@ -37,10 +37,10 @@ export function WordCloud({ element } : { element: SlideElement }) {
     return wordFrequencyArray;
   }
 
-  useEffect(() => {
-    const answer = makeWordFrequency(element.data?.initialWords || []);
-    setWords(answer);
-  }, [element.data?.initialWords]);
+  // useEffect(() => {
+  //   const answer = makeWordFrequency(element.data?.initialWords || []);
+  //   setWords(answer);
+  // }, [element.data?.initialWords]);
 
   return (
     <>
@@ -71,7 +71,7 @@ export function WordCloud({ element } : { element: SlideElement }) {
         <CardContent className='!p-1'>
           <Input
             type='text'
-            placeholder={element.content || 'Insira uma palavra'}      
+            placeholder={'Insira uma palavra'}      
           />
         </CardContent>
       </Card>
