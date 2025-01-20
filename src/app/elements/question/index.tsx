@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 import { SlideElement } from "@/app/edit/[id]/types/pages";
 
@@ -11,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { toast } from '@/hooks/use-toast';
 
-import { ElementProps } from '@/app/elements';
+import { ElementProps, ElementType } from '@/app/elements';
 import { useQuestionStore } from '@/app/elements/question/store/question';
 import { QuestionAnswer, Question as QuestionDetails, QuestionType } from '@/app/elements/question/types';
 import { DiscursiveQuestion } from '@/app/elements/question/Discursive';
@@ -123,8 +124,9 @@ export function QuestionProperties({ element } : { element: SlideElement }) {
   );
 };
 
-export function Question({ element, onLoaded } : ElementProps) {
+export function Question({ element, onLoaded, onAnswerSend } : ElementProps) {
   const store = useQuestionStore();
+  const session = useSession();
   const question = store.questions.get(element.id);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -161,6 +163,10 @@ export function Question({ element, onLoaded } : ElementProps) {
   const onAnswer = (answer: string) => {
     try {
       sendAnswer(element.id, answer);
+      const content = { answer };
+      if (session.data && session.data.user && session.data.user.id) {
+        onAnswerSend(JSON.stringify(content), session.data.user.id, ElementType.QUESTION);
+      }
     } catch (error) {
       toast({
         title: 'Oops!',

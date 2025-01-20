@@ -1,11 +1,19 @@
 import { Card } from "@/components/ui/Card";
 
 import { Elements } from "@/app/elements";
+
 import { usePresentationStore } from "@/app/join/[id]/store/presentation";
+import { useWebSocketStore } from "@/app/join/[id]/store/websocket";
 
 export function Apresentation() {
   const store = usePresentationStore();
+  const websocket = useWebSocketStore();
   const currentSlide = store.currentSlide;
+
+  const onAnswer = (content: string, userId: string, type: string) => {
+    console.log('Sending answer to ' + store.classroomId, content, userId, type);
+    websocket.send(store.classroomId, 'events', JSON.stringify({ content, userId, type }));
+  }
 
   return (
     <Card className='w-full h-full'>
@@ -33,7 +41,8 @@ export function Apresentation() {
               >
                 <Element
                   key={element.id}
-                  element={element}
+                  element={{ ...element, owner: false }}
+                  onAnswerSend={onAnswer}
                 />
               </div>
             );

@@ -12,6 +12,7 @@ import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 
 import { useChatStore } from '@/app/join/[id]/store/chat';
 import { usePresentationStore } from '@/app/join/[id]/store/presentation';
+import { useWebSocketStore } from '@/app/join/[id]/store/websocket';
 
 import { Classroom, DetailPresentation } from '@/app/join/[id]/types';
 import { ChatPanel } from '@/app/join/[id]/components/ChatPanel';
@@ -33,27 +34,32 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
   return URL.createObjectURL(blob);
 };
 
-export default function Watch({ params } : { params: { id: string }}) {
+export default function Join({ params } : { params: { id: string }}) {
   const session = useSession();
   const store = usePresentationStore();
+  const websocket = useWebSocketStore();
   const { panelOpened, openPanel, closePanel } = useChatStore();
-  const [ ablyClient, setAblyClient ] = useState<Ably.Realtime | null>(null);
 
   useEffect(() => {
-    if (!session.data?.user?.id)
+    if (!session.data?.user?.id) {
       return;
-    if (!store.classroomId)
+    }
+    if (!store.classroomId) {
       return;
-    const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_ABLY_API_KEY, clientId: session.data.user.id });
-    setAblyClient(client);
-    client.channels.get(store.classroomId)
-      .subscribe('change-slide', async (message) => {
-        store.setCurrentSlideIndex(message.data.slideIndex);
-      });
-    client.channels.get(store.classroomId).presence.enter();
+    }
+    websocket.connect(session.data.user.id);
+    if (!websocket.client) {
+      return;
+    }
+    websocket.subscribe(store.classroomId, 'change-slide', async (message) => {
+      store.setCurrentSlideIndex(message.data.slideIndex);
+    });
+    websocket.enterPresence(store.classroomId);
     return () => {
-      client.channels.get(store.classroomId).presence.leave();
-      client.close();
+      if (!websocket.client) {
+        return;
+      }
+      websocket.leavePresence(store.classroomId);
     }
   }, [session.data, store.classroomId]);
 

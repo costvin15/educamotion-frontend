@@ -19,6 +19,7 @@ import { InteractionLogs } from "@/app/control-panel/[id]/components/Interaction
 import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
 import { useControlPanelStore } from '@/app/control-panel/[id]/store';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/Card';
 
 const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
@@ -74,6 +75,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
       }
       store.setClassroomId(classroom.id);
       store.setPresentationId(classroom.presentation.id);
+      store.setEntryCode(classroom.entryCode);
       store.setNumberOfPages(presentation.slidesIds.length);
       store.setSlidesIds(presentation.slidesIds);
       store.setElements(presentation.elements);
@@ -170,6 +172,9 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
         <Apresentation />
 
         <div className='space-y-6'>
+          <Card className='p-6 space-y-6'>
+            <h2 className='text-lg'>Código da Sala: {store.entryCode}</h2>
+          </Card>
           <Tabs defaultValue='viewers'>
             <TabsList className='grid w-full grid-cols-2'>
               <TabsTrigger value='viewers' className='flex items-center gap-2'>

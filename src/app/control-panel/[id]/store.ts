@@ -5,6 +5,7 @@ import { SlideElement, Page } from "@/app/control-panel/[id]/types";
 export interface ControlPanelState {
   presentationId: string;
   classroomId: string;
+  entryCode: string;
   numberOfPages: number;
   currentSlide: Page;
   currentSlideIndex: number;
@@ -12,6 +13,7 @@ export interface ControlPanelState {
   elements: Record<string, SlideElement[]>;
   setPresentationId: (id: string) => void;
   setClassroomId: (id: string) => void;
+  setEntryCode: (code: string) => void;
   setNumberOfPages: (number: number) => void;
   setCurrentSlide: (slide: Page) => void;
   setCurrentSlideIndex: (index: number) => void;
@@ -29,6 +31,7 @@ const initialState: Page = {
 export const useControlPanelStore = create<ControlPanelState>((set) => ({
   presentationId: '',
   classroomId: '',
+  entryCode: '',
   numberOfPages: 0,
   currentSlide: initialState,
   currentSlideIndex: 0,
@@ -36,6 +39,7 @@ export const useControlPanelStore = create<ControlPanelState>((set) => ({
   elements: {},
   setPresentationId: (id) => set((state) => ({ presentationId: id })),
   setClassroomId: (id) => set((state) => ({ classroomId: id })),
+  setEntryCode: (code) => set((state) => ({ entryCode: code })),
   setNumberOfPages: (number) => set((state) => ({ numberOfPages: number })),
   setCurrentSlide: (slide) => set((state) => ({ currentSlide: slide })),
   setCurrentSlideIndex: (index) => set((state) => ({ currentSlideIndex: index })),

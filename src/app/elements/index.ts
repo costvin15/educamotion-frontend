@@ -17,6 +17,7 @@ export enum ElementType {
 
 export interface ElementProps {
   element: SlideElement;
+  onAnswerSend: (content: string, userId: string, type: ElementType) => void;
   onLoaded?: () => void;
 }
 
