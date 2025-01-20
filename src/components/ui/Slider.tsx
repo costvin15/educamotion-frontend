@@ -16,5 +16,6 @@ const Slider = React.forwardRef<ElementRef<typeof Root>, ComponentPropsWithoutRe
     </Root>
   )
 );
+Slider.displayName = 'Slider';
 
 export { Slider };

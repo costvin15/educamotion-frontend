@@ -72,6 +72,7 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
         <Element
           element={element}
           onLoaded={onLoaded}
+          onAnswerSend={() => {}}
         />
       </div>
       {isSelected && (
@@ -85,3 +86,4 @@ export const CanvasElement = forwardRef<HTMLDivElement, CanvasElementProps>((({ 
     </Rnd>
   );
 }));
+CanvasElement.displayName = 'CanvasElement';
