@@ -12,7 +12,7 @@ export function Apresentation() {
 
   const onAnswer = (content: string, userId: string, type: string) => {
     console.log('Sending answer to ' + store.classroomId, content, userId, type);
-    websocket.send(store.classroomId, 'events', JSON.stringify({ content, userId, type }));
+    websocket.send(store.classroomId, 'events', { content, userId, type });
   }
 
   return (

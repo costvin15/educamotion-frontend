@@ -4,6 +4,7 @@ export enum InteractionType {
   PAGE_VIEW = 'Visualização de Página',
   COSMO = 'Cosmo',
   CHAT_MESSAGE = 'Mensagem de Chat',
+  QUESTION = 'Questão respondida',
 }
 
 export interface InteractionLog {

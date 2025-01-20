@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/Card";
 
 import { Elements } from "@/app/elements";
 
-import { useControlPanelStore } from "@/app/control-panel/[id]/store";
+import { useControlPanelStore } from "@/app/control-panel/[id]/store/ControlPanel";
 
 export function Apresentation() {
   const store = useControlPanelStore();

@@ -4,7 +4,7 @@ import { useAbly, usePresence, usePresenceListener } from 'ably/react';
 import { Card } from '@/components/ui/Card';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
-import { useControlPanelStore } from '@/app/control-panel/[id]/store';
+import { useControlPanelStore } from '@/app/control-panel/[id]/store/ControlPanel';
 import { ViewerCard } from './ViewerCard';
 
 export function ViewersList() {

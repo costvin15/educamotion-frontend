@@ -17,9 +17,10 @@ import { ViewersList } from "@/app/control-panel/[id]/components/ViewersList";
 import { InteractionLogs } from "@/app/control-panel/[id]/components/InteractionLogs";
 
 import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
-import { useControlPanelStore } from '@/app/control-panel/[id]/store';
+import { useControlPanelStore } from '@/app/control-panel/[id]/store/ControlPanel';
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
+import { useWebSocketStore } from '@/app/control-panel/[id]/store/WebSocket';
 
 const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
@@ -50,13 +51,12 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   const store = useControlPanelStore();
   const session = useSession();
   const router = useRouter();
-  const [ablyClient, setAblyClient] = useState<Ably.Realtime | null>(null);
+  const websocket = useWebSocketStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!session.data?.user.id) return;
-    const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: session.data.user.id });
-    setAblyClient(client);
+    websocket.connect(session.data.user.id);
   }, [session.data?.user.id]);
 
   useEffect(() => {
@@ -98,14 +98,17 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   }, [store.presentationId, store.currentSlideIndex]);
 
   const handleSlideChange = (slideIndex: number) => {
-    if (!ablyClient) {
-      console.error('Ably client is not ready');
-      return;
+    if (!websocket.client) {
+      console.log('Ably client is not ready');
+      if (!session.data?.user.id) {
+        return;
+      }
+      websocket.connect(session.data.user.id);
     }
 
     store.setCurrentSlideIndex(slideIndex);
     performChangeSlide(store.classroomId, store.slidesIds[slideIndex]);
-    ablyClient.channels.get(store.classroomId).publish('change-slide', { slideIndex: slideIndex });
+    websocket.send(store.classroomId, 'change-slide', { slideIndex });
   }
 
   const performNextSlide = () => {
@@ -187,8 +190,8 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
               </TabsTrigger>
             </TabsList>
             <TabsContent value='viewers'>
-              {ablyClient && store.classroomId && (
-                <AblyProvider client={ablyClient}>
+              {websocket.client && store.classroomId && (
+                <AblyProvider client={websocket.client}>
                   <ChannelProvider channelName={store.classroomId}>
                     <ViewersList />
                   </ChannelProvider>

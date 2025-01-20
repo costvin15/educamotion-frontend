@@ -1,5 +1,5 @@
-import * as Ably from 'ably';
 import { create } from 'zustand';
+import * as Ably from 'ably';
 
 export interface WebSocketState {
   client: Ably.Realtime | null;
