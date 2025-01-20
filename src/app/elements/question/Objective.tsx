@@ -128,10 +128,6 @@ export function ObjectiveQuestion({ question, onAnswer } : QuestionProps) {
   const storedAnswer = store.answers.get(question.id);
   const [selectedOption, setSelectedOption] = useState<string>(storedAnswer?.answer || '');
 
-  if (!question) {
-    return null;
-  }
-
   useEffect(() => {
     if (!question) {
       return;
@@ -142,6 +138,10 @@ export function ObjectiveQuestion({ question, onAnswer } : QuestionProps) {
     }, 500);
     return () => clearTimeout(timeout);
   }, [selectedOption]);
+
+  if (!question) {
+    return null;
+  }
 
   return (
     <div className='w-full h-full bg-primary p-4 rounded-lg shadow-md'>
