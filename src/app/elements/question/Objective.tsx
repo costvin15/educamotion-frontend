@@ -18,22 +18,9 @@ export function ObjectiveQuestionProperties({ questionId } : QuestionPropertiesP
   const [correctOption, setCorrectOption] = useState<string>(question?.correctOption || '');
   const [newOptionContent, setNewOptionContent] = useState('');
 
-  const handleAddOption = () => {
-    if (!newOptionContent) {
-      return;
-    }
-
-    if (options.includes(newOptionContent)) {
-      return;
-    }
-
-    setOptions([...options, newOptionContent]);
-    setNewOptionContent('');
-  }
-
   useEffect(() => {
     if (!question) {
-      return;
+      return () => {};
     }
 
     store.setQuestion({ ...question, options, correctOption });
@@ -46,6 +33,19 @@ export function ObjectiveQuestionProperties({ questionId } : QuestionPropertiesP
 
   if (!question) {
     return <></>;
+  }
+
+  const handleAddOption = () => {
+    if (!newOptionContent) {
+      return;
+    }
+
+    if (options.includes(newOptionContent)) {
+      return;
+    }
+
+    setOptions([...options, newOptionContent]);
+    setNewOptionContent('');
   }
 
   return (
