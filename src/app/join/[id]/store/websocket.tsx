@@ -16,7 +16,6 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   connect: (userId, callback: () => void) => {
     const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: userId });
     client.connection.on('connected', () => {
-      console.log('4. Connected to websocket');
       callback();
     });
     set({ client });

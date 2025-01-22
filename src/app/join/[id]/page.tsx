@@ -42,29 +42,21 @@ export default function Join({ params } : { params: { id: string }}) {
 
   useEffect(() => {
     if (!session.data?.user?.id) {
-      console.log('1. No user id');
       return;
     }
     if (!store.classroomId) {
-      console.log('2. No classroom id');
       return;
     }
-    console.log('3. Connecting to websocket');
     websocket.connect(session.data.user.id, () => {
-      console.log('5. Subscribing to classroom channel');
       websocket.subscribe(store.classroomId, 'change-slide', async (message) => {
-        console.log('6. Received message', message);
         store.setCurrentSlideIndex(message.data.slideIndex);
       });
-      console.log('7. Entering presence');
       websocket.enterPresence(store.classroomId);
     });
     return () => {
       if (!websocket.client) {
-        console.log('8. No websocket client. Rolling back');
         return;
       }
-      console.log('9. Leaving presence');
       websocket.leavePresence(store.classroomId);
     }
   }, [session.data, store.classroomId]);

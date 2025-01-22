@@ -99,7 +99,6 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
 
   const handleSlideChange = (slideIndex: number) => {
     if (!websocket.client) {
-      console.log('Ably client is not ready');
       if (!session.data?.user.id) {
         return;
       }
