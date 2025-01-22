@@ -20,9 +20,10 @@ export function MessageInput() {
     if (!session.data?.user?.id) {
       return;
     }
-    websocket.connect(session.data.user.id);
-    websocket.subscribe(presentationStore.classroomId, 'new-message', (message) => {
-      addMessage(message.data.content, message.data.userId);
+    websocket.connect(session.data.user.id, () => {
+      websocket.subscribe(presentationStore.classroomId, 'new-message', (message) => {
+        addMessage(message.data.content, message.data.userId);
+      });
     });
   }, []);
 
