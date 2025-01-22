@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+import client from '@/client';
+
 import { useWordCloudStore } from "@/app/elements/word-cloud/store/word-cloud";
 
 import { SlideElement } from "@/app/edit/[id]/types/pages";
@@ -7,6 +9,12 @@ import { ElementProps } from "@/app/elements";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+import { WordCloud as WordCloudDetails } from "@/app/elements/word-cloud/types";
+
+async function fetchWordCloudDetails(wordCloudId: string) : Promise<WordCloudDetails> {
+  const { data } = await client.get(`/element/word-cloud/detail/${wordCloudId}`);
+  return data;
+}
 
 export function WordCloudProperties({ element } : { element: SlideElement }) {
   return (
