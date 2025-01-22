@@ -15,6 +15,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   client: null,
   connect: (userId) => {
     const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: userId });
+    client.connect();
     set({ client });
   },
   disconnect: () => {

@@ -53,7 +53,7 @@ export default function Join({ params } : { params: { id: string }}) {
       console.log('3. Connecting to websocket');
       websocket.connect(session.data.user.id);
       if (!websocket.client) {
-        console.log('4. No websocket client. Rolling back');
+        console.log('4. No websocket client. Rolling back', websocket);
         return;
       }
       console.log('5. Subscribing to classroom channel');
