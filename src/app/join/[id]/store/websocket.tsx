@@ -25,11 +25,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 
     set({ client: null });
   },
-  enterPresence: (channel) => {
+  enterPresence: async (channel) => {
     const client = get().client;
     if (!client) return;
 
-    client.channels.get(channel).presence.enter();
+    await client.channels.get(channel).presence.enter();
   },
   leavePresence: (channel) => {
     const client = get().client;
@@ -44,11 +44,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const channelInstance = client.channels.get(channel);
     channelInstance.publish(topic, message);
   },
-  subscribe: (channel, topic, callback) => {
+  subscribe: async (channel, topic, callback) => {
     const client = get().client;
     if (!client) return;
 
     const channelInstance = client.channels.get(channel);
-    channelInstance.subscribe(topic, callback);
+    await channelInstance.subscribe(topic, callback);
   },
 }));
