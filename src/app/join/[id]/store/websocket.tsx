@@ -15,33 +15,6 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   client: null,
   connect: (userId) => {
     const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: userId });
-    client.connection.on('connected', () => {
-      console.log('Connection status: connected');
-    });
-    client.connection.on('closed', () => {
-      console.log('Connection status: closed');
-    });
-    client.connection.on('closing', () => {
-      console.log('Connection status: closing');
-    });
-    client.connection.on('connecting', () => {
-      console.log('Connection status: connecting');
-    });
-    client.connection.on('disconnected', () => {
-      console.log('Connection status: disconnected');
-    });
-    client.connection.on('failed', () => {
-      console.log('Connection status: failed');
-    });
-    client.connection.on('initialized', () => {
-      console.log('Connection status: initialized');
-    });
-    client.connection.on('suspended', () => {
-      console.log('Connection status: suspended');
-    });
-    client.connection.on('update', () => {
-      console.log('Connection status: update');
-    });
     set({ client });
   },
   disconnect: () => {
@@ -52,11 +25,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 
     set({ client: null });
   },
-  enterPresence: async (channel) => {
+  enterPresence: (channel) => {
     const client = get().client;
     if (!client) return;
 
-    await client.channels.get(channel).presence.enter();
+    client.channels.get(channel).presence.enter();
   },
   leavePresence: (channel) => {
     const client = get().client;
@@ -71,11 +44,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const channelInstance = client.channels.get(channel);
     channelInstance.publish(topic, message);
   },
-  subscribe: async (channel, topic, callback) => {
+  subscribe: (channel, topic, callback) => {
     const client = get().client;
     if (!client) return;
 
     const channelInstance = client.channels.get(channel);
-    await channelInstance.subscribe(topic, callback);
+    channelInstance.subscribe(topic, callback);
   },
 }));
