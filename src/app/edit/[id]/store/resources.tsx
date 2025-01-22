@@ -1,6 +1,6 @@
-import { CircleHelp, Cloud, CodeXml, Image, Type } from 'lucide-react';
+import { CircleHelp, Cloud } from 'lucide-react';
 
-import { addObjectiveQuestionToEditor, addLeetCodeToEditor as addLeetCodeToEditor, addQuestionToEditor, addWordCloudToEditor, addDiscursiveQuestionToEditor, addMultipleChoiceQuestionToEditor } from '@/app/edit/[id]/utils/EditorElements';
+import { addObjectiveQuestionToEditor, addWordCloudToEditor, addDiscursiveQuestionToEditor, addMultipleChoiceQuestionToEditor } from '@/app/edit/[id]/utils/EditorElements';
 import { EditorState } from '@/app/edit/[id]/store/editor';
 
 export interface SlideResource {
@@ -39,12 +39,5 @@ export const SlideResources : SlideResource[] = [
     description: 'Adicione uma nuvem de palavras ao seu slide',
     icon: <Cloud className='h-6 w-6 text-muted-foreground' />,
     onAdd: (store) => addWordCloudToEditor(store)
-  },
-  {
-    id: 'cosmo',
-    name: 'Cosmo',
-    description: 'Adicione um problema do Cosmo ao seu slide',
-    icon: <CodeXml className='h-6 w-6 text-muted-foreground' />,
-    onAdd: (store) => addLeetCodeToEditor(store)
   }
 ];

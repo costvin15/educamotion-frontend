@@ -30,6 +30,18 @@ export const createQuestion = async (presentationId: string, slideId: string, ti
   return element;
 };
 
+export const createWordCloud = async (presentationId: string, slideId: string, title: string, enableMultipleEntries: boolean) : Promise<SlideElement> => {
+  const element = await createElement(presentationId, slideId, ElementType.WORDCLOUD);
+
+  await client.post('/element/word-cloud/add', {
+    id: element.id,
+    title: title,
+    enableMultipleEntries: enableMultipleEntries,
+  });
+
+  return element;
+}
+
 const createDefaultQuestion = async (presentationId: string, slideId: string, questionType : QuestionType) : Promise<SlideElement> => {
   return createQuestion(
     presentationId,
@@ -69,52 +81,11 @@ export const addMultipleChoiceQuestionToEditor = async (store : EditorState) => 
   store.addElementToSlide(question);
 };
 
-export const addQuestionToEditor = (store : EditorState) => {
-  // store.addElementToSlide({
-  //   id: Date.now().toString(),
-  //   elementType: SlideElementType.QUESTION,
-  //   x: 0,
-  //   y: 0,
-  //   width: 20,
-  //   height: 10,
-  //   rotation: 0,
-  //   content: 'What is the answer to life, the universe and everything?',
-  //   style: {
-  //     fontSize: 16,
-  //     color: '#000000',
-  //   },
-  // });
-}
+export const addWordCloudToEditor = async (store : EditorState) => {
+  const slide = store.slides[store.currentSlideIndex];
+  const presentationId = store.presentationId;
+  const slideId = slide.objectId;
 
-export const addWordCloudToEditor = (store : EditorState) => {
-  // store.addElementToSlide({
-  //   id: Date.now().toString(),
-  //   elementType: SlideElementType.WORDCLOUD,
-  //   x: 0,
-  //   y: 0,
-  //   width: 20,
-  //   height: 10,
-  //   rotation: 0,
-  //   content: 'Word Cloud',
-  //   style: {
-  //     fontSize: 16,
-  //   },
-  // });
-}
-
-export const addLeetCodeToEditor = (store : EditorState) => {
-  // store.addElementToSlide({
-  //   id: Date.now().toString(),
-  //   elementType: SlideElementType.LEETCODE,
-  //   x: 0,
-  //   y: 0,
-  //   width: 20,
-  //   height: 10,
-  //   rotation: 0,
-  //   content: '',
-  //   style: {
-  //     fontSize: 16,
-  //     color: '#000000',
-  //   },
-  // });
-}
+  const wordcloud = await createWordCloud(presentationId, slideId, 'Edite me!', true);
+  store.addElementToSlide(wordcloud);
+};
