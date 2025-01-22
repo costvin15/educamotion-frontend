@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 export interface WebSocketState {
   client: Ably.Realtime | null;
-  connect: (userId: string) => void;
+  connect: (userId: string, callback: () => void) => void;
   disconnect: () => void;
   enterPresence: (channel: string) => void;
   leavePresence: (channel: string) => void;
@@ -13,8 +13,11 @@ export interface WebSocketState {
 
 export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   client: null,
-  connect: (userId) => {
+  connect: (userId, callback: () => void) => {
     const client = new Ably.Realtime({ key: process.env.NEXT_PUBLIC_TEACHER_ABLY_API_KEY, clientId: userId });
+    client.connection.on('connected', () => {
+      callback();
+    });
     set({ client });
   },
   disconnect: () => {

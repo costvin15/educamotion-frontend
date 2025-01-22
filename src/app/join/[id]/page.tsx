@@ -50,21 +50,15 @@ export default function Join({ params } : { params: { id: string }}) {
       return;
     }
     console.log('3. Connecting to websocket');
-    websocket.connect(session.data.user.id);
-    websocket.client?.connection.on('connected', () => {
-      console.log('3.1. Connected to websocket');
+    websocket.connect(session.data.user.id, () => {
+      console.log('5. Subscribing to classroom channel');
+      websocket.subscribe(store.classroomId, 'change-slide', async (message) => {
+        console.log('6. Received message', message);
+        store.setCurrentSlideIndex(message.data.slideIndex);
+      });
+      console.log('7. Entering presence');
+      websocket.enterPresence(store.classroomId);
     });
-    if (!websocket.client) {
-      console.log('4. No websocket client. Rolling back', websocket);
-      return;
-    }
-    console.log('5. Subscribing to classroom channel');
-    websocket.subscribe(store.classroomId, 'change-slide', async (message) => {
-      console.log('6. Received message', message);
-      store.setCurrentSlideIndex(message.data.slideIndex);
-    });
-    console.log('7. Entering presence');
-    websocket.enterPresence(store.classroomId);
     return () => {
       if (!websocket.client) {
         console.log('8. No websocket client. Rolling back');
