@@ -49,8 +49,7 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
   const [userInformation, setUserInformation] = useState<Record<string, User>>({});
   const [questionInformation, setQuestionInformation] = useState<Record<string, Question>>({});
 
-  const slideId = store.presentation?.slidesIds[pageSelected] || 0;
-  const answers = store.report?.pages.find((page) => page.page === slideId)?.answers || [];
+  const answers = store.report?.pages[pageSelected].answers || [];
 
   useEffect(() => {
     if (!store.report || !store.presentation || !store.slidesIds) {
@@ -58,8 +57,6 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
     }
 
     console.log('Report', store.report);
-    console.log('SlideId', slideId);
-    console.log('Answers', answers);
 
     (async () => {
       const usersIds = answers.map((answer) => answer.userId);
