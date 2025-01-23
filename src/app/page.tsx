@@ -36,9 +36,9 @@ export default function Home() {
             Comece a Usar
           </Button>
         </Link>
-        <Button size="lg" variant="outline" className="text-lg">
+        {/* <Button size="lg" variant="outline" className="text-lg">
           Veja Exemplos
-        </Button>
+        </Button> */}
       </Navbar>
 
       <section className='relative px-6 lg:px-8 py-24 md:py-32 bg-gradient-to-br from-primary/5 via-primary/10 to-background'>
@@ -59,9 +59,9 @@ export default function Home() {
                   <PresentationIcon className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="h-12 px-6">
+              {/* <Button variant="outline" size="lg" className="h-12 px-6">
                 Ver Exemplos
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
