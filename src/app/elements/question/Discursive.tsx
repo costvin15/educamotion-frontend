@@ -10,7 +10,7 @@ export function DiscursiveQuestion({ question, onAnswer } : QuestionProps) {
   const storedAnswer = store.answers.get(question.id);
   const [answer, setAnswer] = useState(storedAnswer?.answer || '');
   const [charCount, setCharCount] = useState(0);
-  const maxLength = 255;
+  const maxLength = 10000;
 
   useEffect(() => {
     if (!question) {
