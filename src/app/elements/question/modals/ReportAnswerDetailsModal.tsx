@@ -49,7 +49,9 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
   const [userInformation, setUserInformation] = useState<Record<string, User>>({});
   const [questionInformation, setQuestionInformation] = useState<Record<string, Question>>({});
 
-  const answers = store.report?.pages[pageSelected].answers || [];
+  const page = store.report?.pages[pageSelected];
+  console.log('page', page);
+  const answers = page?.answers || [];
 
   useEffect(() => {
     if (!store.report || !store.presentation || !store.slidesIds) {
