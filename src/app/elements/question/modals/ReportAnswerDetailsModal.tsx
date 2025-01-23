@@ -59,7 +59,9 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
 
     (async () => {
       const usersIds = answers.map((answer) => answer.userId);
+      console.log('usersIds', usersIds);
       const usersInformation = await Promise.all(usersIds.map(fetchUserInformation));
+      console.log('usersInformation', usersInformation);
       const usersInformationMap = usersInformation.reduce((acc, user) => {
         acc[user.id] = user;
         return acc;
