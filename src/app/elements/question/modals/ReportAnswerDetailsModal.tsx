@@ -58,6 +58,7 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
     }
 
     console.log('Report', store.report);
+    console.log('SlideId', slideId);
     console.log('Answers', answers);
 
     (async () => {
