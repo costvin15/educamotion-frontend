@@ -49,9 +49,7 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
   const [userInformation, setUserInformation] = useState<Record<string, User>>({});
   const [questionInformation, setQuestionInformation] = useState<Record<string, Question>>({});
 
-  console.log('pageSelected', pageSelected);
   const page = store.report?.pages[pageSelected];
-  console.log('page', page);
   const answers = page?.answers || [];
 
   useEffect(() => {
@@ -59,13 +57,9 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
       return;
     }
 
-    console.log('Report', store.report);
-
     (async () => {
       const usersIds = answers.map((answer) => answer.userId);
-      console.log('usersIds', usersIds);
       const usersInformation = await Promise.all(usersIds.map(fetchUserInformation));
-      console.log('usersInformation', usersInformation);
       const usersInformationMap = usersInformation.reduce((acc, user) => {
         acc[user.id] = user;
         return acc;
@@ -74,7 +68,9 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
     })();
 
     (async () => {
+      console.log('answers', answers);
       const questionsIds = answers.map((answer) => answer.questionId);
+      console.log('questionsIds', questionsIds);
       const questionsInformation = await Promise.all(questionsIds.map(fetchQuestionInformation));
       const questionsInformationMap = questionsInformation.reduce((acc, question) => {
         acc[question.id] = question;
