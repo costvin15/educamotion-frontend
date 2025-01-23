@@ -57,6 +57,9 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
       return;
     }
 
+    console.log('Report', store.report);
+    console.log('Answers', answers);
+
     (async () => {
       const usersIds = answers.map((answer) => answer.userId);
       console.log('usersIds', usersIds);
