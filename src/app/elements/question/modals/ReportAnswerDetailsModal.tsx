@@ -78,7 +78,7 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
       }, {} as Record<string, Question>);
       setQuestionInformation(questionsInformationMap);
     })();
-  }, [store.report]);
+  }, [pageSelected, store.report]);
 
   if (!store.report || !store.presentation || !store.slidesIds) {
     return <></>;
