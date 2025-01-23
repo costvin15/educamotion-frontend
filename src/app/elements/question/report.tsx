@@ -65,16 +65,16 @@ export default function ReportLayout({ presentationId } : ReportLayoutProps) {
 
   return (
     <>
-      {store.report.pages.map((page, _) => {
-        const index = store.slidesIds.get(page.page);
-        if (index === undefined) {
+      {store.report.pages.map((page, index) => {
+        const pageIndex = store.slidesIds.get(page.page);
+        if (pageIndex === undefined) {
           return null;
         }
 
         return (
-          <Card key={index}>
+          <Card key={pageIndex}>
             <CardHeader>
-              <CardTitle>Página nº {index + 1}</CardTitle>
+              <CardTitle>Página nº {pageIndex + 1}</CardTitle>
             </CardHeader>
             <CardContent>
               <p>Respostas registradas: {page.answers.length}</p>
