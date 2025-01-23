@@ -1,15 +1,20 @@
 'use client'
 import { useEffect, useState } from 'react';
+import { DoorOpen, Loader2 } from 'lucide-react';
 
 import client from '@/client';
+
+import { useToast } from '@/hooks/use-toast';
+
 import { Navbar } from '@/components/ui/NavBar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import { FloatingActionButton } from '@/components/ui/FloatingActionButton';
+
 import { SearchFilter } from '@/app/dashboard/components/SearchFilter';
 import { SlideGrid } from '@/app/dashboard/components/SlideGrid';
 import { UserInformation } from '@/app/dashboard/components/UserInformation';
 import { Slide, Slides, SortOptions } from '@/app/dashboard/types/slides';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { JoinClassroomModal } from '@/app/dashboard/components/JoinClassroomModal';
 
 const fetchSlides = async () : Promise<Slides> => {
   const { data } = await client.get('/presentation/list');
@@ -19,6 +24,7 @@ const fetchSlides = async () : Promise<Slides> => {
 export default function Dashboard() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [joinClassroomModalOpen, setJoinClassroomModalOpen] = useState(false);
   const [slides, setSlides] = useState([] as Slide[]);
   const [filteredSlides, setFilteredSlides] = useState([] as Slide[]);
 
@@ -95,6 +101,16 @@ export default function Dashboard() {
             onError={handleImportError}
           />
           <SlideGrid slides={filteredSlides} />
+
+          <JoinClassroomModal
+            isOpen={joinClassroomModalOpen}
+            onClose={() => setJoinClassroomModalOpen(false)}
+          />
+
+          <FloatingActionButton
+            icon={<DoorOpen className='h-6 w-6' />}
+            onClick={() => setJoinClassroomModalOpen(true)}
+          />
         </div>
       )}
     </div>
