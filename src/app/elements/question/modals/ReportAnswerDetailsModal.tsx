@@ -49,6 +49,7 @@ export function ReportAnswerDetailsModal({ isOpen, onClose, pageSelected } : Ans
   const [userInformation, setUserInformation] = useState<Record<string, User>>({});
   const [questionInformation, setQuestionInformation] = useState<Record<string, Question>>({});
 
+  console.log('pageSelected', pageSelected);
   const page = store.report?.pages[pageSelected];
   console.log('page', page);
   const answers = page?.answers || [];
