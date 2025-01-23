@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, ClipboardList, Loader2, LogOut, Users } from "lucide-react";
-import * as Ably from 'ably';
 import { useSession } from 'next-auth/react';
 import { AblyProvider, ChannelProvider } from 'ably/react';
 
@@ -120,6 +119,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
 
   const handleCloseClassroom = async () => {
     // TODO: Exibir mensagem de confirmação antes do fechamento da sala
+    websocket.send(store.classroomId, 'close-classroom', {});
     await sendCloseClassroom(store.classroomId);
     router.push('/dashboard');
   }

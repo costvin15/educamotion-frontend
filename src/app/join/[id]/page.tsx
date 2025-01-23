@@ -17,6 +17,7 @@ import { useWebSocketStore } from '@/app/join/[id]/store/websocket';
 import { Classroom, DetailPresentation } from '@/app/join/[id]/types';
 import { ChatPanel } from '@/app/join/[id]/components/ChatPanel';
 import { Apresentation } from '@/app/join/[id]/components/Apresentation';
+import { useRouter } from 'next/navigation';
 
 const fetchClassroomDetails = async (entryCode: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/entry-code/${entryCode}`);
@@ -36,6 +37,7 @@ const fetchThumbnail = async (presentationId: string, slideId: string) : Promise
 
 export default function Join({ params } : { params: { id: string }}) {
   const session = useSession();
+  const router = useRouter();
   const store = usePresentationStore();
   const websocket = useWebSocketStore();
   const { panelOpened, openPanel, closePanel } = useChatStore();
@@ -50,6 +52,9 @@ export default function Join({ params } : { params: { id: string }}) {
     websocket.connect(session.data.user.id, () => {
       websocket.subscribe(store.classroomId, 'change-slide', async (message) => {
         store.setCurrentSlideIndex(message.data.slideIndex);
+      });
+      websocket.subscribe(store.classroomId, 'close-classroom', async () => {
+        router.push('/');
       });
       websocket.enterPresence(store.classroomId);
     });
