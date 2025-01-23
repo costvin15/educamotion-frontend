@@ -175,6 +175,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (context.query.code) {
       return { redirect: { destination: `/join/${context.query.code}` } };
     }
+    if (context.query.callbackUrl) {
+      return { redirect: { destination: context.query.callbackUrl as string } };
+    }
     return { redirect: { destination: '/dashboard' } };
   }
 
