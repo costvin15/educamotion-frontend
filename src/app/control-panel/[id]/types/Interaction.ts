@@ -3,7 +3,6 @@ export enum InteractionType {
   BUTTON_CLICK = 'Clique em Botão',
   PAGE_VIEW = 'Visualização de Página',
   COSMO = 'Cosmo',
-  CHAT_MESSAGE = 'Mensagem de Chat',
   QUESTION = 'Questão respondida',
   MESSAGE = 'Mensagem de Chat',
 }

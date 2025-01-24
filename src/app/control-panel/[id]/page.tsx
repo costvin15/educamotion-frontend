@@ -54,9 +54,10 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!session.data?.user.id) return;
-    websocket.connect(session.data.user.id);
-  }, [session.data?.user.id]);
+    if (session.data?.user.id) {
+      websocket.connect(session.data.user.id, () => {});
+    }
+  }, [session.data]);
 
   useEffect(() => {
     store.reset();
@@ -97,16 +98,14 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   }, [store.presentationId, store.currentSlideIndex]);
 
   const handleSlideChange = (slideIndex: number) => {
-    if (!websocket.client) {
-      if (!session.data?.user.id) {
-        return;
-      }
-      websocket.connect(session.data.user.id);
+    if (!session.data?.user.id) {
+      return;
     }
-
-    store.setCurrentSlideIndex(slideIndex);
-    performChangeSlide(store.classroomId, store.slidesIds[slideIndex]);
-    websocket.send(store.classroomId, 'change-slide', { slideIndex });
+    websocket.connect(session.data.user.id, () => {
+      store.setCurrentSlideIndex(slideIndex);
+      performChangeSlide(store.classroomId, store.slidesIds[slideIndex]);
+      websocket.send(store.classroomId, 'change-slide', { slideIndex });
+    });
   }
 
   const performNextSlide = () => {
@@ -195,7 +194,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
                     <ViewersList />
                   </ChannelProvider>
                 </AblyProvider>
-              )}
+              ) || <p>Obtendo dados dos usuários ativos...</p>}
             </TabsContent>
             <TabsContent value='logs'>
               <InteractionLogs />
