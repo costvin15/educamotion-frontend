@@ -144,10 +144,12 @@ export function ObjectiveQuestion({ question, onAnswer } : QuestionProps) {
   }
 
   return (
-    <div className='w-full h-full bg-primary p-4 rounded-lg shadow-md'>
-      <h3 className='font-semibold text-lg text-secondary'>{question.title}</h3>
-      <p className='text-secondary/75'>{question.description}</p>
-      <div className='grid grid-cols-2 gap-2 mt-2'>
+    <div className='w-full h-full bg-primary rounded-lg shadow-md'>
+      <div className='p-4'>
+        <h3 className='font-semibold text-lg text-secondary'>{question.title}</h3>
+        <p className='text-secondary/75'>{question.description}</p>
+      </div>
+      <div className='grid grid-cols-2 gap-2 mt-2 absolute bottom-0 w-full p-4'>
         {question.options.map((option, index) => (
           <div key={index}>
             <Button

@@ -36,10 +36,12 @@ export function DiscursiveQuestion({ question, onAnswer } : QuestionProps) {
   };
 
   return (
-    <div className='w-full h-full bg-primary p-4 rounded-lg shadow-md flex flex-col'>
-      <h3 className='font-semibold text-lg text-secondary'>{question.title}</h3>
-      <p className='text-secondary/75'>{question.description}</p>
-      <div className='flex-grow my-4'>
+    <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col'>
+      <div className='p-4'>
+        <h3 className='font-semibold text-lg text-secondary'>{question.title}</h3>
+        <p className='text-secondary/75'>{question.description}</p>
+      </div>
+      <div className='flex-grow my-4 absolute bottom-0 w-full px-4'>
         <Textarea
           placeholder='Digite sua resposta...'
           className={
