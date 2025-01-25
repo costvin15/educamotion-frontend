@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, ClipboardList, Loader2, LogOut, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, ClipboardList, Loader2, LogOut, MessageCircle, Users } from "lucide-react";
 import { useSession } from 'next-auth/react';
 import { AblyProvider, ChannelProvider } from 'ably/react';
+import { useRouter } from 'next/navigation';
 
 import client from '@/client';
 
@@ -10,16 +11,16 @@ import { Button } from "@/components/ui/Button";
 import { Navbar } from "@/components/ui/NavBar";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Card } from '@/components/ui/Card';
 
 import { Apresentation } from "@/app/control-panel/[id]/components/Apresentation";
 import { ViewersList } from "@/app/control-panel/[id]/components/ViewersList";
 import { InteractionLogs } from "@/app/control-panel/[id]/components/InteractionLogs";
-
+import { Chat } from '@/app/control-panel/[id]/components/Chat';
 import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
-import { useControlPanelStore } from '@/app/control-panel/[id]/store/ControlPanel';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/Card';
+
 import { useWebSocketStore } from '@/app/control-panel/[id]/store/WebSocket';
+import { useControlPanelStore } from '@/app/control-panel/[id]/store/ControlPanel';
 
 const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
@@ -186,6 +187,10 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
                 <ClipboardList className='h-4 w-4' />
                 Eventos
               </TabsTrigger>
+              <TabsTrigger value='chat' className='flex items-center gap-2'>
+                <MessageCircle className='h-4 w-4' />
+                Chat
+              </TabsTrigger>
             </TabsList>
             <TabsContent value='viewers'>
               {websocket.client && store.classroomId && (
@@ -198,6 +203,9 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
             </TabsContent>
             <TabsContent value='logs'>
               <InteractionLogs />
+            </TabsContent>
+            <TabsContent value='chat'>
+              <Chat />
             </TabsContent>
           </Tabs>
         </div>

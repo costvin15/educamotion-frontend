@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { Send } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-import { useChatStore } from "@/app/join/[id]/store/chat";
-import { useWebSocketStore } from "@/app/join/[id]/store/websocket";
-import { usePresentationStore } from "@/app/join/[id]/store/presentation";
+import { useChatStore } from "@/app/control-panel/[id]/store/Chat";
+import { useWebSocketStore } from "@/app/control-panel/[id]/store/WebSocket";
+import { useControlPanelStore } from "@/app/control-panel/[id]/store/ControlPanel";
 
-export function MessageInput() {
+export function ChatMessageInput() {
   const session = useSession();
-  const presentationStore = usePresentationStore();
+  const controlPanel = useControlPanelStore();
   const websocket = useWebSocketStore();
   const { addMessage } = useChatStore();
 
@@ -24,26 +24,18 @@ export function MessageInput() {
       return;
     }
 
-    if (!presentationStore.classroomId) {
+    if (!controlPanel.classroomId) {
       setDisabled(true);
       return;
     }
 
     websocket.connect(session.data.user.id, () => {
-      websocket.subscribe(presentationStore.classroomId, 'new-message', (message) => {
+      websocket.subscribe(controlPanel.classroomId, 'new-message', (message) => {
         addMessage(message.data.content, message.data.userId);
       });
     });
     setDisabled(false);
-  }, [session.data?.user.id, presentationStore.classroomId]);
-
-  if (!session.data?.user?.id) {
-    return (
-      <div className='p-4 border-t'>
-        <p>Você precisa estar logado para enviar mensagens.</p>
-      </div>
-    );
-  }
+  }, [session.data?.user.id, controlPanel.classroomId]);
 
   const handleSendMessage = () => {
     const currentMessage = message.trim();
@@ -54,11 +46,11 @@ export function MessageInput() {
     if (!currentMessage || currentMessage.length === 0) {
       return;
     }
-    websocket.send(presentationStore.classroomId, 'new-message', {
+    websocket.send(controlPanel.classroomId, 'new-message', {
       userId: session.data.user.id,
       content: currentMessage
     });
-    websocket.send(presentationStore.classroomId, 'events', {
+    websocket.send(controlPanel.classroomId, 'events', {
       content: JSON.stringify({ message: currentMessage }),
       userId: session.data.user.id,
       type: 'MESSAGE'
@@ -71,19 +63,13 @@ export function MessageInput() {
         <Input
           placeholder='Escreva sua mensagem...'
           value={message}
+          disabled={disabled}
           onChange={(e) => setMessage(e.target.value)}
-          disabled={disabled}
         />
-        <Button
-          size='icon'
-          onClick={() => handleSendMessage()}
-          disabled={disabled}
-        >
-          <Send
-            className='w-4 h-4'
-          />
+        <Button onClick={handleSendMessage} disabled={disabled}>
+          <Send className='w-4 h-4' />
         </Button>
       </div>
     </div>
-  );
+  )
 }

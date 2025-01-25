@@ -5,6 +5,9 @@ import { getSession } from 'next-auth/react';
 axios.interceptors.request.use(async config => {
     config.baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
     const data = await getSession();
+    if (!data) {
+      window.location.reload();
+    }
 
     if (data && data.user.token) {
       config.headers.Authorization = `Bearer ${data.user.token}`;

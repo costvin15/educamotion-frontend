@@ -5,7 +5,8 @@ import { MessageCircleDashed } from "lucide-react";
 import client from "@/client";
 
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { useChatStore } from "@/app/join/[id]/store/chat";
+
+import { useChatStore } from "@/app/control-panel/[id]/store/Chat";
 import { Viewer } from "@/app/control-panel/[id]/types/Viewer";
 
 async function fetchUserInformation(id: string) : Promise<Viewer> {
@@ -13,9 +14,9 @@ async function fetchUserInformation(id: string) : Promise<Viewer> {
   return data;
 }
 
-export function MessageList() {
+export function ChatMessageList() {
   const { messages } = useChatStore();
-  const [users, setUsers] = useState<Record<string, Viewer>>({});
+  const [ users, setUsers ] = useState<Record<string, Viewer>>({});
 
   useEffect(() => {
     messages.forEach((message) => {
@@ -48,4 +49,4 @@ export function MessageList() {
       </div>
     </ScrollArea>
   );
-}
+};

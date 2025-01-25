@@ -42,7 +42,9 @@ export function ViewersList() {
       <ScrollArea className='h-[430px]'>
         <div className='space-y-4'>
           {viewersStore.viewers.length === 0 && (
-            <p className='text-muted-foreground'>Nenhum espectador ativo no momento.</p>
+            <Card className='p-4'>
+              <p className='text-muted-foreground'>Nenhum espectador ativo no momento.</p>
+            </Card>
           )}
 
           {viewersStore.viewers.map((viewer, index) => (

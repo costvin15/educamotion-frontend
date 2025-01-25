@@ -8,18 +8,12 @@ interface Message {
 };
 
 export interface ChatState {
-  panelOpened: boolean;
   messages: Message[];
-  openPanel: () => void;
-  closePanel: () => void;
   addMessage: (message: string, userId: string) => void;
 };
 
 export const useChatStore = create<ChatState>((set) => ({
-  panelOpened: false,
   messages: [],
-  openPanel: () => set((state) => ({ panelOpened: true })),
-  closePanel: () => set((state) => ({ panelOpened: false })),
   addMessage: (message, userId) => set((state) => ({
     messages: [
       {
