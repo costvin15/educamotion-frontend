@@ -21,6 +21,7 @@ import { Classroom, DetailPresentation } from '@/app/control-panel/[id]/types';
 
 import { useWebSocketStore } from '@/app/control-panel/[id]/store/WebSocket';
 import { useControlPanelStore } from '@/app/control-panel/[id]/store/ControlPanel';
+import { CloseClassroomConfirmationModal } from '@/app/control-panel/[id]/components/CloseClassroomConfirmationModal';
 
 const fetchClassroomDetails = async (presentationId: string) : Promise<Classroom> => {
   const { data } = await client.get(`/classroom/presentation/${presentationId}`);
@@ -53,6 +54,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   const router = useRouter();
   const websocket = useWebSocketStore();
   const [loading, setLoading] = useState(true);
+  const [isCloseClassroomModalOpen, setIsCloseClassroomModalOpen] = useState(false);
 
   useEffect(() => {
     if (session.data?.user.id) {
@@ -118,7 +120,6 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
   }
 
   const handleCloseClassroom = async () => {
-    // TODO: Exibir mensagem de confirmação antes do fechamento da sala
     websocket.send(store.classroomId, 'close-classroom', {});
     await sendCloseClassroom(store.classroomId);
     router.push('/dashboard');
@@ -156,7 +157,7 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
 
         <Button
           variant='outline'
-          onClick={handleCloseClassroom}
+          onClick={() => setIsCloseClassroomModalOpen(true)}
         >
           <LogOut className='h-4 w-4 mr-2' />
           Encerrar Apresentação
@@ -210,6 +211,12 @@ export default function ControlPanel({ params } : { params: { id: string }}) {
           </Tabs>
         </div>
       </div>
+
+      <CloseClassroomConfirmationModal
+        isOpen={isCloseClassroomModalOpen}
+        onClose={() => setIsCloseClassroomModalOpen(false)}
+        onAccept={handleCloseClassroom}
+      />
     </div>
   );
 }
