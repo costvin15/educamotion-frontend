@@ -69,6 +69,7 @@ export function MessageInput() {
     <div className='p-4 border-t'>
       <div className='flex gap-2'>
         <Input
+          // TODO: Possibilitar envio de mensagens com Enter
           placeholder='Escreva sua mensagem...'
           value={message}
           onChange={(e) => setMessage(e.target.value)}

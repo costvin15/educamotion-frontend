@@ -29,22 +29,44 @@ async function fetchWordCloudDistributionFrequency(wordCloudId: string) : Promis
   return data;
 }
 
+async function updateWordCloudDetails(wordCloudId: string, title: string, multipleAnswers: boolean) : Promise<WordCloudDetails> {
+  const { data } = await client.put(`/element/word-cloud/update`, {
+    id: wordCloudId,
+    title,
+    enableMultipleEntries: multipleAnswers,
+  });
+  return data;
+}
+
 export function WordCloudProperties({ element } : { element: SlideElement }) {
+  const store = useWordCloudStore();
+  const [ title, setTitle ] = useState<string>(store.title);
+  const [ multipleAnswers, setMultipleAnswers ] = useState<boolean>(store.multipleAnswers);
+
+  useEffect(() => {
+    store.setTitle(title);
+    const timeout = setTimeout(() => {
+      updateWordCloudDetails(element.id, title, multipleAnswers);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [title, multipleAnswers]);
+
   return (
     <>
       <div className='space-y-2'>
         <Label>Título</Label>
         <Input
           type='text'
-          value={''}
-          onChange={(event) => {}}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
         />
       </div>
 
       <div className='space-y-2'>
-        <Label>Habilitar múltiplas respostas do mesmo usuário?</Label>
+        <Label>Habilitar múltiplas entradas do mesmo usuário?</Label>
         <Select
-          value='1'
+          value={multipleAnswers ? '1' : '0'}
+          onValueChange={(value) => setMultipleAnswers(value == '1')}
         >
           <SelectTrigger>
             <SelectValue placeholder='Selecione' />
@@ -72,6 +94,14 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
 
   useEffect(() => {
     (async () => {
+      const details = await fetchWordCloudDetails(element.id);
+      store.setTitle(details.title);
+      store.setMultipleAnswers(details.enableMultipleEntries);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
       await fetchDistribution();
       const words : Datum[] = [];
       store.words.forEach((value, key) => {
@@ -88,7 +118,7 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
   return (
     <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col flex-shrink'>
       <div className='p-4'>
-        <h3 className='font-semibold text-lg text-secondary'>Nuvem de Palavras</h3>
+        <h3 className='font-semibold text-lg text-secondary'>{store.title.length == 0 ? 'Nuvem de Palavras' : store.title}</h3>
       </div>
       <div className='absolute max-w-full bottom-0 w-full p-4'>
         <WordCloudRoot

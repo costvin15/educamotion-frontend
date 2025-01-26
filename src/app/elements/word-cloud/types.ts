@@ -1,7 +1,7 @@
 export interface WordCloud {
   id: string;
   title: string;
-  multipleAnswers: boolean;
+  enableMultipleEntries: boolean;
 }
 
 interface WordCloudDistributionItem {
