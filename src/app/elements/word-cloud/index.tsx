@@ -13,6 +13,7 @@ import { WordCloud as WordCloudDetails, WordCloudDistribution } from "@/app/elem
 import { WordCloud as WordCloudRoot } from "@/components/ui/WordCloud";
 import { Button } from "@/components/ui/Button";
 import { Send } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface Datum {
   value: string;
@@ -47,16 +48,40 @@ async function addWordCloudEntry(wordCloudId: string, entry: string) : Promise<v
 
 export function WordCloudProperties({ element } : { element: SlideElement }) {
   const store = useWordCloudStore();
-  const [ title, setTitle ] = useState<string>(store.title);
-  const [ multipleAnswers, setMultipleAnswers ] = useState<boolean>(store.multipleAnswers);
+  const instance = store.wordClouds.get(element.id);
+  const [ title, setTitle ] = useState<string>(instance?.title ?? '');
+  const [ multipleAnswers, setMultipleAnswers ] = useState<boolean>(instance?.enableMultipleEntries ?? false);
 
   useEffect(() => {
-    store.setTitle(title);
+    if (!instance) {
+      return;
+    }
+    setTitle(instance.title);
+    setMultipleAnswers(instance.enableMultipleEntries);
+  }, [instance]);
+
+  useEffect(() => {
+    if (!instance) {
+      return;
+    }
+    store.setWordCloud({
+      ...instance,
+      title,
+      enableMultipleEntries: multipleAnswers,
+    });
     const timeout = setTimeout(() => {
       updateWordCloudDetails(element.id, title, multipleAnswers);
     }, 500);
     return () => clearTimeout(timeout);
   }, [title, multipleAnswers]);
+
+  if (!instance) {
+    return (
+      <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col justify-center items-center'>
+        <h3 className='font-semibold text-lg text-secondary'>Nuvem de Palavras</h3>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -90,22 +115,26 @@ export function WordCloudProperties({ element } : { element: SlideElement }) {
 
 export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
   const store = useWordCloudStore();
+  const instance = store.wordClouds.get(element.id);
   const [ datum, setDatum ] = useState<Datum[]>([]);
   const [ word, setWord ] = useState<string>('');
 
   const fetchDistribution = async () => {
     const distribution = await fetchWordCloudDistributionFrequency(element.id);
-    console.log(distribution);
     for (const word of distribution.frequencyDistribution) {
-      console.log(`Adding word: ${word.word} with frequency ${word.frequency}`);
-      store.addFrequency(word.word, word.frequency);
+      store.addFrequency(element.id, word.word, word.frequency);
     }
   }
 
   const updateDatum = async () => {
     await fetchDistribution();
     const words : Datum[] = [];
-    store.words.forEach((value, key) => {
+    const wordCloud = store.words.get(element.id);
+    if (!wordCloud) {
+      return;
+    }
+    const distribution = wordCloud.datum;
+    distribution.forEach((value, key) => {
       words.push({ value: key, count: value });
     });
     setDatum(words);
@@ -114,8 +143,8 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
   useEffect(() => {
     (async () => {
       const details = await fetchWordCloudDetails(element.id);
-      store.setTitle(details.title);
-      store.setMultipleAnswers(details.enableMultipleEntries);
+      console.log('Word cloud details:', details);
+      store.addWordCloud(details);
     })();
   }, []);
 
@@ -129,6 +158,14 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
     })();
   }, [element.id]);
 
+  if (!instance) {
+    return (
+      <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col justify-center items-center'>
+        <h3 className='font-semibold text-lg text-secondary'>Nuvem de Palavras</h3>
+      </div>
+    );
+  }
+
   const handleSend = () => {
     if (word.length == 0) {
       return;
@@ -138,9 +175,17 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
       const currentWord = word.trim().toLowerCase();
   
       console.log(`Adding word: ${currentWord}`);
-      store.addWord(currentWord);
+      store.addWord(element.id, currentWord);
       setWord('');
-      await addWordCloudEntry(element.id, currentWord);
+      try {      
+        await addWordCloudEntry(element.id, currentWord);
+      } catch (error) {
+        toast({
+          title: 'Oops!',
+          description: 'Não é possível adicionar mais palavras a esta nuvem de palavras.',
+          variant: 'destructive',
+        });
+      }
       await updateDatum();
     })();
   }
@@ -148,7 +193,7 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
   return (
     <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col flex-shrink'>
       <div className='p-4'>
-        <h3 className='font-semibold text-lg text-secondary'>{store.title.length == 0 ? 'Nuvem de Palavras' : store.title}</h3>
+        <h3 className='font-semibold text-lg text-secondary'>{instance.title.length == 0 ? 'Nuvem de Palavras' : instance.title}</h3>
       </div>
       <div className='absolute max-w-full bottom-0 w-full p-4'>
         <WordCloudRoot
