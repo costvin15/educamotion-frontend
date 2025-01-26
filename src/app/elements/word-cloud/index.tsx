@@ -38,6 +38,13 @@ async function updateWordCloudDetails(wordCloudId: string, title: string, multip
   return data;
 }
 
+async function addWordCloudEntry(wordCloudId: string, entry: string) : Promise<void> {
+  await client.post(`/element/word-cloud/new-entry`, {
+    wordCloudId,
+    entry,
+  });
+}
+
 export function WordCloudProperties({ element } : { element: SlideElement }) {
   const store = useWordCloudStore();
   const [ title, setTitle ] = useState<string>(store.title);
@@ -84,12 +91,24 @@ export function WordCloudProperties({ element } : { element: SlideElement }) {
 export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
   const store = useWordCloudStore();
   const [ datum, setDatum ] = useState<Datum[]>([]);
+  const [ word, setWord ] = useState<string>('');
 
   const fetchDistribution = async () => {
     const distribution = await fetchWordCloudDistributionFrequency(element.id);
+    console.log(distribution);
     for (const word of distribution.frequencyDistribution) {
+      console.log(`Adding word: ${word.word} with frequency ${word.frequency}`);
       store.addFrequency(word.word, word.frequency);
     }
+  }
+
+  const updateDatum = async () => {
+    await fetchDistribution();
+    const words : Datum[] = [];
+    store.words.forEach((value, key) => {
+      words.push({ value: key, count: value });
+    });
+    setDatum(words);
   }
 
   useEffect(() => {
@@ -102,18 +121,29 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
 
   useEffect(() => {
     (async () => {
-      await fetchDistribution();
-      const words : Datum[] = [];
-      store.words.forEach((value, key) => {
-        words.push({ value: key, count: value });
-      });
-      setDatum(words);
+      await updateDatum();
 
       if (onLoaded) {
         onLoaded();
       }
     })();
   }, [element.id]);
+
+  const handleSend = () => {
+    if (word.length == 0) {
+      return;
+    }
+
+    (async () => {
+      const currentWord = word.trim().toLowerCase();
+  
+      console.log(`Adding word: ${currentWord}`);
+      store.addWord(currentWord);
+      setWord('');
+      await addWordCloudEntry(element.id, currentWord);
+      await updateDatum();
+    })();
+  }
 
   return (
     <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col flex-shrink'>
@@ -122,14 +152,23 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
       </div>
       <div className='absolute max-w-full bottom-0 w-full p-4'>
         <WordCloudRoot
+          key={datum.length}
           data={datum}
         />
         <div className='flex gap-2'>
           <Input
             placeholder='Digite uma palavra'
+            value={word}
+            onChange={(event) => setWord(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key == 'Enter') {
+                handleSend();
+              }
+            }}
           />
           <Button
             variant='secondary'
+            onClick={handleSend}
           >
             <Send className='w-6 h-6' />
           </Button>
