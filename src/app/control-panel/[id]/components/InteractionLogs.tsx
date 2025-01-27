@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Clock, MessageCircle, MousePointer2 } from 'lucide-react';
+import { Clock, Cloud, MessageCircle, MousePointer2 } from 'lucide-react';
 
 import client from '@/client';
 
@@ -80,6 +80,8 @@ export function InteractionLogs() {
                 <div className='flex items-center gap-2'>
                   {log.type === InteractionType.MESSAGE && (
                     <MessageCircle className='h-4 w-4 text-primary' />
+                  ) || log.type === InteractionType.WORD_CLOUD && (
+                    <Cloud className='h-4 w-4 text-primary' />
                   ) || (
                     <MousePointer2 className='h-4 w-4 text-primary' />
                   )}
@@ -93,6 +95,7 @@ export function InteractionLogs() {
               <p className='text-sm'>
                 {log.type === InteractionType.QUESTION && `Respondeu questão`}
                 {log.type === InteractionType.MESSAGE && `Enviou mensagem no chat`}
+                {log.type === InteractionType.WORD_CLOUD && `Adicionou palavra na nuvem`}
               </p>
               {log.data && (
                 <div className='text-sm bg-background/50 p-2 rounded'>

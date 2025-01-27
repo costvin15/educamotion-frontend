@@ -25,7 +25,7 @@ export const WordCloud = forwardRef<HTMLDivElement, WordCloudProps>(
           luminosity: 'dark',
           hue: 'blue',
         }}
-        randomSeed={new Date().getTime()}
+        randomSeed={1}
       />
     </div>
   )

@@ -5,6 +5,7 @@ export enum InteractionType {
   COSMO = 'Cosmo',
   QUESTION = 'Questão respondida',
   MESSAGE = 'Mensagem de Chat',
+  WORD_CLOUD = 'Adicionou uma palavra na nuvem',
 }
 
 export interface InteractionLog {

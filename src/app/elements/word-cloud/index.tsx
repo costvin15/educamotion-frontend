@@ -5,7 +5,7 @@ import client from '@/client';
 import { useWordCloudStore } from "@/app/elements/word-cloud/store/word-cloud";
 
 import { SlideElement } from "@/app/edit/[id]/types/pages";
-import { ElementProps } from "@/app/elements";
+import { ElementProps, ElementType } from "@/app/elements";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
@@ -14,6 +14,8 @@ import { WordCloud as WordCloudRoot } from "@/components/ui/WordCloud";
 import { Button } from "@/components/ui/Button";
 import { Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
+import { useWebSocketStore } from "@/app/join/[id]/store/websocket";
 
 interface Datum {
   value: string;
@@ -113,8 +115,10 @@ export function WordCloudProperties({ element } : { element: SlideElement }) {
   )  
 };
 
-export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
+export function WordCloud({ element, onLoaded, onAnswerSend } : ElementProps) {
   const store = useWordCloudStore();
+  const session = useSession();
+  const websocket = useWebSocketStore();
   const instance = store.wordClouds.get(element.id);
   const [ datum, setDatum ] = useState<Datum[]>([]);
   const [ word, setWord ] = useState<string>('');
@@ -140,11 +144,61 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
     setDatum(words);
   }
 
+  const handleWebsocketSubscription = () => {
+    if (!session.data?.user.id) {
+      return;
+    }
+
+    websocket.connect(session.data.user.id, () => {
+      websocket.subscribe(element.id, 'word-cloud', (message) => {
+        console.log('received message', message);
+        const content = JSON.parse(message.data.content);
+        store.addWord(element.id, content);
+        updateDatum();
+      });
+    });
+  }
+
+  const handleWebsocketMessage = (message: string) => {
+    if (!session.data?.user.id) {
+      return;
+    }
+
+    websocket.connect(session.data.user.id, () => {
+      websocket.send(element.id, 'word-cloud', { content: message });
+    });
+  }
+
+  const handleSend = () => {
+    if (word.length == 0) {
+      return;
+    }
+
+    (async () => {
+      const currentWord = word.trim().toLowerCase();
+  
+      setWord('');
+      try {      
+        await addWordCloudEntry(element.id, currentWord);
+        handleWebsocketMessage(currentWord);
+        if (session.data && session.data.user && session.data.user.id) {
+          onAnswerSend(JSON.stringify({ word: currentWord }), session.data.user.id, ElementType.WORDCLOUD);
+        }
+      } catch (error) {
+        toast({
+          title: 'Oops!',
+          description: 'Não é possível adicionar mais palavras a esta nuvem de palavras.',
+          variant: 'destructive',
+        });
+      }
+    })();
+  }
+
   useEffect(() => {
     (async () => {
       const details = await fetchWordCloudDetails(element.id);
-      console.log('Word cloud details:', details);
       store.addWordCloud(details);
+      handleWebsocketSubscription();
     })();
   }, []);
 
@@ -166,30 +220,6 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
     );
   }
 
-  const handleSend = () => {
-    if (word.length == 0) {
-      return;
-    }
-
-    (async () => {
-      const currentWord = word.trim().toLowerCase();
-  
-      console.log(`Adding word: ${currentWord}`);
-      store.addWord(element.id, currentWord);
-      setWord('');
-      try {      
-        await addWordCloudEntry(element.id, currentWord);
-      } catch (error) {
-        toast({
-          title: 'Oops!',
-          description: 'Não é possível adicionar mais palavras a esta nuvem de palavras.',
-          variant: 'destructive',
-        });
-      }
-      await updateDatum();
-    })();
-  }
-
   return (
     <div className='w-full h-full bg-primary rounded-lg shadow-md flex flex-col flex-shrink'>
       <div className='p-4'>
@@ -204,7 +234,9 @@ export function WordCloud({ element, onAnswerSend, onLoaded } : ElementProps) {
           <Input
             placeholder='Digite uma palavra'
             value={word}
-            onChange={(event) => setWord(event.target.value)}
+            onChange={(event) => {
+              setWord(event.target.value.trim());
+            }}
             onKeyDown={(event) => {
               if (event.key == 'Enter') {
                 handleSend();
