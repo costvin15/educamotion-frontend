@@ -13,6 +13,7 @@ const UserInformation = () => {
     const name = session.data?.user.name;
     if (!name) return '';
     const [firstName, lastName] = name.split(' ');
+    if (!firstName || !lastName) return name[0];
     return `${firstName[0]}${lastName[0]}`;
   }
 
